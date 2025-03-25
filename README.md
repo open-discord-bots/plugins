@@ -2,8 +2,8 @@
 <img src="https://apis.dj-dj.be/cdn/opendiscord/logo.png" alt="Open Ticket" width="650px"><br>
 <a href="https://otgithub.dj-dj.be"><img src="https://apis.dj-dj.be/cdn/openticket/logo.png" alt="Open Ticket" width="170px"></a><br>
 <a href="https://discord.com/invite/26vT9wt3n3"><img alt="Discord Invite Link" src="https://img.shields.io/badge/discord-support%20server-5865F2.svg?style=flat-square&logo=discord"></img></a>
-<a href="https://github.com/DJj123dj/open-discord-plugins/blob/main/LICENSE"><img alt="Open Discord Plugins License" src="https://img.shields.io/badge/license-MIT-important.svg?style=flat-square"></img></a>
-<a href="https://discord.dj-dj.be"><img alt="Open Discord Plugins Stars" src="https://img.shields.io/github/stars/djj123dj/open-discord-plugins?color=yellow&label=stars&logo=github&style=flat-square"></img></a>
+<a href="https://github.com/open-discord-bots/plugins/blob/main/LICENSE"><img alt="Open Discord Plugins License" src="https://img.shields.io/badge/license-MIT-important.svg?style=flat-square"></img></a>
+<a href="https://discord.dj-dj.be"><img alt="Open Discord Plugins Stars" src="https://img.shields.io/github/stars/open-discord-bots/plugins?color=yellow&label=stars&logo=github&style=flat-square"></img></a>
 <a href="https://github.com/sponsors/DJj123dj"><img alt="Sponsor DJj123dj" src="https://img.shields.io/badge/sponsor-DJj123dj-ea4aaa?style=flat-square&logo=githubsponsors"></img></a>
 </p>
 
@@ -28,11 +28,11 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 
 ## 🧩 Plugins
 > #### ⭐ Featured Plugins (Top 5 Most Used)
-> **[`ot-sqlite-database`](https://github.com/DJj123dj/open-discord-plugins/tree/main/open-ticket/ot-sqlite-database/),
-> [`ot-migrate-v3`](https://github.com/DJj123dj/open-discord-plugins/tree/main/open-ticket/ot-migrate-v3/),
-> [`ot-reviews`](https://github.com/DJj123dj/open-discord-plugins/tree/main/open-ticket/ot-reviews/),
-> [`ot-feedback`](https://github.com/DJj123dj/open-discord-plugins/tree/main/open-ticket/ot-feedback/),
-> [`ot-tags`](https://github.com/DJj123dj/open-discord-plugins/tree/main/open-ticket/ot-tags/)**
+> **[`ot-sqlite-database`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-sqlite-database/),
+> [`ot-migrate-v3`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-migrate-v3/),
+> [`ot-reviews`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-reviews/),
+> [`ot-feedback`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-feedback/),
+> [`ot-tags`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-tags/)**
 
 ### 📦 Official *(made by DJdj Development)*
 |Name                                                                  |Category                    |Description              |
