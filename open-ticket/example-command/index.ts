@@ -1,6 +1,5 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
 declare module "#opendiscord-types" {

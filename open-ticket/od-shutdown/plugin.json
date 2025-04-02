@@ -1,10 +1,10 @@
 {
-    "name":"OT Shutdown",
-    "id":"ot-shutdown",
+    "name":"OD Shutdown",
+    "id":"od-shutdown",
     "version":"1.0.3",
     "startFile":"index.ts",
 
-    "enabled":true,
+    "enabled":false,
     "priority":0,
     "events":[],
 

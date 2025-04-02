@@ -1,0 +1,23 @@
+{
+    "name":"OD No Slash Clear",
+    "id":"od-no-slash-clear",
+    "version":"1.0.2",
+    "startFile":"index.ts",
+
+    "enabled":false,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "shortDescription":"Disable the automatic removal of slash commands that aren't used by Open Discord bots.",
+        "longDescription":"Disable the automatic removal of slash commands that aren't used by Open Discord bots. This is useful if you've added your own commands and you don't want to use the Open Discord system.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["slash","system","disable","auto-removal"]
+    }
+}

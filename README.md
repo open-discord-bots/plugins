@@ -41,17 +41,17 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`example-command`](./open-ticket/example-command/)                   |📄 Example                  |Sample custom command using the Open Discord system. |
 |[`ot-jump-to-top`](./open-ticket/ot-jump-to-top/)                     |📢 Command                  |Add a simple command to jump to the top of the ticket. |
 |[`ot-kill-switch`](./open-ticket/ot-kill-switch/)                     |📢 Command                  |Temporarily disable the ticket system using a kill switch. |
-|[`ot-hosting-status`](./open-ticket/ot-hosting-status/)               |📢 Command                  |A simple command to send hosting status updates to a channel. |
-|[`ot-shutdown`](./open-ticket/ot-shutdown/)                           |📢 Command                  |A simple command to turn off the bot from a slash command (server & bot owner only). |
+|[`od-hosting-status`](./open-ticket/od-hosting-status/)               |📢 Command                  |A simple command to send hosting status updates to a channel. |
+|[`od-shutdown`](./open-ticket/od-shutdown/)                           |📢 Command                  |A simple command to turn off the bot from a slash command (server & bot owner only). |
 |[`ot-sqlite-database`](./open-ticket/ot-sqlite-database/)             |⚙️ Utility                  |With this plugin, the database will be an SQLite file. It's a must-have for large servers! |
-|[`ot-no-slash-clear`](./open-ticket/ot-no-slash-clear/)               |⚙️ Utility                  |Disable the automatic removal of slash commands that aren't used by Open Ticket. |
+|[`od-no-slash-clear`](./open-ticket/od-no-slash-clear/)               |⚙️ Utility                  |Disable the automatic removal of slash commands that aren't used by Open Ticket. |
 |[`ot-migrate-v3`](./open-ticket/ot-migrate-v3/)                       |⚙️ Utility                  |Use this plugin to migrate all tickets from Open Ticket v3 to v4. |
 |[`ot-ticket-message-extras`](./open-ticket/ot-ticket-message-extras/) |🎨 Customisation            |A plugin which adds a few little features to the ticket message. |
 |[`ot-rename-keep-prefix`](./open-ticket/ot-rename-keep-prefix/)       |🎨 Customisation            |Simple plugin to keep the channel prefix when using the /rename command. |
 |[`ot-customise-buttons`](./open-ticket/ot-customise-buttons/)         |🎨 Customisation            |Customise almost all built-in buttons. This includes the claim, reopen, close & delete buttons. |
 |[`ot-ephemeral-messages`](./open-ticket/ot-ephemeral-messages/)       |🎨 Customisation            |Customise for every messages if it needs to be ephemeral or not. |
 |[`ot-footers`](./open-ticket/ot-footers/)                             |🎨 Customisation            |A simple plugin to add footers in all Open Ticket embeds. |
-|[`ot-alt-detector`](./open-ticket/ot-alt-detector/)                   |💼 Management               |Use the discord-alt-detector npm package by DJdj Development in your ticket bot. |
+|[`od-alt-detector`](./open-ticket/od-alt-detector/)                   |💼 Management               |Use the discord-alt-detector npm package by DJdj Development in your ticket bot. |
 |[`ot-embeds`](./open-ticket/ot-embeds/)                               |💼 Management               |Create custom premade embeds in the config or use the command to create one from scratch. |
 |[`ot-move-actions`](./open-ticket/ot-move-actions/)                   |💼 Management               |Automatically unclaim/unpin a ticket when it's moved using `/move`. |
 |[`ot-reviews`](./open-ticket/ot-reviews/)                             |💼 Management               |Review system for Open Ticket! It is very customisable and has lots of features. |

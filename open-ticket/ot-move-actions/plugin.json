@@ -1,10 +1,10 @@
 {
     "name":"OT Move Actions",
     "id":"ot-move-actions",
-    "version":"1.0.1",
+    "version":"1.0.2",
     "startFile":"index.ts",
 
-    "enabled":true,
+    "enabled":false,
     "priority":0,
     "events":[],
 

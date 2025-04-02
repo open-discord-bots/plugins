@@ -1,10 +1,10 @@
 {
-    "name":"OT Hosting Status",
-    "id":"ot-hosting-status",
+    "name":"OD Hosting Status",
+    "id":"od-hosting-status",
     "version":"1.0.2",
     "startFile":"index.ts",
 
-    "enabled":true,
+    "enabled":false,
     "priority":0,
     "events":[],
 

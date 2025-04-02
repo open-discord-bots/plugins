@@ -1,10 +1,10 @@
 {
-    "name":"OT Example Command",
+    "name":"Example Command",
     "id":"example-command",
     "version":"1.0.3",
     "startFile":"index.ts",
 
-    "enabled":true,
+    "enabled":false,
     "priority":0,
     "events":[],
 
