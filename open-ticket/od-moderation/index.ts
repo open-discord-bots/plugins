@@ -114,7 +114,7 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
     // Warn Command
     slash.add(new api.ODSlashCommand("example-command:warn", {
         name: "warn",
-        description: "Warn a user in the guild.",
+        description: "Warn a user in the server.",
         type: discord.ApplicationCommandType.ChatInput,
         contexts: [discord.InteractionContextType.Guild],
         integrationTypes: [discord.ApplicationIntegrationType.GuildInstall],
@@ -178,32 +178,32 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
     menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("example-command:ban", 0, {
         slashName: "ban",
         textName: "ban",
-        slashDescription: "Ban a user from the guild.",
-        textDescription: "Ban a user from the guild.",
+        slashDescription: "Ban a user from the server.",
+        textDescription: "Ban a user from the server.",
     }));
 
     // Unban Command
     menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("example-command:unban", 0, {
         slashName: "unban",
         textName: "unban",
-        slashDescription: "Unban a user from the guild.",
-        textDescription: "Unban a user from the guild.",
+        slashDescription: "Unban a user from the server.",
+        textDescription: "Unban a user from the server.",
     }));
 
     // Kick Command
     menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("example-command:kick", 0, {
         slashName: "kick",
         textName: "kick",
-        slashDescription: "Kick a user from the guild.",
-        textDescription: "Kick a user from the guild.",
+        slashDescription: "Kick a user from the server.",
+        textDescription: "Kick a user from the server.",
     }));
 
     // Warn Command
     menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("example-command:warn", 0, {
         slashName: "warn",
         textName: "warn",
-        slashDescription: "Warn a user in the guild.",
-        textDescription: "Warn a user in the guild.",
+        slashDescription: "Warn a user in the server.",
+        textDescription: "Warn a user in the server.",
     }));
 });
 
@@ -216,7 +216,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general");
             instance.setTitle("🚫 user banned");
             instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("A user has been banned from the guild.");
+            instance.setDescription("A user has been banned from the server.");
         })
     );
 
@@ -227,7 +227,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general");
             instance.setTitle("User Unbanned");
             instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("A user has been unbanned from the guild.");
+            instance.setDescription("A user has been unbanned from the server.");
         })
     );
 
@@ -238,7 +238,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general");
             instance.setTitle("User Kicked");
             instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("A user has been kicked from the guild.");
+            instance.setDescription("A user has been kicked from the server.");
         })
     );
 
@@ -249,7 +249,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general");
             instance.setTitle("User Warned");
             instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("A user has been warned in the guild.");
+            instance.setDescription("A user has been warned in the server.");
         })
     );
 });
@@ -302,7 +302,7 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(unknownErrorMessage);
     unknownErrorMessage.workers.add(
         new api.ODWorker("example-command:unknown-error-message", 0, async (instance, params, source, cancel) => {
-            instance.setContent("An unknown error occurred. Please try again later.");
+            instance.setContent("⚠️ An unknown error occurred. Please try again later.");
         })
     );
 
