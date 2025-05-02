@@ -48,10 +48,14 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
         integrationTypes:[discord.ApplicationIntegrationType.GuildInstall],
         options:[
             {
-                type:discord.ApplicationCommandOptionType.Boolean,
+                type:discord.ApplicationCommandOptionType.String,
                 required:true,
                 name:"enabled",
-                description:"Enable/disable the kill switch."
+                description:"Enable/disable the kill switch.",
+                choices: [
+                    { name: "Enable", value: "true" },
+                    { name: "Disable", value: "false" }
+                ]
             }
         ]
     }))
@@ -68,9 +72,13 @@ opendiscord.events.get("onTextCommandLoad").listen((text) => {
         guildPermission:true,
         options:[
             {
-                type:"boolean",
+                type:"string",
                 required:true,
-                name:"enabled"
+                name:"enabled",
+                choices: [
+                    { name: "Enable", value: "true" },
+                    { name: "Disable", value: "false" }
+                ]
             }
         ]
     }))
@@ -156,7 +164,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             }
 
             //switch & reply
-            const newValue = options.getBoolean("enabled",true)
+            const newValue = options.getString("enabled",true) === "true"
             manager.enabled = newValue
             await instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:kill-message").build(source,{enabled:newValue,user}))
         }),
