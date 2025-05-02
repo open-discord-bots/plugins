@@ -1,6 +1,23 @@
-# od moderation 
-A simple moderation plugin for open discord.
+# OD Moderation Plugin
 
-> this plugin is still in working so it will not working properly 
+A clean and minimal moderation plugin for **Open Discord (OD)** — helping server admins keep their communities safe and respectful with essential tools.
 
-> this is not a official plugin for open discord 
+> Currently supports `ban`, `kick`, `unban`, and `warn`. More features coming soon!
+
+---
+
+## Features (Current)
+
+- `!ban @user` – Bans a member from the server.
+- `!kick @user` – Kicks a member from the server.
+- `!unban userID` – Unbans a user by ID.
+- `!warn @user` – Issues a warning to a user (logs coming soon).
+
+---
+
+## Usage
+
+Use the following commands in any server channel (requires appropriate permissions):
+
+> this is not official plugin of open discord
+
