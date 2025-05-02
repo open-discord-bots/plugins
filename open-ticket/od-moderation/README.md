@@ -1,6 +1,6 @@
 # OD Moderation Plugin
 
-A clean and minimal moderation plugin for **Open Discord (OD)** — helping server admins keep their communities safe and respectful with essential tools.
+A clean and minimal moderation plugin for **Open Discord** — helping server admins keep their communities safe and respectful with essential tools.
 
 > Currently supports `ban`, `kick`, `unban`, and `warn`. More features coming soon!
 
