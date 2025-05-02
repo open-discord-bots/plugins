@@ -216,7 +216,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.get("example-command:ban-embed").workers.add(
         new api.ODWorker("example-command:ban-embed", 0, (instance, params, source, cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general");
-            instance.setTitle(" user banned");
+            instance.setTitle("🚫 user banned");
             instance.setColor(generalConfig.data.mainColor);
             instance.setDescription("A user has been banned from the guild.");
         })
