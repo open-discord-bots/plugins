@@ -264,8 +264,7 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     banMessage.workers.add(
         new api.ODWorker("example-command:ban-message", 0, async (instance, params, source, cancel) => {
             const embedSource = source === "text" || source === "slash" ? source : "other";
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("example-command:ban-embed").build(embedSource, {}));
-            instance.setContent("A user has been banned from the guild.");
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("example-command:ban-embed").build(embedSource, {}));    
         })
     );
 
@@ -276,7 +275,6 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
         new api.ODWorker("example-command:unban-message", 0, async (instance, params, source, cancel) => {
             const embedSource = source === "text" || source === "slash" ? source : "other";
             instance.addEmbed(await opendiscord.builders.embeds.getSafe("example-command:unban-embed").build(embedSource, {}));
-            instance.setContent("A user has been unbanned from the guild.");
         })
     );
 
@@ -287,7 +285,6 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
         new api.ODWorker("example-command:kick-message", 0, async (instance, params, source, cancel) => {
             const embedSource = source === "text" || source === "slash" ? source : "other";
             instance.addEmbed(await opendiscord.builders.embeds.getSafe("example-command:kick-embed").build(embedSource, {}));
-            instance.setContent("A user has been kicked from the guild.");
         })
     );
 
@@ -298,7 +295,6 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
         new api.ODWorker("example-command:warn-message", 0, async (instance, params, source, cancel) => {
             const embedSource = source === "text" || source === "slash" ? source : "other";
             instance.addEmbed(await opendiscord.builders.embeds.getSafe("example-command:warn-embed").build(embedSource, {}));
-            instance.setContent("A user has been warned in the guild.");
         })
     );
 
@@ -380,9 +376,9 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 } catch (dmError) {
                     console.error("Failed to send DM to the user:", dmError);
                     // Notify the moderator that the DM failed
-                    instance.reply(await opendiscord.builders.messages.getSafe("example-command:dm-failed-message").build(source, {}));
+                    
                 }
-
+                
                 // Ban the user
                 await guild.members.ban(targetUser, { reason });
                 instance.reply(await opendiscord.builders.messages.getSafe("example-command:ban-message").build(source, {}));
