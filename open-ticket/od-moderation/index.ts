@@ -31,7 +31,6 @@ declare module "#opendiscord-types" {
         "example-command:unban-message": { source: "slash" | "text" | "other", params: {}, workers: "example-command:unban-message" };
         "example-command:kick-message": { source: "slash" | "text" | "other", params: {}, workers: "example-command:kick-message" };
         "example-command:warn-message": { source: "slash" | "text" | "other", params: {}, workers: "example-command:warn-message" };
-        "example-command:dm-failed-message": { source: "slash" | "text" | "other", params: {}, workers: "example-command:dm-failed-message" };
         "example-command:unknown-error-message": { source: "slash" | "text" | "other", params: {}, workers: "example-command:unknown-error-message" };
         "example-command:higher-role-error-message": { source: "slash" | "text" | "other", params: {}, workers: "example-command:higher-role-error-message" };
     }
