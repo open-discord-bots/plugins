@@ -302,14 +302,6 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
         })
     );
 
-    // DM Failure Message Builder
-    const dmFailedMessage = new api.ODMessage("example-command:dm-failed-message");
-    messages.add(dmFailedMessage);
-    dmFailedMessage.workers.add(
-        new api.ODWorker("example-command:dm-failed-message", 0, async (instance, params, source, cancel) => {
-            instance.setContent("The user could not be notified via DM, but the action will proceed.");
-        })
-    );
 
     // Unknown Error Message Builder
     const unknownErrorMessage = new api.ODMessage("example-command:unknown-error-message");
