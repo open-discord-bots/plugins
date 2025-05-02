@@ -15,9 +15,7 @@ A clean and minimal moderation plugin for **Open Discord (OD)** — helping serv
 
 ---
 
-## Usage
-
-Use the following commands in any server channel (requires appropriate permissions):
+## Note📖
 
 > this is not official plugin of open discord
 
