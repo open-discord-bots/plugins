@@ -75,10 +75,7 @@ opendiscord.events.get("onTextCommandLoad").listen((text) => {
                 type:"string",
                 required:true,
                 name:"enabled",
-                choices: [
-                    { name: "Enable", value: "true" },
-                    { name: "Disable", value: "false" }
-                ]
+                choices: ["true","false"]
             }
         ]
     }))
