@@ -504,8 +504,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     await targetUser.send(`You have been kicked from **${guild.name}** for the following reason: ${reason}`);
                 } catch (dmError) {
                     console.error("Failed to send DM to the user:", dmError);
-                    // Notify the moderator that the DM failed
-                    instance.reply(await opendiscord.builders.messages.getSafe("example-command:dm-failed-message").build(source, {}));
+                
                 }
 
                 // Kick the user
