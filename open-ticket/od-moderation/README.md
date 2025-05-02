@@ -18,4 +18,5 @@ A clean and minimal moderation plugin for **Open Discord (OD)** — helping serv
 ## Note📖
 
 > this is not an official plugin of open discord
+
 > this plugin is still in development there will be bugs
