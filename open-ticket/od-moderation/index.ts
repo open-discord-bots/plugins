@@ -326,6 +326,16 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     higherRoleErrorMessage.workers.add(
         new api.ODWorker("od-moderation:higher-role-error-message", 0, async (instance, params, source, cancel) => {
             instance.setContent("The bot cannot ban a user with a higher or equal role.");
+            })
+    );
+
+    // no perms Message Builder
+    const nopermsMessage = new api.ODMessage("od-moderation:no-perms-message");
+    messages.add(nopermsMessage);
+    warnMessage.workers.add(
+        new api.ODWorker("od-moderation:no-perms-message", 0, async (instance, params, source, cancel) => {
+            const embedSource = source === "text" || source === "slash" ? source : "other";
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:no-perms-embed").build(embedSource, {}));
         })
     );
 });
@@ -354,7 +364,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             // Check if the user has permission to ban members
             const member = guild.members.cache.get(user.id);
             if (!member?.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
                 return cancel();
             }
 
@@ -387,7 +397,6 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     await targetUser.send(`You have been banned from **${guild.name}** for the following reason: ${reason}`);
                 } catch (dmError) {
                     console.error("Failed to send DM to the user:", dmError);
-                    // Notify the moderator that the DM failed
                     
                 }
                 
@@ -427,7 +436,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
             // Check if the user has permission to ban members
             if (!guild.members.cache.get(user.id)?.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
                 return cancel();
             }
 
@@ -483,7 +492,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             // Check if the user has permission to kick members
             const member = guild.members.cache.get(user.id);
             if (!member?.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
                 return cancel();
             }
 
@@ -556,7 +565,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             // Check if the user has permission to warn members
             const member = guild.members.cache.get(user.id);
             if (!member?.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
                 return cancel();
             }
 
