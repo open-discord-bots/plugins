@@ -252,6 +252,17 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
             instance.setTitle("User Warned");
             instance.setColor(generalConfig.data.mainColor);
             instance.setDescription("A user has been warned in the server.");
+            })
+    );
+
+    // no perms Embed
+    embeds.add(new api.ODEmbed("od-moderation:no-perms-embed"));
+    embeds.get("od-moderation:no-perms-embed").workers.add(
+        new api.ODWorker("od-moderation:no-perms-embed", 0, (instance, params, source, cancel) => {
+            const generalConfig = opendiscord.configs.get("opendiscord:general");
+            instance.setTitle("Error");
+            instance.setColor(generalConfig.data.mainColor);
+            instance.setDescription("you don't have permission.");
         })
     );
 });
