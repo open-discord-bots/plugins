@@ -302,7 +302,8 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(unknownErrorMessage);
     unknownErrorMessage.workers.add(
         new api.ODWorker("example-command:unknown-error-message", 0, async (instance, params, source, cancel) => {
-            instance.setContent("⚠️ An unknown error occurred. Please try again later.");
+            instance.setContent("⚠️ An unknown error occurred. Please try again later.")
+            instance.setEphemeral(true)
         })
     );
 
