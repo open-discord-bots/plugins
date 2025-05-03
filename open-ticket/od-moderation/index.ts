@@ -31,13 +31,15 @@ declare module "#opendiscord-types" {
         "od-moderation:warn-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:warn-message" };
         "od-moderation:unknown-error-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:unknown-error-message" };
         "od-moderation:higher-role-error-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:higher-role-error-message" };
-    }
+        "od-moderation:no-perms-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:no-perms-message" };
+ }
     export interface ODEmbedManagerIds_Default {
         "od-moderation:ban-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:ban-embed" };
         "od-moderation:unban-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:unban-embed" };
         "od-moderation:kick-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:kick-embed" };
         "od-moderation:warn-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:warn-embed" };
-    }
+        "od-moderation:no-perms-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:no-perms-embed" };
+ }
 }
 
 // REGISTER SLASH COMMANDS
