@@ -179,51 +179,54 @@ opendiscord.events.get("afterEmbedBuildersLoaded").listen((embeds) => {
             //PANEL FOOTER (high priority => overwrite default footer)
             embeds.get("opendiscord:panel").workers.add(new api.ODWorker("ot-footers:footer",10,(instance,params,source,cancel) => {
                 const panelFooterData = config.data.panelFooterImages.find((p) => p.id == params.panel.id.value)
-                if (panelFooterData) instance.setFooter(panelFooterData.panelFooter,panelFooterData.panelFooterImage)
+                if (panelFooterData && panelFooterData.panelFooterImage) instance.setFooter(panelFooterData.panelFooter,panelFooterData.panelFooterImage)
+                else if (panelFooterData) instance.setFooter(panelFooterData.panelFooter)
             }))
 
         }else if (id == "opendiscord:ticket-message"){
             //OPTION FOOTER (ticket message)
             embeds.get("opendiscord:ticket-message").workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,source,cancel) => {
                 const optionFooterData = config.data.optionFooterImages.find((p) => p.id == params.ticket.option.id.value)
-                if (optionFooterData) instance.setFooter(optionFooterData.ticketFooter,optionFooterData.ticketFooterImage)
+                if (optionFooterData && optionFooterData.ticketFooterImage) instance.setFooter(optionFooterData.ticketFooter,optionFooterData.ticketFooterImage)
+                else if (optionFooterData) instance.setFooter(optionFooterData.ticketFooter)
             }))
 
         }else if (id == "opendiscord:ticket-created-dm"){
             //OPTION FOOTER (ticket dm)
             embeds.get("opendiscord:ticket-created-dm").workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,source,cancel) => {
                 const optionFooterData = config.data.optionFooterImages.find((p) => p.id == params.ticket.option.id.value)
-                if (optionFooterData) instance.setFooter(optionFooterData.dmFooter,optionFooterData.dmFooterImage)
+                if (optionFooterData && optionFooterData.dmFooterImage) instance.setFooter(optionFooterData.dmFooter,optionFooterData.dmFooterImage)
+                else if (optionFooterData) instance.setFooter(optionFooterData.dmFooter)
             }))
 
         }else if (config.data.errorFooter.enabled && errorEmbedIds.includes(id)){
             //ERROR FOOTER (high priority => overwrite default footer)
             embed.workers.add(new api.ODWorker("ot-footers:footer",10,(instance,params,source,cancel) => {
-                instance.setFooter(config.data.errorFooter.footer,config.data.errorFooter.footerImage)
+                instance.setFooter(config.data.errorFooter.footer,config.data.errorFooter.footerImage ? config.data.errorFooter.footerImage : undefined)
             }))
 
         }else if (config.data.dmLogsFooter.enabled && dmLogEmbedIds.includes(id)){
             //DM LOGS FOOTER
             embed.workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,source,cancel) => {
-                instance.setFooter(config.data.dmLogsFooter.footer,config.data.dmLogsFooter.footerImage)
+                instance.setFooter(config.data.dmLogsFooter.footer,config.data.dmLogsFooter.footerImage ? config.data.dmLogsFooter.footerImage : undefined)
             }))
 
         }else if (config.data.logsFooter.enabled && logEmbedIds.includes(id)){
             //LOGS FOOTER
             embed.workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,source,cancel) => {
-                instance.setFooter(config.data.logsFooter.footer,config.data.logsFooter.footerImage)
+                instance.setFooter(config.data.logsFooter.footer,config.data.logsFooter.footerImage ? config.data.logsFooter.footerImage : undefined)
             }))
 
         }else if (config.data.generalFooter.enabled && id.startsWith("opendiscord:")){
             //GENERAL FOOTER (built-in)
             embed.workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,source,cancel) => {
-                instance.setFooter(config.data.generalFooter.footer,config.data.generalFooter.footerImage)
+                instance.setFooter(config.data.generalFooter.footer,config.data.generalFooter.footerImage ? config.data.generalFooter.footerImage : undefined)
             }))
 
         }else if (config.data.generalFooter.enabled && config.data.generalFooter.includePluginEmbeds){
             //GENERAL FOOTER (plugins)
             embed.workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,source,cancel) => {
-                instance.setFooter(config.data.generalFooter.footer,config.data.generalFooter.footerImage)
+                instance.setFooter(config.data.generalFooter.footer,config.data.generalFooter.footerImage ? config.data.generalFooter.footerImage : undefined)
             }))
         }
     })
