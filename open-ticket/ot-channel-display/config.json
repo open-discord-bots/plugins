@@ -1,0 +1,24 @@
+{
+    "_INFO":"The channel names will update once every 15 minutes because of discord ratelimits. Don't worry if it's not accurate!",
+    "channels":[
+        {
+            "id":"discord channel id",
+            "name":"Server Size: {user-count}"
+        },
+        {
+            "id":"discord channel id",
+            "name":"Ticket Count: {tickets-created-count}"
+        }
+    ],
+    "_VAR_INFO":"Check all available variables in the 'VARIABLES.txt' file!",
+    "variables":[
+        {
+            "name":"{user-count}",
+            "variable":"guild.members.all"
+        },
+        {
+            "name":"{tickets-created-count}",
+            "variable":"stats.tickets.created"
+        }
+    ]
+}
