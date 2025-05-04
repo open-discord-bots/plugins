@@ -1,0 +1,23 @@
+{
+    "name":"od moderation",
+    "id":"od_moderation",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"NotMukundOP",
+        "shortDescription":"A simple moderation plugin for open discord",
+        "longDescription":"A simple moderation plugin for open discord",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["moderation"]
+    }
+}
