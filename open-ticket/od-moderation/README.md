@@ -8,7 +8,7 @@ A clean and minimal moderation plugin for **Open Discord** — helping server ad
 
 ## Features (Current)
 
-- `!ban @user` – Bans a member from the server.
-- `!kick @user` – Kicks a member from the server.
-- `!unban userID` – Unbans a user by ID.
-- `!warn @user` – Issues a warning to a user (logs coming soon).
+- `/ban @user` – Bans a member from the server.
+- `/kick @user` – Kicks a member from the server.
+- `/unban userID` – Unbans a user by ID.
+- `/warn @user` – Issues a warning to a user (logs coming soon).
