@@ -1,0 +1,23 @@
+{
+    "name":"OT Vanity",
+    "id":"ot-vanity",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "shortDescription":"A plugin to detect the vanity status of members in the server.",
+        "longDescription":"A plugin to detect the vanity status of members in the server and give them exclusive privilleges.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["vanity","members","list","promo"]
+    }
+}

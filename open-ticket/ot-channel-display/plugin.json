@@ -1,0 +1,23 @@
+{
+    "name":"OT Channel Display",
+    "id":"ot-channel-display",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "shortDescription":"A plugin to show different variables in a voice channel in your server.",
+        "longDescription":"A plugin to show different variables in a voice channel in your server. (e.g amount of tickets created/closed)",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["display","stats","voice-channel"]
+    }
+}

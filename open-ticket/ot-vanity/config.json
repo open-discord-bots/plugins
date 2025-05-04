@@ -1,0 +1,22 @@
+{
+    "vanityText":".gg/example",
+    "caseSensitive":true,
+    "matchWholeText":false,
+    
+    "_INFO":"These are the roles which will be rewarded immediately or after a certain amount of time. All roles will be removed when the vanity is removed.",
+    "rewardRoles":["discord role id"],
+    "timedRewardRoles":[
+        {
+            "id":"rank-1",
+            "name":"Rank 1",
+            "delayValue":1,
+            "delayUnit":"minutes OR hours OR days",
+            "roles":["discord role id"]
+        }
+    ],
+
+    "logs":{
+        "enabled":false,
+        "channel":"discord channel id"
+    }
+}

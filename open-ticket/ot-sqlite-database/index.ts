@@ -180,19 +180,6 @@ export class ODSQLiteDatabase extends api.ODDatabase {
     /**Init the database. */
     async init(): Promise<void> {
         await this.sqlite.addTable(this.table)
-
-        //TEMPORARY!!! (also check database loader at row ~240)
-        if (api.TEMP_migrateDatabaseStructurePrefix){
-            const data = await this.getAll()
-            const newData = api.TEMP_migrateDatabaseStructurePrefix(data)
-        
-            for (const d of data){
-                await this.delete(d.category,d.key)
-            }
-            for (const d of newData){
-                await this.set(d.category,d.key,d.value)
-            }
-        }
     }
     /**Add/Overwrite a specific category & key in the database. Returns `true` when overwritten. */
     async set(category:string, key:string, value:api.ODValidJsonType): Promise<boolean> {
