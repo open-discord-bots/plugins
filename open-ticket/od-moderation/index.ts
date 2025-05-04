@@ -325,7 +325,8 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(higherRoleErrorMessage);
     higherRoleErrorMessage.workers.add(
         new api.ODWorker("od-moderation:higher-role-error-message", 0, async (instance, params, source, cancel) => {
-            instance.setContent("The bot cannot ban a user with a higher or equal role.");
+            instance.setContent("The bot cannot ban a user with a higher or equal role.")
+            instance.setEphemeral(true)
             })
     );
 
