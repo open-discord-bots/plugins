@@ -380,7 +380,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             // Check if the target user has a higher or equal role than the user executing the command
             const targetMember = guild.members.cache.get(targetUser.id);
             if (targetMember && member && targetMember.roles.highest.position >= member.roles.highest.position) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:higher-role-error-message").build(source, {}));
+                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
                 return cancel();
             }
 
