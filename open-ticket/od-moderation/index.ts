@@ -1,7 +1,7 @@
 import { api, opendiscord, utilities } from "#opendiscord";
 import * as discord from "discord.js";
 
-// DECLARATION
+//DECLARATION
 declare module "#opendiscord-types" {
     export interface ODPluginManagerIds_Default {
         "od-moderation": api.ODPlugin;
@@ -25,20 +25,16 @@ declare module "#opendiscord-types" {
         "od-moderation:warn": { source: "slash" | "text", params: {}, workers: "od-moderation:warn" | "od-moderation:logs" };
     }
     export interface ODMessageManagerIds_Default {
-        "od-moderation:ban-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:ban-message" };
-        "od-moderation:unban-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:unban-message" };
-        "od-moderation:kick-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:kick-message" };
-        "od-moderation:warn-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:warn-message" };
-        "od-moderation:unknown-error-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:unknown-error-message" };
-        "od-moderation:higher-role-error-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:higher-role-error-message" };
-        "od-moderation:no-perms-message": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:no-perms-message" };
+        "od-moderation:ban-message": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "od-moderation:ban-message" };
+        "od-moderation:unban-message": { source: "slash" | "text" | "other", params: {author:discord.User,userId:string,reason:string|null}, workers: "od-moderation:unban-message" };
+        "od-moderation:kick-message": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "od-moderation:kick-message" };
+        "od-moderation:warn-message": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "od-moderation:warn-message" };
  }
     export interface ODEmbedManagerIds_Default {
-        "od-moderation:ban-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:ban-embed" };
-        "od-moderation:unban-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:unban-embed" };
-        "od-moderation:kick-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:kick-embed" };
-        "od-moderation:warn-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:warn-embed" };
-        "od-moderation:no-perms-embed": { source: "slash" | "text" | "other", params: {}, workers: "od-moderation:no-perms-embed" };
+        "od-moderation:ban-embed": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "od-moderation:ban-embed" };
+        "od-moderation:unban-embed": { source: "slash" | "text" | "other", params: {author:discord.User,userId:string,reason:string|null}, workers: "od-moderation:unban-embed" };
+        "od-moderation:kick-embed": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "od-moderation:kick-embed" };
+        "od-moderation:warn-embed": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "od-moderation:warn-embed" };
  }
 }
 
@@ -147,6 +143,19 @@ opendiscord.events.get("onTextCommandLoad").listen((text) => {
         prefix: generalConfig.data.prefix,
         dmPermission: false,
         guildPermission: true,
+        options:[
+            {
+                type:"user",
+                name:"user",
+                required:true
+            },
+            {
+                type:"string",
+                name:"reason",
+                required:false,
+                allowSpaces:true
+            }
+        ]
     }));
 
     // Unban Command
@@ -155,6 +164,20 @@ opendiscord.events.get("onTextCommandLoad").listen((text) => {
         prefix: generalConfig.data.prefix,
         dmPermission: false,
         guildPermission: true,
+        options:[
+            {
+                type:"string",
+                name:"userid",
+                required:true,
+                regex:/^\d+$/
+            },
+            {
+                type:"string",
+                name:"reason",
+                required:false,
+                allowSpaces:true
+            }
+        ]
     }));
 
     // Kick Command
@@ -163,6 +186,19 @@ opendiscord.events.get("onTextCommandLoad").listen((text) => {
         prefix: generalConfig.data.prefix,
         dmPermission: false,
         guildPermission: true,
+        options:[
+            {
+                type:"user",
+                name:"user",
+                required:true
+            },
+            {
+                type:"string",
+                name:"reason",
+                required:false,
+                allowSpaces:true
+            }
+        ]
     }));
 
     // Warn Command
@@ -171,6 +207,19 @@ opendiscord.events.get("onTextCommandLoad").listen((text) => {
         prefix: generalConfig.data.prefix,
         dmPermission: false,
         guildPermission: true,
+        options:[
+            {
+                type:"user",
+                name:"user",
+                required:true
+            },
+            {
+                type:"string",
+                name:"reason",
+                required:false,
+                allowSpaces:true
+            }
+        ]
     }));
 });
 
@@ -211,14 +260,17 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
 
 // REGISTER EMBED BUILDERS
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
+    const generalConfig = opendiscord.configs.get("opendiscord:general");
     // Ban Embed
     embeds.add(new api.ODEmbed("od-moderation:ban-embed"));
     embeds.get("od-moderation:ban-embed").workers.add(
         new api.ODWorker("od-moderation:ban-embed", 0, (instance, params, source, cancel) => {
-            const generalConfig = opendiscord.configs.get("opendiscord:general");
-            instance.setTitle("🚫 user banned");
+            instance.setTitle(utilities.emojiTitle("🚫","User Banned"))
             instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("A user has been banned from the server.");
+            instance.setDescription(discord.userMention(params.user.id)+" has been banned from the server.");
+            instance.addFields({name:"Reason:",value:"```"+params.reason+"```"})
+            instance.setThumbnail(params.user.displayAvatarURL())
+            instance.setAuthor(params.author.displayName,params.author.displayAvatarURL())
         })
     );
 
@@ -226,10 +278,12 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("od-moderation:unban-embed"));
     embeds.get("od-moderation:unban-embed").workers.add(
         new api.ODWorker("od-moderation:unban-embed", 0, (instance, params, source, cancel) => {
-            const generalConfig = opendiscord.configs.get("opendiscord:general");
-            instance.setTitle("User Unbanned");
+            instance.setTitle(utilities.emojiTitle("🚫","User Unbanned"))
             instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("A user has been unbanned from the server.");
+            instance.setDescription(discord.userMention(params.userId)+" has been unbanned from the server.");
+            instance.addFields({name:"Reason:",value:"```"+params.reason+"```"})
+            instance.setThumbnail(params.author.displayAvatarURL())
+            instance.setAuthor(params.author.displayName,params.author.displayAvatarURL())
         })
     );
 
@@ -237,10 +291,12 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("od-moderation:kick-embed"));
     embeds.get("od-moderation:kick-embed").workers.add(
         new api.ODWorker("od-moderation:kick-embed", 0, (instance, params, source, cancel) => {
-            const generalConfig = opendiscord.configs.get("opendiscord:general");
-            instance.setTitle("User Kicked");
+            instance.setTitle(utilities.emojiTitle("👋","User Kicked"))
             instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("A user has been kicked from the server.");
+            instance.setDescription(discord.userMention(params.user.id)+" has been kicked from the server.");
+            instance.addFields({name:"Reason:",value:"```"+params.reason+"```"})
+            instance.setThumbnail(params.user.displayAvatarURL())
+            instance.setAuthor(params.author.displayName,params.author.displayAvatarURL())
         })
     );
 
@@ -248,21 +304,12 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("od-moderation:warn-embed"));
     embeds.get("od-moderation:warn-embed").workers.add(
         new api.ODWorker("od-moderation:warn-embed", 0, (instance, params, source, cancel) => {
-            const generalConfig = opendiscord.configs.get("opendiscord:general");
-            instance.setTitle("User Warned");
+            instance.setTitle(utilities.emojiTitle("⚠️","User Warned"))
             instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("A user has been warned in the server.");
-            })
-    );
-
-    // no perms Embed
-    embeds.add(new api.ODEmbed("od-moderation:no-perms-embed"));
-    embeds.get("od-moderation:no-perms-embed").workers.add(
-        new api.ODWorker("od-moderation:no-perms-embed", 0, (instance, params, source, cancel) => {
-            const generalConfig = opendiscord.configs.get("opendiscord:general");
-            instance.setTitle("Error");
-            instance.setColor(generalConfig.data.mainColor);
-            instance.setDescription("you don't have permission.");
+            instance.setDescription(discord.userMention(params.user.id)+" has been warned.");
+            instance.addFields({name:"Reason:",value:"```"+params.reason+"```"})
+            instance.setThumbnail(params.user.displayAvatarURL())
+            instance.setAuthor(params.author.displayName,params.author.displayAvatarURL())
         })
     );
 });
@@ -270,73 +317,38 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 // REGISTER MESSAGE BUILDERS
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     // Ban Message Builder
-    const banMessage = new api.ODMessage("od-moderation:ban-message");
-    messages.add(banMessage);
-    banMessage.workers.add(
+    messages.add(new api.ODMessage("od-moderation:ban-message"))
+    messages.get("od-moderation:ban-message").workers.add(
         new api.ODWorker("od-moderation:ban-message", 0, async (instance, params, source, cancel) => {
-            const embedSource = source === "text" || source === "slash" ? source : "other";
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:ban-embed").build(embedSource, {}));    
+            const {user,reason,author} = params
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:ban-embed").build(source,{user,reason,author}));    
         })
     );
 
     // Unban Message Builder
-    const unbanMessage = new api.ODMessage("od-moderation:unban-message");
-    messages.add(unbanMessage);
-    unbanMessage.workers.add(
+    messages.add(new api.ODMessage("od-moderation:unban-message"))
+    messages.get("od-moderation:unban-message").workers.add(
         new api.ODWorker("od-moderation:unban-message", 0, async (instance, params, source, cancel) => {
-            const embedSource = source === "text" || source === "slash" ? source : "other";
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:unban-embed").build(embedSource, {}));
+            const {userId,reason,author} = params
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:unban-embed").build(source,{userId,reason,author}));
         })
     );
 
     // Kick Message Builder
-    const kickMessage = new api.ODMessage("od-moderation:kick-message");
-    messages.add(kickMessage);
-    kickMessage.workers.add(
+    messages.add(new api.ODMessage("od-moderation:kick-message"))
+    messages.get("od-moderation:kick-message").workers.add(
         new api.ODWorker("od-moderation:kick-message", 0, async (instance, params, source, cancel) => {
-            const embedSource = source === "text" || source === "slash" ? source : "other";
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:kick-embed").build(embedSource, {}));
+            const {user,reason,author} = params
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:kick-embed").build(source,{user,reason,author}));
         })
     );
 
     // Warn Message Builder
-    const warnMessage = new api.ODMessage("od-moderation:warn-message");
-    messages.add(warnMessage);
-    warnMessage.workers.add(
+    messages.add(new api.ODMessage("od-moderation:warn-message"))
+    messages.get("od-moderation:warn-message").workers.add(
         new api.ODWorker("od-moderation:warn-message", 0, async (instance, params, source, cancel) => {
-            const embedSource = source === "text" || source === "slash" ? source : "other";
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:warn-embed").build(embedSource, {}));
-        })
-    );
-
-
-    // Unknown Error Message Builder
-    const unknownErrorMessage = new api.ODMessage("od-moderation:unknown-error-message");
-    messages.add(unknownErrorMessage);
-    unknownErrorMessage.workers.add(
-        new api.ODWorker("od-moderation:unknown-error-message", 0, async (instance, params, source, cancel) => {
-            instance.setContent("⚠️ An unknown error occurred. Please try again later.")
-            instance.setEphemeral(true)
-        })
-    );
-
-    // Higher Role Error Message Builder
-    const higherRoleErrorMessage = new api.ODMessage("od-moderation:higher-role-error-message");
-    messages.add(higherRoleErrorMessage);
-    higherRoleErrorMessage.workers.add(
-        new api.ODWorker("od-moderation:higher-role-error-message", 0, async (instance, params, source, cancel) => {
-            instance.setContent("The bot cannot ban a user with a higher or equal role.")
-            instance.setEphemeral(true)
-            })
-    );
-
-    // no perms Message Builder
-    const nopermsMessage = new api.ODMessage("od-moderation:no-perms-message");
-    messages.add(nopermsMessage);
-    warnMessage.workers.add(
-        new api.ODWorker("od-moderation:no-perms-message", 0, async (instance, params, source, cancel) => {
-            const embedSource = source === "text" || source === "slash" ? source : "other";
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:no-perms-embed").build(embedSource, {}));
+            const {user,reason,author} = params
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("od-moderation:warn-embed").build(source,{user,reason,author}));
         })
     );
 });
@@ -346,81 +358,67 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     const generalConfig = opendiscord.configs.get("opendiscord:general");
 
     // Ban Command Responder
-    commands.add(new api.ODCommandResponder("od-moderation:ban", generalConfig.data.prefix, "ban"));
+    commands.add(new api.ODCommandResponder("od-moderation:ban",generalConfig.data.prefix,"ban"));
     commands.get("od-moderation:ban").workers.add([
         new api.ODWorker("od-moderation:ban", 0, async (instance, params, source, cancel) => {
-            const { guild, channel, user } = instance;
+            const { guild, channel, user, member } = instance;
 
-            if (!guild) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            if (!guild || !member){
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}));
                 return cancel();
             }
 
             // Check if the bot has permission to ban members
-            if (!guild.members.me?.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            if (!guild.members.me || !guild.members.me.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to ban people in this server."}));
                 return cancel();
             }
 
             // Check if the user has permission to ban members
-            const member = guild.members.cache.get(user.id);
-            if (!member?.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
+            if (!member.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild,channel,user,permissions:["admin","discord-administrator"]}));
                 return cancel();
             }
 
             // Get the user to ban and the reason
-            const targetUser = instance.options?.getUser("user", true);
-            const reason = instance.options?.getString("reason", false) || "No reason provided.";
+            const targetUser = instance.options.getUser("user",true);
+            const reason = instance.options.getString("reason",false)
+            const targetMember = await opendiscord.client.fetchGuildMember(guild,targetUser.id)
 
-            if (!targetUser) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            if (!targetMember){
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"Unable to find target member in server."}));
                 return cancel();
             }
 
             // Check if the target user has a higher or equal role than the user executing the command
-            const targetMember = guild.members.cache.get(targetUser.id);
-            if (targetMember && member && targetMember.roles.highest.position >= member.roles.highest.position) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
+            if (targetMember.roles.highest.position >= member.roles.highest.position) {
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"You do not have permissions to ban a user with a higher role."}));
                 return cancel();
             }
 
-            // Check if the target user has a higher role than the bot
-            const botMember = guild.members.me;
-            if (targetMember && botMember && targetMember.roles.highest.position >= botMember.roles.highest.position) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:higher-role-error-message").build(source, {}));
-                return cancel();
-            }
-
-            try {
-                // Send a DM to the user before banning
-                try {
-                    await targetUser.send(`You have been banned from **${guild.name}** for the following reason: ${reason}`);
-                } catch (dmError) {
-                    console.error("Failed to send DM to the user:", dmError);
-                    
-                }
-                
-                // Ban the user
-                await guild.members.ban(targetUser, { reason });
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:ban-message").build(source, {}));
-            } catch (error) {
-                console.error("Failed to ban user:", error);
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            await opendiscord.client.sendUserDm(targetUser,{ephemeral:false,id:new api.ODId("od-moderation:banned-dm"),message:{
+                content:"You have been banned from **"+guild.name+"** for the following reason:\n```"+(reason ?? "/")+"```"
+            }})
+            
+            // Ban the user
+            try{
+                await guild.members.ban(targetUser,{reason:(reason ?? "/")})
+                await instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:ban-message").build(source,{author:user,user:targetUser,reason}));
+            }catch(err){
+                process.emit("uncaughtException",err)
             }
         }),
         new api.ODWorker("od-moderation:logs", -1, (instance, params, source, cancel) => {
-            const targetUser = instance.options?.getUser("user", true);
-            const reason = instance.options?.getString("reason", false) || "No reason provided.";
-            opendiscord.log(`${instance.user.displayName} banned ${targetUser?.username || "unknown user"}!`, "plugin", [
-                { key: "user", value: instance.user.username },
-                { key: "userid", value: instance.user.id, hidden: true },
-                { key: "target", value: targetUser?.username || "unknown user" },
-                { key: "targetid", value: targetUser?.id || "unknown", hidden: true },
-                { key: "channelid", value: instance.channel.id, hidden: true },
-                { key: "method", value: source },
-                { key: "reason", value: reason },
-            ]);
+            const targetUser = instance.options.getUser("user",true);
+            const reason = instance.options.getString("reason",false) ?? "/"
+            opendiscord.log(`${instance.user.displayName} has banned ${targetUser.displayName} from the server!`, "plugin", [
+                {key:"user",value:instance.user.username},
+                {key:"userid",value:instance.user.id,hidden:true},
+                {key:"target",value:targetUser.username},
+                {key:"targetid",value:targetUser.id,hidden:true},
+                {key:"method",value:source},
+                {key:"reason",value:reason},
+            ])
         })
     ]);
 
@@ -428,48 +426,47 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     commands.add(new api.ODCommandResponder("od-moderation:unban", generalConfig.data.prefix, "unban"));
     commands.get("od-moderation:unban").workers.add([
         new api.ODWorker("od-moderation:unban", 0, async (instance, params, source, cancel) => {
-            const { guild, channel, user } = instance;
+            const { guild, channel, user, member } = instance;
 
-            if (!guild) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            if (!guild || !member){
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}));
+                return cancel();
+            }
+
+            // Check if the bot has permission to ban members
+            if (!guild.members.me || !guild.members.me.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to unban people in this server."}));
                 return cancel();
             }
 
             // Check if the user has permission to ban members
-            if (!guild.members.cache.get(user.id)?.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
+            if (!member.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild,channel,user,permissions:["admin","discord-administrator"]}));
                 return cancel();
             }
 
             // Get the user ID to unban and the reason
-            const userId = instance.options?.getString("userid", true);
-            const reason = instance.options?.getString("reason", false) || "No reason provided.";
-
-            if (!userId) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
-                return cancel();
-            }
-
+            const userId = instance.options.getString("userid", true)
+            const reason = instance.options.getString("reason", false)
+            
+            // Unban the user
             try {
-                // Unban the user
-                await guild.members.unban(userId, reason);
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unban-message").build(source, {}));
-            } catch (error) {
-                console.error("Failed to unban user:", error);
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+                await guild.members.unban(userId, reason ?? "/");
+                await instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unban-message").build(source,{author:user,userId,reason}));
+            }catch(err){
+                process.emit("uncaughtException",err)
             }
         }),
         new api.ODWorker("od-moderation:logs", -1, (instance, params, source, cancel) => {
-            const userId = instance.options?.getString("userid", true);
-            const reason = instance.options?.getString("reason", false) || "No reason provided.";
-            opendiscord.log(`${instance.user.displayName} unbanned user with ID ${userId || "unknown"}!`, "plugin", [
-                { key: "user", value: instance.user.username },
-                { key: "userid", value: instance.user.id, hidden: true },
-                { key: "targetid", value: userId || "unknown", hidden: true },
-                { key: "channelid", value: instance.channel.id, hidden: true },
-                { key: "method", value: source },
-                { key: "reason", value: reason },
-            ]);
+            const targetUserId = instance.options.getString("userid", true)
+            const reason = instance.options.getString("reason",false) ?? "/"
+            opendiscord.log(`${instance.user.displayName} has unbanned ${targetUserId} in the server!`, "plugin", [
+                {key:"user",value:instance.user.username},
+                {key:"userid",value:instance.user.id,hidden:true},
+                {key:"targetid",value:targetUserId},
+                {key:"method",value:source},
+                {key:"reason",value:reason},
+            ])
         })
     ]);
     
@@ -477,78 +474,64 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     commands.add(new api.ODCommandResponder("od-moderation:kick", generalConfig.data.prefix, "kick"));
     commands.get("od-moderation:kick").workers.add([
         new api.ODWorker("od-moderation:kick", 0, async (instance, params, source, cancel) => {
-            const { guild, channel, user } = instance;
+            const { guild, channel, user, member } = instance;
 
-            if (!guild) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            if (!guild || !member){
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}));
                 return cancel();
             }
 
             // Check if the bot has permission to kick members
-            if (!guild.members.me?.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            if (!guild.members.me || !guild.members.me.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to kick people in this server."}));
                 return cancel();
             }
 
             // Check if the user has permission to kick members
-            const member = guild.members.cache.get(user.id);
-            if (!member?.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
+            if (!member.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild,channel,user,permissions:["admin","discord-administrator"]}));
                 return cancel();
             }
 
             // Get the user to kick and the reason
-            const targetUser = instance.options?.getUser("user", true);
-            const reason = instance.options?.getString("reason", false) || "No reason provided.";
+            const targetUser = instance.options.getUser("user", true)
+            const reason = instance.options.getString("reason", false)
+            const targetMember = await opendiscord.client.fetchGuildMember(guild,targetUser.id)
 
-            if (!targetUser) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            if (!targetMember){
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"Unable to find target member in server."}));
                 return cancel();
             }
 
             // Check if the target user has a higher or equal role than the user executing the command
-            const targetMember = guild.members.cache.get(targetUser.id);
-            if (targetMember && member && targetMember.roles.highest.position >= member.roles.highest.position) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
+            if (targetMember.roles.highest.position >= member.roles.highest.position) {
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"You do not have permissions to ban a user with a higher role."}));
                 return cancel();
             }
 
-            // Check if the target user has a higher role than the bot
-            const botMember = guild.members.me;
-            if (targetMember && botMember && targetMember.roles.highest.position >= botMember.roles.highest.position) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:higher-role-error-message").build(source, {}));
-                return cancel();
-            }
-
-            try {
-                // Send a DM to the user before kicking
-                try {
-                    await targetUser.send(`You have been kicked from **${guild.name}** for the following reason: ${reason}`);
-                } catch (dmError) {
-                    console.error("Failed to send DM to the user:", dmError);
-                
-                }
-
-                // Kick the user
-                await guild.members.kick(targetUser, reason);
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:kick-message").build(source, {}));
-            } catch (error) {
-                console.error("Failed to kick user:", error);
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            await opendiscord.client.sendUserDm(targetUser,{ephemeral:false,id:new api.ODId("od-moderation:kicked-dm"),message:{
+                content:"You have been kicked from **"+guild.name+"** for the following reason:\n```"+(reason ?? "/")+"```"
+            }})
+            
+            // Kick the user
+            try{
+                await guild.members.kick(targetUser,reason ?? "/")
+                await instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:kick-message").build(source,{author:user,user:targetUser,reason}));
+            }catch(err){
+                process.emit("uncaughtException",err)
             }
         }),
         new api.ODWorker("od-moderation:logs", -1, (instance, params, source, cancel) => {
-            const targetUser = instance.options?.getUser("user", true);
-            const reason = instance.options?.getString("reason", false) || "No reason provided.";
-            opendiscord.log(`${instance.user.displayName} kicked ${targetUser?.username || "unknown user"}!`, "plugin", [
-                { key: "user", value: instance.user.username },
-                { key: "userid", value: instance.user.id, hidden: true },
-                { key: "target", value: targetUser?.username || "unknown user" },
-                { key: "targetid", value: targetUser?.id || "unknown", hidden: true },
-                { key: "channelid", value: instance.channel.id, hidden: true },
-                { key: "method", value: source },
-                { key: "reason", value: reason },
-            ]);
+            const targetUser = instance.options.getUser("user",true);
+            const reason = instance.options.getString("reason",false) ?? "/"
+            opendiscord.log(`${instance.user.displayName} has kicked ${targetUser.displayName} from the server!`, "plugin", [
+                {key:"user",value:instance.user.username},
+                {key:"userid",value:instance.user.id,hidden:true},
+                {key:"target",value:targetUser.username},
+                {key:"targetid",value:targetUser.id,hidden:true},
+                {key:"method",value:source},
+                {key:"reason",value:reason},
+            ])
         })
     ]);
 
@@ -556,57 +539,46 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     commands.add(new api.ODCommandResponder("od-moderation:warn", generalConfig.data.prefix, "warn"));
     commands.get("od-moderation:warn").workers.add([
         new api.ODWorker("od-moderation:warn", 0, async (instance, params, source, cancel) => {
-            const { guild, channel, user } = instance;
+            const { guild, channel, user, member } = instance;
 
-            if (!guild) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            if (!guild || !member){
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}));
                 return cancel();
             }
 
             // Check if the user has permission to warn members
-            const member = guild.members.cache.get(user.id);
-            if (!member?.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
+            if (!opendiscord.permissions.hasPermissions("support",await opendiscord.permissions.getPermissions(user,channel,guild,{allowChannelRoleScope:false,allowChannelUserScope:false,allowGlobalRoleScope:true,allowGlobalUserScope:true}))){
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild,channel,user,permissions:["admin","discord-administrator"]}));
                 return cancel();
             }
 
             // Get the user to warn and the reason
-            const targetUser = instance.options?.getUser("user", true);
-            const reason = instance.options?.getString("reason", false) || "No reason provided.";
+            const targetUser = instance.options?.getUser("user", true)
+            const reason = instance.options?.getString("reason", false)
 
-            if (!targetUser) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
-                return cancel();
-            }
-
-            // Check if the target user has a higher or equal role than the user executing the command
-            const targetMember = guild.members.cache.get(targetUser.id);
-            if (targetMember && member && targetMember.roles.highest.position >= member.roles.highest.position) {
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:no-perms-message").build(source, {}));
-                return cancel();
-            }
-
-            try {
-                // Send a warning message to the user
-                await targetUser.send(`You have been warned in **${guild.name}** for: ${reason}`);
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:warn-message").build(source, {}));
-            } catch (error) {
-                console.error("Failed to warn user:", error);
-                instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:unknown-error-message").build(source, {}));
+            await opendiscord.client.sendUserDm(targetUser,{ephemeral:false,id:new api.ODId("od-moderation:warned-dm"),message:{
+                content:"You have been warned in **"+guild.name+"** for the following reason:\n```"+(reason ?? "/")+"```"
+            }})
+            
+            // Warn the user
+            try{
+                //TODO: PRESERVE WARNINGS :)
+                await instance.reply(await opendiscord.builders.messages.getSafe("od-moderation:warn-message").build(source,{author:user,user:targetUser,reason}));
+            }catch(err){
+                process.emit("uncaughtException",err)
             }
         }),
         new api.ODWorker("od-moderation:logs", -1, (instance, params, source, cancel) => {
-            const targetUser = instance.options?.getUser("user", true);
-            const reason = instance.options?.getString("reason", false) || "No reason provided.";
-            opendiscord.log(`${instance.user.displayName} warned ${targetUser?.username || "unknown user"}!`, "plugin", [
-                { key: "user", value: instance.user.username },
-                { key: "userid", value: instance.user.id, hidden: true },
-                { key: "target", value: targetUser?.username || "unknown user" },
-                { key: "targetid", value: targetUser?.id || "unknown", hidden: true },
-                { key: "channelid", value: instance.channel.id, hidden: true },
-                { key: "method", value: source },
-                { key: "reason", value: reason },
-            ]);
+            const targetUser = instance.options.getUser("user",true);
+            const reason = instance.options.getString("reason",false) ?? "/"
+            opendiscord.log(`${instance.user.displayName} has warned ${targetUser.displayName} in the server!`, "plugin", [
+                {key:"user",value:instance.user.username},
+                {key:"userid",value:instance.user.id,hidden:true},
+                {key:"target",value:targetUser.username},
+                {key:"targetid",value:targetUser.id,hidden:true},
+                {key:"method",value:source},
+                {key:"reason",value:reason},
+            ])
         })
     ]);
 });
