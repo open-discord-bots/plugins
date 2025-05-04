@@ -57,6 +57,8 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`ot-reviews`](./open-ticket/ot-reviews/)                             |💼 Management               |Review system for Open Ticket! It is very customisable and has lots of features. |
 |[`ot-tags`](./open-ticket/ot-tags/)                                   |💼 Management               |Use tags to quickly reply with a pre-existing text. |
 |[`ot-better-status`](./open-ticket/ot-better-status/)                 |🤖 Client                   |An advanced status plugin to rotate between states. It also allows for the use of variables. |
+|[`ot-channel-display`](./open-ticket/ot-channel-display/)             |🤖 Client                   |A plugin to show different variables in a voice channel in your server. |
+|[`ot-vanity`](./open-ticket/ot-vanity/)                               |🤖 Client                   |A plugin to detect the vanity status of members in the server and give them exclusive privilleges. |
 
 ### ✅ Verified *(made by community)*
 |Name                                                                 |Author                      |Category                    |Description              |
@@ -67,6 +69,7 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`ot-assign-role`](./open-ticket/ot-assign-role/)                    |rapid.fast                  |💼 Management               |This plugin assigns a predefined role to a user upon creating a ticket. |
 |[`ot-volume-warning`](./open-ticket/ot-volume-warning/)              |guillee.3                   |💼 Management               |Alerts ticket creators when too many tickets are open, indicating possible response delays. |
 |[`od-reminders`](./open-ticket/od-reminders/)                        |guillee.3                   |💼 Management               |Set reminders that will be sent to a channel every specified time. |
+|[`od-moderation`](./open-ticket/od-moderation/)                      |NotMukundOP                 |💼 Management               |A simple moderation plugin for Open Discord with ban, kick & warnings. |
 |[`ot-translate-cmds`](./open-ticket/ot-translate-cmds/)              |guillee.3                   |🤖 Client                  |Translate all built-in command names, descriptions & options. |
 
 ### 📢 Categories
@@ -80,16 +83,22 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 > Please Create a new category when your plugin doesn't fit in one of the available categories.
 
 ## 🛠️ Contributors
-### 🖥️ Team
-The team behind Open Discord!
+### 🖥️ Team & Contributors
+A list of people that contributed or provided the most support for Open Ticket.
 <table>
 <tr>
-<td><img src="https://github.com/DJj123dj.png" alt="Profile Picture" width="80px"></td>
-<td><img src="https://github.com/Sank34.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/DJj123dj.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/smetsliam.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/FrankVissers.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/Sank34.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/guillee3.png" alt="Profile Picture" width="80px"></td>
 </tr>
 <tr>
-<th><a href="https://github.com/DJj123dj">DJj123dj</a></th>
-<th><a href="https://github.com/Sank34">Sanke</a></th>
+<th><a href="https://github.com/DJj123dj">💻 DJj123dj</a></th>
+<th><a href="https://github.com/smetsliam">💬 smetsliam</a></th>
+<th><a href="https://github.com/FrankVissers">💬 Frank Vissers</a></th>
+<th><a href="https://github.com/Sank34">💬 Sanke</a></th>
+<th><a href="https://github.com/guillee3">🧩 Guillee3</a></th>
 </tr>
 </table>
 
@@ -98,12 +107,10 @@ A big thanks to all our sponsors! Without them, it wouldn't be possible to creat
 
 <table>
 <tr>
-<td><img src="https://github.com/roppl3r.png" alt="Profile Picture" width="80px"></td>
-<td><img src="https://github.com/BENZORICH.png" alt="Profile Picture" width="80px"></td>
+<td><img src="https://github.com/guillee3.png" alt="Profile Picture" width="100px"></td>
 </tr>
 <tr>
-<th><a href="https://github.com/roppl3r">roppl3r</a></th>
-<th><a href="https://github.com/BENZORICH">BENZORICH</a></th>
+<td align="center"><a href="https://github.com/guillee3"><b>guillee3</b></a></td>
 </tr>
 </table>
 
@@ -112,6 +119,7 @@ A big thanks to all our sponsors! Without them, it wouldn't be possible to creat
 <img src="https://github.com/SpyEye2.png" alt="SpyEye" width="40px">
 <img src="https://github.com/mods-hd.png" alt="Mods HD" width="40px">
 <img src="https://github.com/DOSEV5.png" alt="DOSEV5" width="40px">
+<img src="https://github.com/BENZORICH.png" alt="BENZORICH" width="40px">
 </a>
 
 ---
