@@ -374,7 +374,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
             const keywordSuffix = ((config.data.layout == "text" || config.data.layout == "bold-text") && keyword) ? "\n\n*Triggered By:* `"+keyword+"`" : ""
 
             instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
-            instance.setDescription(tag.value+keywordSuffix)
+            instance.setDescription(tag.value.replaceAll(/\\n/g,"\n")+keywordSuffix)
             instance.setAuthor(user.displayName,user.displayAvatarURL())
             if (config.data.embedLayout.title) instance.setTitle(utilities.emojiTitle("🏷️",tag.name))
             if (config.data.embedLayout.footer) instance.setFooter(config.data.embedLayout.footer)
@@ -458,8 +458,8 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
             const {tag,user,channel,keyword} = params
             const keywordSuffix = ((config.data.layout == "text" || config.data.layout == "bold-text") && keyword) ? "\n#- Triggered By: `"+keyword+"`" : ""
 
-            if (config.data.layout == "text") instance.setContent(tag.value+keywordSuffix)
-            else if (config.data.layout == "bold-text") instance.setContent("**"+tag.value+"**"+keywordSuffix)
+            if (config.data.layout == "text") instance.setContent(tag.value.replaceAll(/\\n/g,"\n")+keywordSuffix)
+            else if (config.data.layout == "bold-text") instance.setContent("**"+tag.value.replaceAll(/\\n/g,"\n")+"**"+keywordSuffix)
             else if (config.data.layout == "embed") instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-embed").build(source,{tag,user,channel,keyword}))
         })
     )
