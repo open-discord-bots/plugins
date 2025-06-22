@@ -1,0 +1,23 @@
+{
+    "name":"Extended Logs",
+    "id":"od-extended-logs",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"Scribl",
+        "shortDescription":"Sends logs to discord",
+        "longDescription":"The plugin adds a timestamp to all logs after initialization. All logs can be directed to a discord channel, set the channel ID in `config.json`, the `channel` parameter",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["system","utility","logs"]
+    }
+}
