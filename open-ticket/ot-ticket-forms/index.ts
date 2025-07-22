@@ -20,7 +20,7 @@ opendiscord.events.get("afterCodeExecuted").listen(async () => {
     for(const formConfig of formsConfig) {
         formConfig.questions.sort((a, b) => a.position - b.position);
     }
-    opendiscord.log("Plugin \"ot-forms\" restoring answers...", "plugin");
+    opendiscord.log("Plugin \"ot-ticket-forms\" restoring answers...", "plugin");
     await OTForms_AnswersManager.restore();
 })
 

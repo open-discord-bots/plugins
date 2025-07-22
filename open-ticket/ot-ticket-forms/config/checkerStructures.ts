@@ -2,7 +2,7 @@ import { api } from "#opendiscord";
 
 export const formsConfigStructure = new api.ODCheckerArrayStructure("ot-ticket-forms:forms",{allowedTypes:["object"],propertyChecker:new api.ODCheckerObjectStructure("ot-ticket-forms:forms",{children:[
     //FORM STRUCTURE
-    {key:"id",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UniqueId("ot-ticket-forms:form-id","ot-forms","form-id",{regex:/^[A-Za-z0-9-éèçàêâôûîñ]+$/,minLength:3,maxLength:40})},
+    {key:"id",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UniqueId("ot-ticket-forms:form-id","ot-ticket-forms","form-id",{regex:/^[A-Za-z0-9-éèçàêâôûîñ]+$/,minLength:3,maxLength:40})},
     {key:"name",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-ticket-forms:form-name",{minLength:1,maxLength:45})},
     {key:"description",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-ticket-forms:form-description",{maxLength:4096})},
     {key:"color",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_HexColor("ot-ticket-forms:form-color",true,false)},

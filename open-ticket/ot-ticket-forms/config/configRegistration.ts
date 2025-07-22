@@ -3,7 +3,7 @@ import { formsConfigStructure } from "./checkerStructures";
 
 //REGISTER CONFIG
 opendiscord.events.get("onConfigLoad").listen((configManager) => {
-    configManager.add(new api.ODJsonConfig("ot-ticket-forms:config", "config.json", "./plugins/ot-forms/"));
+    configManager.add(new api.ODJsonConfig("ot-ticket-forms:config", "config.json", "./plugins/ot-ticket-forms/"));
 });
 
 //REGISTER CHECKER
