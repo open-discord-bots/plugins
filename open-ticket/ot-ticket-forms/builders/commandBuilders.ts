@@ -12,7 +12,7 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
     config.data.forEach((form) => {
         formChoices.push({name:form.name,value:form.id})
     })
-    
+
     slash.add(new api.ODSlashCommand("ot-ticket-forms:form",{
         name:"form",
         description:"Send a form.",
@@ -23,7 +23,7 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
             {
                 type:acot.Subcommand,
                 name:"send",
-                description:"Send a form to a channel.",
+                description:"Send a form to a channel or thread.",
                 options:[
                     {
                         type:acot.String,
@@ -35,9 +35,9 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
                     {
                         type:acot.Channel,
                         name:"channel",
-                        description:"The channel to send the form.",
+                        description:"The channel or thread to send the form.",
                         required:true,
-                        channelTypes:[discord.ChannelType.GuildText,discord.ChannelType.GuildAnnouncement]
+                        channelTypes:[discord.ChannelType.GuildText,discord.ChannelType.GuildAnnouncement, discord.ChannelType.PublicThread, discord.ChannelType.PrivateThread]
                     }
                 ]
             }

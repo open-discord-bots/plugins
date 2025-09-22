@@ -120,6 +120,6 @@ The `questions` array defines the form's questions. Each question object include
 5. A form does not have a question limit. But try to make it as shorter as you can so the user can answer in a short time.
 6. You can add as many forms as you want.
 7. The forms will be sent automatically when a user creates a ticket from which the option id is on the `autoSendOptionIds` field.
-8. You can also send a form using the slash command `/form send <form> <channel>`.
+8. You can also send a form using the slash command `/form send <form> <channel>`. This command allows sending the form to a text channel or a thread.
 
 By following this structure, you can create robust and flexible forms with the OT plugin.
