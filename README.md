@@ -29,10 +29,19 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 ## 🧩 Plugins
 > #### ⭐ Featured Plugins (Top 5 Most Used)
 > **[`ot-sqlite-database`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-sqlite-database/),
-> [`ot-migrate-v3`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-migrate-v3/),
 > [`ot-reviews`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-reviews/),
 > [`ot-feedback`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-feedback/),
-> [`ot-tags`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-tags/)**
+> [`ot-tags`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-tags/),
+> [`ot-config-reload`](https://github.com/open-discord-bots/plugins/tree/main/open-ticket/ot-config-reload/)**
+
+#### Categories:
+- **📄 Example** - These plugins serve as an example or starting template.
+- **📢 Command** - These plugins add new commands to the bot.
+- **⚙️ Utility** - These plugins help with utility systems. You might not notice them as a ticket user/admin directly.
+- **🎨 Customisation** - These plugins add even more customisation to the bot.
+- **💼 Management** - These plugins add features that help you manage your server or ticket system.
+- **🤖 Client** - These plugins add features affecting the Discord Client or bot itself.
+- Please Create a new category when your plugin doesn't fit in one of the available categories.
 
 ### 📦 Official *(made by DJdj Development)*
 |Name                                                                  |Category                    |Description              |
@@ -71,16 +80,6 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`od-reminders`](./open-ticket/od-reminders/)                        |guillee.3                   |💼 Management               |Set reminders that will be sent to a channel every specified time. |
 |[`od-moderation`](./open-ticket/od-moderation/)                      |NotMukundOP                 |💼 Management               |A simple moderation plugin for Open Discord with ban, kick & warnings. |
 |[`ot-translate-cmds`](./open-ticket/ot-translate-cmds/)              |guillee.3                   |🤖 Client                  |Translate all built-in command names, descriptions & options. |
-
-### 📢 Categories
-- **📄 Example** - These plugins serve as an example or starting template.
-- **📢 Command** - These plugins add new commands to the bot.
-- **⚙️ Utility** - These plugins help with backend & systems. You won't notice it in discord itself.
-- **🎨 Customisation** - These plugins help you customise the bot even further.
-- **💼 Management** - These plugins add features that help you manage your server.
-- **🤖 Client** - These plugins add features affecting the discord client or bot itself.
-
-> Please Create a new category when your plugin doesn't fit in one of the available categories.
 
 ## 🛠️ Contributors
 ### 🖥️ Team & Contributors
