@@ -102,6 +102,7 @@ opendiscord.events.get("onReadyForUsage").listen(async () => {
 
         let isTicketMessage = false
         ticketMessage.components.forEach((row) => {
+            if (row.type !== discord.ComponentType.ActionRow) return
             row.components.forEach((component) => {
                 if (["OTdeleteTicket","OTcloseTicket","OTclaimTicket","OTreopenTicket"].some((id) => component.customId && component.customId.startsWith(id))) isTicketMessage = true
             })
@@ -154,6 +155,7 @@ opendiscord.events.get("onButtonResponderLoad").listen((buttons) => {
 
             let isTicketMessage = false
             ticketMessage.components.forEach((row) => {
+                if (row.type !== discord.ComponentType.ActionRow) return
                 row.components.forEach((component) => {
                     if (["OTdeleteTicket","OTcloseTicket","OTclaimTicket","OTreopenTicket"].some((id) => component.customId && component.customId.startsWith(id))) isTicketMessage = true
                 })
