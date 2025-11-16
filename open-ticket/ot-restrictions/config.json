@@ -1,0 +1,19 @@
+{
+    "priority":"whitelist OR blacklist (in case of conflict)",
+    "restrictions":[
+        {
+            "optionId":"example-option-id-1",
+            "enableWhitelist":false,
+            "whitelistedRoles":["discord role id"],
+            "enableBlacklist":false,
+            "blacklistedRoles":["discord role id"]
+        },
+        {
+            "optionId":"example-option-id-2",
+            "enableWhitelist":false,
+            "whitelistedRoles":["discord role id"],
+            "enableBlacklist":false,
+            "blacklistedRoles":["discord role id"]
+        }
+    ]
+}

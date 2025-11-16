@@ -1,0 +1,58 @@
+[
+    {
+        "id": "example-followup-1",
+        "content":"This is the plain text that will appear above the embed (or leave empty)",
+        "embed":{
+            "enabled":true,
+            "title":"Example Embed 1",
+            "url":"https://www.example.com/abc/def (or leave empty)",
+            "description":"This is an example embed!",
+            "customColor":"#f8ab00 (or leave empty for main bot color)",
+
+            "image":"https://www.example.com/image.png (or leave empty)",
+            "thumbnail":"https://www.example.com/image.png (or leave empty)",
+            "authorText":"Test Author (or leave empty)",
+            "authorImage":"https://www.example.com/image.png (or leave empty)",
+            "footerText":"Test Footer (or leave empty)",
+            "footerImage":"https://www.example.com/image.png (or leave empty)",
+
+            "timestamp":false,
+            "fields":[
+                {"name":"field name","value":"field value","inline":false}
+            ]
+        },
+        "ping":{
+            "@here":true,
+            "@everyone":false,
+            "custom":["discord role id"]
+        }
+    },
+    {
+        "id": "example-followup-2",
+        "content":"This is the plain text that will appear above the embed (or leave empty)",
+        "embed":{
+            "enabled":false,
+            "title":"This embed is disabled!",
+            "url":"https://www.example.com/abc/def (or leave empty)",
+            "description":"This is an example embed!",
+            "customColor":"#f8ab00 (or leave empty for main bot color)",
+
+            "image":"https://www.example.com/image.png (or leave empty)",
+            "thumbnail":"https://www.example.com/image.png (or leave empty)",
+            "authorText":"Test Author (or leave empty)",
+            "authorImage":"https://www.example.com/image.png (or leave empty)",
+            "footerText":"Test Footer (or leave empty)",
+            "footerImage":"https://www.example.com/image.png (or leave empty)",
+
+            "timestamp":false,
+            "fields":[
+                {"name":"field name","value":"field value","inline":false}
+            ]
+        },
+        "ping":{
+            "@here":true,
+            "@everyone":false,
+            "custom":["discord role id"]
+        }
+    }
+]

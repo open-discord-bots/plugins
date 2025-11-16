@@ -1,0 +1,10 @@
+[
+    {
+        "optionId":"example-option-id-1",
+        "messages":["example-followup-1"]
+    },
+    {
+        "optionId":"example-option-id-2",
+        "messages":["example-followup-1","example-followup-2"]
+    }
+]

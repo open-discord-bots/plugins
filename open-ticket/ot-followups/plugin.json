@@ -1,0 +1,23 @@
+{
+    "name":"OT Follow-Ups",
+    "id":"ot-followups",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+
+    "enabled":true,
+    "priority":0,
+    "events":["ot-followups:onMessagesLoad","ot-followups:afterMessagesLoaded"],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"guillee.3",
+        "shortDescription":"Send additional follow-up messages to a ticket.",
+        "longDescription":"This plugin allows you to send additional follow-up messages to a ticket after the main ticket message.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["ticket","message","follow-up","embed"]
+    }
+}

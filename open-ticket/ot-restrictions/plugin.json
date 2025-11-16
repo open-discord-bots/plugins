@@ -1,0 +1,23 @@
+{
+    "name":"OT Restrictions",
+    "id":"ot-restrictions",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "shortDescription":"Restrict which roles can open a specific ticket option.",
+        "longDescription":"This plugin allows you to create a white- & blacklist for each ticket option to restrict ticket creation to certain roles.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["ticket","restrictions","allowlist","denylist","whitelist","blacklist","roles"]
+    }
+}
