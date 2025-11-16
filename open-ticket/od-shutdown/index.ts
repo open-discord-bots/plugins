@@ -110,7 +110,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
         }),
         new api.ODWorker("od-shutdown:exit-process",-2,async (instance,params,source,cancel) => {
             opendiscord.log("Shutting down the bot...","warning")
-            opendiscord.client.activity.setStatus("custom","shutting down...","invisible",true)
+            opendiscord.client.activity.setStatus("custom","shutting down...","invisible","",true)
             await utilities.timer(2000)
             process.exit(0)
         })

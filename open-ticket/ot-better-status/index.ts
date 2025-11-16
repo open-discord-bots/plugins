@@ -227,10 +227,10 @@ opendiscord.events.get("onClientActivityInit").listen((activity) => {
 
     //first status starts after bot initialisation
     opendiscord.events.get("onReadyForUsage").listen(async () => {
-        opendiscord.client.activity.setStatus(states[0].type,await processVariables(variables,states[0].text),states[0].status,true)
+        opendiscord.client.activity.setStatus(states[0].type,await processVariables(variables,states[0].text),states[0].status,"",true)
         setInterval(async () => {
             state = (state >= maxState) ? 0 : state+1
-            opendiscord.client.activity.setStatus(states[state].type,await processVariables(variables,states[state].text),states[state].status,true)
+            opendiscord.client.activity.setStatus(states[state].type,await processVariables(variables,states[state].text),states[state].status,"",true)
         },switchDelay)
     })
 })

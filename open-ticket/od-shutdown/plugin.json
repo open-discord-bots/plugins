@@ -1,7 +1,7 @@
 {
     "name":"OD Shutdown",
     "id":"od-shutdown",
-    "version":"1.0.3",
+    "version":"1.0.4",
     "startFile":"index.ts",
 
     "enabled":true,
