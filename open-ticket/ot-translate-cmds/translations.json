@@ -32,7 +32,7 @@
                 },
                 "descriptionTranslations": {
                     "en-US": "The user to add.",
-                    "en-GB": "user",
+                    "en-GB": "The user to add.",
                     "es-ES": "El usuario a añadir.",
                     "es-419": "El usuario a añadir.",
                     "fr": "L'utilisateur à ajouter.",
@@ -1446,6 +1446,256 @@
             "nl": "Ontpin een ticket."
         },
         "options": [
+            {
+                "name": "reason",
+                "type": "option",
+                "nameTranslations": {
+                    "en-US": "reason",
+                    "en-GB": "reason",
+                    "es-ES": "razón",
+                    "es-419": "razón",
+                    "fr": "raison",
+                    "nl": "reden"
+                },
+                "descriptionTranslations": {
+                    "en-US": "Specify an optional reason that will be visible in logs.",
+                    "en-GB": "Specify an optional reason that will be visible in logs.",
+                    "es-ES": "Especifica una razón opcional que será visible en los registros.",
+                    "es-419": "Especifica una razón opcional que será visible en los registros.",
+                    "fr": "Spécifiez une raison optionnelle qui sera visible dans les registres.",
+                    "nl": "Geef een optionele reden die zichtbaar is in de logs."
+                }
+            }
+        ]
+    },
+    {
+        "name": "ticket",
+        "type": "command",
+        "nameTranslations": {
+            "en-US": "ticket",
+            "en-GB": "ticket",
+            "es-ES": "ticket",
+            "es-419": "ticket",
+            "fr": "ticket"
+        },
+        "descriptionTranslations": {
+            "en-US": "Instantly create a ticket.",
+            "en-GB": "Instantly create a ticket.",
+            "es-ES": "Crea un ticket al instante.",
+            "es-419": "Crea un ticket al instante.",
+            "fr": "Créez un ticket instantanément."
+        },
+        "options": [
+            {
+                "name": "id",
+                "type": "option",
+                "nameTranslations": {
+                    "en-US": "id",
+                    "en-GB": "id",
+                    "es-ES": "id",
+                    "es-419": "id",
+                    "fr": "id"
+                },
+                "descriptionTranslations": {
+                    "en-US": "The identifier of the ticket that you want to create.",
+                    "en-GB": "The identifier of the ticket that you want to create.",
+                    "es-ES": "El identificador del ticket que quieres crear.",
+                    "es-419": "El identificador del ticket que quieres crear.",
+                    "fr": "L'identifiant du ticket que vous souhaitez créer."
+                }
+            }
+        ]
+    },
+    {
+        "name": "priority",
+        "type": "command",
+        "nameTranslations": {
+            "en-US": "priority",
+            "en-GB": "priority",
+            "es-ES": "prioridad",
+            "es-419": "prioridad",
+            "fr": "priorité"
+        },
+        "descriptionTranslations": {
+            "en-US": "Manage the priority of a ticket.",
+            "en-GB": "Manage the priority of a ticket.",
+            "es-ES": "Gestiona la prioridad de un tiquet.",
+            "es-419": "Gestiona la prioridad de un tiquet.",
+            "fr": "Gérez la priorité d'un ticket."
+        },
+        "options": [
+            {
+                "name": "get",
+                "type": "subcommand",
+                "nameTranslations": {
+                    "en-US": "get",
+                    "en-GB": "get",
+                    "es-ES": "obtener",
+                    "es-419": "obtener",
+                    "fr": "obtenir"
+                },
+                "descriptionTranslations": {
+                    "en-US": "Get the priority of the ticket.",
+                    "en-GB": "Get the priority of the ticket.",
+                    "es-ES": "Obtén la prioridad del ticket.",
+                    "es-419": "Obtén la prioridad del ticket.",
+                    "fr": "Obtenez la priorité du ticket."
+                }
+            },
+            {
+                "name": "set",
+                "type": "subcommand",
+                "nameTranslations": {
+                    "en-US": "set",
+                    "en-GB": "set",
+                    "es-ES": "establecer",
+                    "es-419": "establecer",
+                    "fr": "établir"
+                },
+                "descriptionTranslations": {
+                    "en-US": "Set the priority of the ticket.",
+                    "en-GB": "Set the priority of the ticket.",
+                    "es-ES": "Establece la prioridad del ticket.",
+                    "es-419": "Establece la prioridad del ticket.",
+                    "fr": "Établissez la priorité du ticket."
+                },
+                "options": [
+                    {
+                        "name": "priority",
+                        "type": "option",
+                        "nameTranslations": {
+                            "en-US": "priority",
+                            "en-GB": "priority",
+                            "es-ES": "prioridad",
+                            "es-419": "prioridad",
+                            "fr": "priorité"
+                        },
+                        "descriptionTranslations": {
+                            "en-US": "The priority of the channel.",
+                            "en-GB": "The priority of the channel.",
+                            "es-ES": "La prioridad del canal.",
+                            "es-419": "La prioridad del canal.",
+                            "fr": "La priorité du canal."
+                        }
+                    },
+                    {
+                        "name": "reason",
+                        "type": "option",
+                        "nameTranslations": {
+                            "en-US": "reason",
+                            "en-GB": "reason",
+                            "es-ES": "razón",
+                            "es-419": "razón",
+                            "fr": "raison"
+                        },
+                        "descriptionTranslations": {
+                            "en-US": "Specify an optional reason that will be visible in logs.",
+                            "en-GB": "Specify an optional reason that will be visible in logs.",
+                            "es-ES": "Especifica una razón opcional que será visible en los registros.",
+                            "es-419": "Especifica una razón opcional que será visible en los registros.",
+                            "fr": "Spécifiez une raison optionnelle qui sera visible dans les registres.",
+                            "nl": "Geef een optionele reden die zichtbaar is in de logs."
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "topic",
+        "type": "command",
+        "nameTranslations": {
+            "en-US": "topic",
+            "en-GB": "topic",
+            "es-ES": "tema",
+            "es-419": "tema",
+            "fr": "sujet"
+        },
+        "descriptionTranslations": {
+            "en-US": "Manage the topic of a ticket.",
+            "en-GB": "Manage the topic of a ticket.",
+            "es-ES": "Gestiona el tema de un tiquet.",
+            "es-419": "Gestiona el tema de un tiquet.",
+            "fr": "Gérez le sujet d'un ticket."
+        },
+        "options": [
+            {
+                "name": "set",
+                "type": "subcommand",
+                "nameTranslations": {
+                    "en-US": "set",
+                    "en-GB": "set",
+                    "es-ES": "establecer",
+                    "es-419": "establecer",
+                    "fr": "établir"
+                },
+                "descriptionTranslations": {
+                    "en-US": "Set the topic of the ticket channel.",
+                    "en-GB": "Set the topic of the ticket channel.",
+                    "es-ES": "Establece el tema del canal del ticket.",
+                    "es-419": "Establece el tema del canal del ticket.",
+                    "fr": "Établissez le sujet du canal de ticket."
+                },
+                "options": [
+                    {
+                        "name": "topic",
+                        "type": "option",
+                        "nameTranslations": {
+                            "en-US": "topic",
+                            "en-GB": "topic",
+                            "es-ES": "tema",
+                            "es-419": "tema",
+                            "fr": "sujet"
+                        },
+                        "descriptionTranslations": {
+                            "en-US": "The new topic of the channel.",
+                            "en-GB": "The new topic of the channel.",
+                            "es-ES": "El nuevo tema del canal.",
+                            "es-419": "El nuevo tema del canal.",
+                            "fr": "Le nouveau sujet du canal."
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "transfer",
+        "type": "command",
+        "nameTranslations": {
+            "en-US": "transfer",
+            "en-GB": "transfer",
+            "es-ES": "transferir",
+            "es-419": "transferir",
+            "fr": "transférer"
+        },
+        "descriptionTranslations": {
+            "en-US": "Transfer the ticket ownership from one user to another.",
+            "en-GB": "Transfer the ticket ownership from one user to another.",
+            "es-ES": "Transfiere la propiedad del tiquet de un usuario a otro.",
+            "es-419": "Transfiere la propiedad del tiquet de un usuario a otro.",
+            "fr": "Transférez la propriété du ticket d'un utilisateur à un autre."
+        },
+        "options": [
+            {
+                "name": "user",
+                "type": "option",
+                "nameTranslations": {
+                    "en-US": "user",
+                    "en-GB": "user",
+                    "es-ES": "usuario",
+                    "es-419": "usuario",
+                    "fr": "utilisateur",
+                    "nl": "gebruiker"
+                },
+                "descriptionTranslations": {
+                    "en-US": "The user to transfer to.",
+                    "en-GB": "The user to transfer to.",
+                    "es-ES": "El usuario a transferir.",
+                    "es-419": "El usuario a transferir.",
+                    "fr": "L'utilisateur à transférer."
+                }
+            },
             {
                 "name": "reason",
                 "type": "option",
