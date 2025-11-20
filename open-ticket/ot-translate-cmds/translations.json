@@ -530,14 +530,16 @@
             "en-GB": "claim",
             "es-ES": "reclamar",
             "es-419": "reclamar",
-            "fr": "réclamer"
+            "fr": "réclamer",
+            "nl": "claim"
         },
         "descriptionTranslations": {
             "en-US": "Claim a ticket.",
             "en-GB": "Claim a ticket.",
             "es-ES": "Reclama un tiquet.",
             "es-419": "Reclama un tiquet.",
-            "fr": "Réclamer un ticket."
+            "fr": "Réclamer un ticket.",
+            "nl": "Claim een ticket."
         },
         "options": [
             {
@@ -548,14 +550,16 @@
                     "en-GB": "user",
                     "es-ES": "usuario",
                     "es-419": "usuario",
-                    "fr": "utilisateur"
+                    "fr": "utilisateur",
+                    "nl": "gebruiker"
                 },
                 "descriptionTranslations": {
                     "en-US": "Claim this ticket to someone else instead of yourself.",
                     "en-GB": "Claim this ticket to someone else instead of yourself.",
                     "es-ES": "Reclama este ticket para otra persona en lugar de para ti.",
                     "es-419": "Reclama este ticket para otra persona en lugar de para ti.",
-                    "fr": "Réclamez ce ticket pour quelqu'un d'autre au lieu de vous-même."
+                    "fr": "Réclamez ce ticket pour quelqu'un d'autre au lieu de vous-même.",
+                    "nl": "Claim dit ticket voor iemand anders dan uzelf."
                 }
             },
             {
@@ -1476,14 +1480,16 @@
             "en-GB": "ticket",
             "es-ES": "ticket",
             "es-419": "ticket",
-            "fr": "ticket"
+            "fr": "ticket",
+            "nl": "ticket"
         },
         "descriptionTranslations": {
             "en-US": "Instantly create a ticket.",
             "en-GB": "Instantly create a ticket.",
             "es-ES": "Crea un ticket al instante.",
             "es-419": "Crea un ticket al instante.",
-            "fr": "Créez un ticket instantanément."
+            "fr": "Créez un ticket instantanément.",
+            "nl": "Maak een nieuw ticket aan."
         },
         "options": [
             {
@@ -1494,14 +1500,16 @@
                     "en-GB": "id",
                     "es-ES": "id",
                     "es-419": "id",
-                    "fr": "id"
+                    "fr": "id",
+                    "nl": "id"
                 },
                 "descriptionTranslations": {
                     "en-US": "The identifier of the ticket that you want to create.",
                     "en-GB": "The identifier of the ticket that you want to create.",
                     "es-ES": "El identificador del ticket que quieres crear.",
                     "es-419": "El identificador del ticket que quieres crear.",
-                    "fr": "L'identifiant du ticket que vous souhaitez créer."
+                    "fr": "L'identifiant du ticket que vous souhaitez créer.",
+                    "nl": "Het soort ticket dat u wilt creëeren."
                 }
             }
         ]
@@ -1514,14 +1522,16 @@
             "en-GB": "priority",
             "es-ES": "prioridad",
             "es-419": "prioridad",
-            "fr": "priorité"
+            "fr": "priorité",
+            "nl": "prioriteit"
         },
         "descriptionTranslations": {
             "en-US": "Manage the priority of a ticket.",
             "en-GB": "Manage the priority of a ticket.",
             "es-ES": "Gestiona la prioridad de un tiquet.",
             "es-419": "Gestiona la prioridad de un tiquet.",
-            "fr": "Gérez la priorité d'un ticket."
+            "fr": "Gérez la priorité d'un ticket.",
+            "nl": "Beheer de prioriteit van een ticket."
         },
         "options": [
             {
@@ -1532,7 +1542,8 @@
                     "en-GB": "get",
                     "es-ES": "obtener",
                     "es-419": "obtener",
-                    "fr": "obtenir"
+                    "fr": "obtenir",
+                    "nl": "verkrijg"
                 },
                 "descriptionTranslations": {
                     "en-US": "Get the priority of the ticket.",
@@ -1550,14 +1561,16 @@
                     "en-GB": "set",
                     "es-ES": "establecer",
                     "es-419": "establecer",
-                    "fr": "établir"
+                    "fr": "établir",
+                    "nl": "verander"
                 },
                 "descriptionTranslations": {
                     "en-US": "Set the priority of the ticket.",
                     "en-GB": "Set the priority of the ticket.",
                     "es-ES": "Establece la prioridad del ticket.",
                     "es-419": "Establece la prioridad del ticket.",
-                    "fr": "Établissez la priorité du ticket."
+                    "fr": "Établissez la priorité du ticket.",
+                    "nl": "Verander de prioriteit van een ticket."
                 },
                 "options": [
                     {
@@ -1568,14 +1581,16 @@
                             "en-GB": "priority",
                             "es-ES": "prioridad",
                             "es-419": "prioridad",
-                            "fr": "priorité"
+                            "fr": "priorité",
+                            "nl": "prioriteit"
                         },
                         "descriptionTranslations": {
                             "en-US": "The priority of the channel.",
                             "en-GB": "The priority of the channel.",
                             "es-ES": "La prioridad del canal.",
                             "es-419": "La prioridad del canal.",
-                            "fr": "La priorité du canal."
+                            "fr": "La priorité du canal.",
+                            "nl": "De prioriteit van het kanaal."
                         }
                     },
                     {
@@ -1586,7 +1601,8 @@
                             "en-GB": "reason",
                             "es-ES": "razón",
                             "es-419": "razón",
-                            "fr": "raison"
+                            "fr": "raison",
+                            "nl": "reden"
                         },
                         "descriptionTranslations": {
                             "en-US": "Specify an optional reason that will be visible in logs.",
@@ -1609,14 +1625,16 @@
             "en-GB": "topic",
             "es-ES": "tema",
             "es-419": "tema",
-            "fr": "sujet"
+            "fr": "sujet",
+            "nl":"onderwerp"
         },
         "descriptionTranslations": {
             "en-US": "Manage the topic of a ticket.",
             "en-GB": "Manage the topic of a ticket.",
             "es-ES": "Gestiona el tema de un tiquet.",
             "es-419": "Gestiona el tema de un tiquet.",
-            "fr": "Gérez le sujet d'un ticket."
+            "fr": "Gérez le sujet d'un ticket.",
+            "nl": "Beheer het onderwerp van het ticket."
         },
         "options": [
             {
@@ -1627,14 +1645,16 @@
                     "en-GB": "set",
                     "es-ES": "establecer",
                     "es-419": "establecer",
-                    "fr": "établir"
+                    "fr": "établir",
+                    "nl": "verander"
                 },
                 "descriptionTranslations": {
                     "en-US": "Set the topic of the ticket channel.",
                     "en-GB": "Set the topic of the ticket channel.",
                     "es-ES": "Establece el tema del canal del ticket.",
                     "es-419": "Establece el tema del canal del ticket.",
-                    "fr": "Établissez le sujet du canal de ticket."
+                    "fr": "Établissez le sujet du canal de ticket.",
+                    "nl": "Verander het onderwerp van het ticket kanaal."
                 },
                 "options": [
                     {
@@ -1645,14 +1665,16 @@
                             "en-GB": "topic",
                             "es-ES": "tema",
                             "es-419": "tema",
-                            "fr": "sujet"
+                            "fr": "sujet",
+                            "nl": "onderwerp"
                         },
                         "descriptionTranslations": {
                             "en-US": "The new topic of the channel.",
                             "en-GB": "The new topic of the channel.",
                             "es-ES": "El nuevo tema del canal.",
                             "es-419": "El nuevo tema del canal.",
-                            "fr": "Le nouveau sujet du canal."
+                            "fr": "Le nouveau sujet du canal.",
+                            "nl": "Het nieuwe onderwerp van het kanaal."
                         }
                     }
                 ]
@@ -1667,14 +1689,16 @@
             "en-GB": "transfer",
             "es-ES": "transferir",
             "es-419": "transferir",
-            "fr": "transférer"
+            "fr": "transférer",
+            "nl": "transfer"
         },
         "descriptionTranslations": {
             "en-US": "Transfer the ticket ownership from one user to another.",
             "en-GB": "Transfer the ticket ownership from one user to another.",
             "es-ES": "Transfiere la propiedad del tiquet de un usuario a otro.",
             "es-419": "Transfiere la propiedad del tiquet de un usuario a otro.",
-            "fr": "Transférez la propriété du ticket d'un utilisateur à un autre."
+            "fr": "Transférez la propriété du ticket d'un utilisateur à un autre.",
+            "nl": "Transfer het eigendom van het ticket van de ene naar de andere gebruiker."
         },
         "options": [
             {
@@ -1693,7 +1717,8 @@
                     "en-GB": "The user to transfer to.",
                     "es-ES": "El usuario a transferir.",
                     "es-419": "El usuario a transferir.",
-                    "fr": "L'utilisateur à transférer."
+                    "fr": "L'utilisateur à transférer.",
+                    "nl": "De gebruiker om naar te transferren."
                 }
             },
             {
