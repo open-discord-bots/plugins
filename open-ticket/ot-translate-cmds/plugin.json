@@ -1,23 +1,23 @@
 {
-    "name":"OT Translate Commands",
-    "id":"ot-translate-cmds",
-    "version":"1.0.1",
-    "startFile":"index.ts",
+  "name": "OT Translate Commands",
+  "id": "ot-translate-cmds",
+  "version": "1.0-OTv4.1",
+  "startFile": "index.ts",
 
-    "enabled":true,
-    "priority":0,
-    "events":[],
+  "enabled": true,
+  "priority": 0,
+  "events": [],
 
-    "npmDependencies":[],
-    "requiredPlugins":[],
-    "incompatiblePlugins":[],
+  "npmDependencies": [],
+  "requiredPlugins": [],
+  "incompatiblePlugins": [],
 
-    "details":{
-        "author":"guillee.3",
-        "shortDescription":"Translate all built-in command names, descriptions & options.",
-        "longDescription":"Translate all built-in command names, descriptions & options to the user's language settings in the Discord app. Please read the README.md file if you want to modify or add any translation.",
-        "imageUrl":"",
-        "projectUrl":"",
-        "tags":["command","translate","languages","translation","slash"]
-    }
+  "details": {
+    "author": "guillee.3",
+    "shortDescription": "Translate all built-in command names, descriptions & options.",
+    "longDescription": "Translate all built-in command names, descriptions & options to the user's language settings in the Discord app. Please read the README.md file if you want to modify or add any translation.",
+    "imageUrl": "",
+    "projectUrl": "",
+    "tags": ["command", "translate", "languages", "translation", "slash"]
+  }
 }
