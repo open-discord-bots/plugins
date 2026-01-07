@@ -96,13 +96,13 @@ opendiscord.events.get("onReadyForUsage").listen(async () => {
         if (channel.type != discord.ChannelType.GuildText) return
 
         //detect OTv3 ticket message
-        const pinnedMessages = await channel.messages.fetchPinned()
-        const ticketMessage = pinnedMessages.find((msg) => msg.author.id == client.user.id && msg.embeds.length > 0)
+        const pinnedMessages = await channel.messages.fetchPins()
+        const ticketMessage = pinnedMessages.items.find((pin) => pin.message.author.id == client.user.id && pin.message.embeds.length > 0)?.message
         if (!ticketMessage) return
 
         let isTicketMessage = false
         ticketMessage.components.forEach((row) => {
-            if (row.type !== discord.ComponentType.ActionRow) return
+            if (row.type != discord.ComponentType.ActionRow) return
             row.components.forEach((component) => {
                 if (["OTdeleteTicket","OTcloseTicket","OTclaimTicket","OTreopenTicket"].some((id) => component.customId && component.customId.startsWith(id))) isTicketMessage = true
             })
@@ -149,13 +149,13 @@ opendiscord.events.get("onButtonResponderLoad").listen((buttons) => {
 
             //GET ORIGINAL PROPERTIES
             //detect OTv3 ticket message
-            const pinnedMessages = await channel.messages.fetchPinned()
-            const ticketMessage = pinnedMessages.find((msg) => msg.author.id == client.user.id && msg.embeds.length > 0)
+            const pinnedMessages = await channel.messages.fetchPins()
+            const ticketMessage = pinnedMessages.items.find((pin) => pin.message.author.id == client.user.id && pin.message.embeds.length > 0)?.message
             if (!ticketMessage) return
 
             let isTicketMessage = false
             ticketMessage.components.forEach((row) => {
-                if (row.type !== discord.ComponentType.ActionRow) return
+                if (row.type != discord.ComponentType.ActionRow) return
                 row.components.forEach((component) => {
                     if (["OTdeleteTicket","OTcloseTicket","OTclaimTicket","OTreopenTicket"].some((id) => component.customId && component.customId.startsWith(id))) isTicketMessage = true
                 })

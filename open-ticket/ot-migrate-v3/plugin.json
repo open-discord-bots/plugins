@@ -1,7 +1,7 @@
 {
     "name":"OT Migrate v3",
     "id":"ot-migrate-v3",
-    "version":"1.0.1",
+    "version":"1.0.2",
     "startFile":"index.ts",
 
     "enabled":true,
