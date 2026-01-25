@@ -1,0 +1,20 @@
+{
+  "name": "Twitch Notifier",
+  "id": "od-twitch-notifier",
+  "version": "1.0.0",
+  "startFile": "index.ts",
+  "enabled": true,
+  "priority": 0,
+  "events": [],
+  "npmDependencies": [],
+  "requiredPlugins": [],
+  "incompatiblePlugins": [],
+  "details": {
+    "author": "guillee3",
+    "shortDescription": "Get notified when your favorite Twitch streamers go live",
+    "longDescription": "Monitor Twitch streamers and receive automatic Discord notifications when they go live or offline. Features include rich embeds with stream details, multi-channel support, custom messages, role mentions, paginated streamer lists, automatic username change detection, and fully customizable responses.",
+    "imageUrl": "",
+    "projectUrl": "",
+    "tags": ["twitch", "notifications", "livestream", "streaming", "alerts"]
+  }
+}
