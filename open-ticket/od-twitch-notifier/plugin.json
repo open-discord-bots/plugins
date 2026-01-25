@@ -11,8 +11,8 @@
   "incompatiblePlugins": [],
   "details": {
     "author": "guillee3",
-    "shortDescription": "Get notified when your favorite Twitch streamers go live",
-    "longDescription": "Monitor Twitch streamers and receive automatic Discord notifications when they go live or offline. Features include rich embeds with stream details, multi-channel support, custom messages, role mentions, paginated streamer lists, automatic username change detection, and fully customizable responses.",
+    "shortDescription": "Get notified when your favorite Twitch streamers go live.",
+    "longDescription": "Monitor Twitch streamers and receive automatic Discord notifications when they go live or offline. Features include customizable embeds with stream details, multi-channel support, automatic username change detection, and more.",
     "imageUrl": "",
     "projectUrl": "",
     "tags": ["twitch", "notifications", "livestream", "streaming", "alerts"]
