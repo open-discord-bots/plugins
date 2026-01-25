@@ -72,7 +72,7 @@ Open `plugins/od-twitch-notifier/config.json` and add your credentials:
 | Option                     | Description                                           | Default            |
 | -------------------------- | ----------------------------------------------------- | ------------------ |
 | `pollIntervalMs`           | How often to check for live streams (in milliseconds) | `60000` (1 minute) |
-| `maxSubscriptionsPerGuild` | Maximum streamers per server                          | `50`               |
+| `maxTwitchChannels` | Maximum streamers per server                          | `50`               |
 | `commandPermission`        | Who can use the commands (see below)                  | `"admin"`          |
 
 ### Command Permission Options

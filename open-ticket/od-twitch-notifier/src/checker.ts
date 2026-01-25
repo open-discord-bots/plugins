@@ -98,7 +98,7 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
         }),
       },
       {
-        key: "maxSubscriptionsPerGuild",
+        key: "maxTwitchChannels",
         optional: false,
         priority: 0,
         checker: new api.ODCheckerNumberStructure("od-twitch-notifier:max-subs", {

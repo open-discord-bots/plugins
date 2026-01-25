@@ -54,7 +54,7 @@ export async function handleAddChannel(
 
   // Check subscription limit per guild
   const cfg = opendiscord.configs.get("od-twitch-notifier:config");
-  const maxSubs = cfg.data.maxSubscriptionsPerGuild || 50;
+  const maxSubs = cfg.data.maxTwitchChannels || 50;
   const currentCount = storage.listSubscriptions().filter((s) => s.guildId === instance.guild.id).length;
   if (currentCount >= maxSubs) {
     await instance.reply({

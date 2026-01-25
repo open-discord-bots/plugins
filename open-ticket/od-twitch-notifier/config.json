@@ -5,7 +5,7 @@
     "twitchClientSecret": "your-client-secret-from-dev.twitch.tv/console/apps"
   },
   "pollIntervalMs": 60000,
-  "maxSubscriptionsPerGuild": 50,
+  "maxTwitchChannels": 50,
   "commandPermission": "admin | everyone | none | <roleId>",
   "embeds": {
     "live": {
