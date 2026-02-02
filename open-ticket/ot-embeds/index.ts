@@ -386,7 +386,15 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 const image = instance.options.getString("image",false) ?? ""
                 const thumbnail = instance.options.getString("thumbnail",false) ?? ""
                 const ping = instance.options.getMentionable("ping",false)
-                const pingCustom = ping ? [ping.id] : []
+                let pingEveryone = false
+                const pingCustom: string[] = []
+                if (ping){
+                    if (guild && ping.id == guild.id){
+                        pingEveryone = true
+                    }else{
+                        pingCustom.push(ping.id)
+                    }
+                }
 
                 await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(source,{embed:{
                     id:"_CUSTOM_",
@@ -406,7 +414,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     fields:[],
                     ping:{
                         "@here":false,
-                        "@everyone":false,
+                        "@everyone":pingEveryone,
                         custom:pingCustom
                     }
                 }})).message)
