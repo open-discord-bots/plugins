@@ -51,6 +51,7 @@ export interface OTForms_ModalQuestion extends OTForms_Question {
     type: "short" | "paragraph",
     placeholder: string,
     optional: boolean,
+    maxLength: number,
 }
 
 /** ## OTForms_Choice `interface`

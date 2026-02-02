@@ -14,7 +14,8 @@
                 "question":"This is an example of a short answer question. You can add as many questions as you want.",
                 "type":"short",
                 "optional":false,
-                "placeholder":"Single line response, no paragraphs allowed. (or leave it empty)"
+                "placeholder":"Single line response, no paragraphs allowed. (or leave it empty)",
+                "maxLength": 50
             },
             {
                 "position":2,
@@ -84,7 +85,8 @@
                 "question":"Question Nr1",
                 "type":"paragraph",
                 "optional":false,
-                "placeholder":"the placeholder (or leave it empty)"
+                "placeholder":"the placeholder (or leave it empty)",
+                "maxLength": 250
             }      
         ]
     }

@@ -46,6 +46,7 @@ The `questions` array defines the form's questions. Each question object include
 > For questions of type `short` or `long`:
 > - **`optional`**: A boolean indicating if the question is optional (`true`) or required (`false`).
 > - **`placeholder`**: A text placeholder for the response input (optional).
+> - **`maxLength`**: A number to set the max length size of the response (optional, default 1023).
 
 > #### Dropdown-Specific Properties
 > For questions of type `dropdown`:
@@ -86,7 +87,8 @@ The `questions` array defines the form's questions. Each question object include
             "question": "That's an example of paragraph answer question?",
             "type": "long",
             "optional": false,
-            "placeholder": "Multiple lines response, paragraphs allowed. (or leave it empty)"
+            "placeholder": "Multiple lines response, paragraphs allowed. (or leave it empty)",
+            "maxLength": 500
         },
         {
             "number": 4,
