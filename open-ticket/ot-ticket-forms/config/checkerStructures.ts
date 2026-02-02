@@ -17,14 +17,17 @@ export const formsConfigStructure = new api.ODCheckerArrayStructure("ot-ticket-f
             {key:"position",optional:false,priority:0,checker:new api.ODCheckerNumberStructure("ot-ticket-forms:question-position",{min:1,floatAllowed:false,negativeAllowed:false})},
             {key:"question",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-ticket-forms:question",{minLength:1,maxLength:45})},
             {key:"optional",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-ticket-forms:question-optional",{})},
-            {key:"placeholder",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-ticket-forms:question-placeholder",{maxLength:100})}
+            {key:"placeholder",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-ticket-forms:question-placeholder",{maxLength:100})},
+            {key:"maxLength",optional:false,priority:0,checker:new api.ODCheckerNumberStructure("ot-ticket-forms:question-maxlength",{min:1,max:1023,floatAllowed:false,negativeAllowed:false})},
+
         ]})},
         //PARAGRAPH QUESTION STRUCTURE
         {name:"paragraph",priority:0,properties:[{key:"type",value:"paragraph"}],checker:new api.ODCheckerObjectStructure("ot-ticket-forms:paragraph-question",{children:[
             {key:"position",optional:false,priority:0,checker:new api.ODCheckerNumberStructure("ot-ticket-forms:question-position",{min:1,floatAllowed:false,negativeAllowed:false})},
             {key:"question",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-ticket-forms:question",{minLength:1,maxLength:45})},
             {key:"optional",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-ticket-forms:question-optional",{})},
-            {key:"placeholder",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-ticket-forms:question-placeholder",{maxLength:100})}
+            {key:"placeholder",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-ticket-forms:question-placeholder",{maxLength:100})},
+            {key:"maxLength",optional:false,priority:0,checker:new api.ODCheckerNumberStructure("ot-ticket-forms:question-maxlength",{min:1,max:1023,floatAllowed:false,negativeAllowed:false})},
         ]})},
         //DROPDOWN QUESTION STRUCTURE
         {name:"dropdown",priority:0,properties:[{key:"type",value:"dropdown"}],checker:new api.ODCheckerObjectStructure("ot-ticket-forms:dropdown-question",{children:[
