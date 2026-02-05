@@ -1,0 +1,23 @@
+{
+    "name":"Templates System",
+    "id":"templates-system",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DanoGlez",
+        "shortDescription":"Predefined template system for sending quick messages.",
+        "longDescription":"Allows you to create and send predefined message templates with custom embeds through the /templates command.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["templates","messages","embeds","quick-replies"]
+    }
+}
