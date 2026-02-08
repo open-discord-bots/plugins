@@ -1,12 +1,12 @@
 {
-    "name":"OD Alt Detector",
-    "id":"od-alt-detector",
+    "name":"OT Alt Detector",
+    "id":"ot-alt-detector",
     "version":"1.0.3",
     "startFile":"index.ts",
 
     "enabled":true,
     "priority":0,
-    "events":["od-alt-detector:onAltDetect","od-alt-detector:afterAltDetected"],
+    "events":["ot-alt-detector:onAltDetect","ot-alt-detector:afterAltDetected"],
 
     "npmDependencies":["discord-alt-detector"],
     "requiredPlugins":[],

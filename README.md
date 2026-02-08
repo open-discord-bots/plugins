@@ -60,7 +60,7 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`ot-customise-buttons`](./open-ticket/ot-customise-buttons/)         |🎨 Customisation            |Customise almost all built-in buttons. This includes the claim, reopen, close & delete buttons. |
 |[`ot-ephemeral-messages`](./open-ticket/ot-ephemeral-messages/)       |🎨 Customisation            |Customise for every messages if it needs to be ephemeral or not. |
 |[`ot-footers`](./open-ticket/ot-footers/)                             |🎨 Customisation            |A simple plugin to add footers in all Open Ticket embeds. |
-|[`od-alt-detector`](./open-ticket/od-alt-detector/)                   |💼 Management               |Use the discord-alt-detector npm package by DJdj Development in your ticket bot. |
+|[`ot-alt-detector`](./open-ticket/ot-alt-detector/)                   |💼 Management               |Use the discord-alt-detector npm package by DJdj Development in your ticket bot. |
 |[`ot-embeds`](./open-ticket/ot-embeds/)                               |💼 Management               |Create custom premade embeds in the config or use the command to create one from scratch. |
 |[`ot-move-actions`](./open-ticket/ot-move-actions/)                   |💼 Management               |Automatically unclaim/unpin a ticket when it's moved using `/move`. |
 |[`ot-reviews`](./open-ticket/ot-reviews/)                             |💼 Management               |Review system for Open Ticket! It is very customisable and has lots of features. |

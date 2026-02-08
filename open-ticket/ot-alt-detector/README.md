@@ -1,4 +1,4 @@
-# OD Alt Detector
+# OT Alt Detector
 Use the discord-alt-detector npm package by DJdj Development in your ticket bot!
 
 > This package uses the `discord-alt-detector` npm package.
