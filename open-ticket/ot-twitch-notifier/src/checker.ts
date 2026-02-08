@@ -9,78 +9,78 @@ import { api, opendiscord } from "#opendiscord";
  * Validates all config.json properties including credentials, embeds, responses, and log messages.
  */
 export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) => {
-  const responseEmbedStructure = new api.ODCheckerObjectStructure("od-twitch-notifier:response-embed", {
+  const responseEmbedStructure = new api.ODCheckerObjectStructure("ot-twitch-notifier:response-embed", {
     children: [
       {
         key: "color",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerStringStructure("od-twitch-notifier:response-color", {}),
+        checker: new api.ODCheckerStringStructure("ot-twitch-notifier:response-color", {}),
       },
       {
         key: "title",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerStringStructure("od-twitch-notifier:response-title", { maxLength: 256 }),
+        checker: new api.ODCheckerStringStructure("ot-twitch-notifier:response-title", { maxLength: 256 }),
       },
       {
         key: "description",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerStringStructure("od-twitch-notifier:response-description", { maxLength: 4096 }),
+        checker: new api.ODCheckerStringStructure("ot-twitch-notifier:response-description", { maxLength: 4096 }),
       },
     ],
   });
 
-  const logMessageStructure = new api.ODCheckerObjectStructure("od-twitch-notifier:log-message", {
+  const logMessageStructure = new api.ODCheckerObjectStructure("ot-twitch-notifier:log-message", {
     children: [
       {
         key: "color",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerStringStructure("od-twitch-notifier:log-color", {}),
+        checker: new api.ODCheckerStringStructure("ot-twitch-notifier:log-color", {}),
       },
       {
         key: "title",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerStringStructure("od-twitch-notifier:log-title", { maxLength: 256 }),
+        checker: new api.ODCheckerStringStructure("ot-twitch-notifier:log-title", { maxLength: 256 }),
       },
       {
         key: "description",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerStringStructure("od-twitch-notifier:log-description", { maxLength: 4096 }),
+        checker: new api.ODCheckerStringStructure("ot-twitch-notifier:log-description", { maxLength: 4096 }),
       },
     ],
   });
 
-  const configStructure = new api.ODCheckerObjectStructure("od-twitch-notifier:config", {
+  const configStructure = new api.ODCheckerObjectStructure("ot-twitch-notifier:config", {
     children: [
       //CREDENTIALS
       {
         key: "credentials",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerObjectStructure("od-twitch-notifier:credentials", {
+        checker: new api.ODCheckerObjectStructure("ot-twitch-notifier:credentials", {
           children: [
             {
               key: "useEnv",
               optional: false,
               priority: 0,
-              checker: new api.ODCheckerBooleanStructure("od-twitch-notifier:use-env", {}),
+              checker: new api.ODCheckerBooleanStructure("ot-twitch-notifier:use-env", {}),
             },
             {
               key: "twitchClientId",
               optional: false,
               priority: 0,
-              checker: new api.ODCheckerStringStructure("od-twitch-notifier:client-id", {}),
+              checker: new api.ODCheckerStringStructure("ot-twitch-notifier:client-id", {}),
             },
             {
               key: "twitchClientSecret",
               optional: false,
               priority: 0,
-              checker: new api.ODCheckerStringStructure("od-twitch-notifier:client-secret", {}),
+              checker: new api.ODCheckerStringStructure("ot-twitch-notifier:client-secret", {}),
             },
           ],
         }),
@@ -91,7 +91,7 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
         key: "pollIntervalMs",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerNumberStructure("od-twitch-notifier:poll-interval", {
+        checker: new api.ODCheckerNumberStructure("ot-twitch-notifier:poll-interval", {
           min: 1000,
           negativeAllowed: false,
           floatAllowed: false,
@@ -101,7 +101,7 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
         key: "maxTwitchChannels",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerNumberStructure("od-twitch-notifier:max-subs", {
+        checker: new api.ODCheckerNumberStructure("ot-twitch-notifier:max-subs", {
           min: 1,
           max: 500,
           negativeAllowed: false,
@@ -112,7 +112,7 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
         key: "commandPermission",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerStringStructure("od-twitch-notifier:command-permission", {
+        checker: new api.ODCheckerStringStructure("ot-twitch-notifier:command-permission", {
           regex: /^(admin|everyone|none|\d{15,50})$/,
         }),
       },
@@ -122,38 +122,38 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
         key: "embeds",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerObjectStructure("od-twitch-notifier:embeds", {
+        checker: new api.ODCheckerObjectStructure("ot-twitch-notifier:embeds", {
           children: [
             //LIVE EMBED
             {
               key: "live",
               optional: false,
               priority: 0,
-              checker: new api.ODCheckerObjectStructure("od-twitch-notifier:live-embed", {
+              checker: new api.ODCheckerObjectStructure("ot-twitch-notifier:live-embed", {
                 children: [
                   {
                     key: "color",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-color", {}),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-color", {}),
                   },
                   {
                     key: "title",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-title", { maxLength: 256 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-title", { maxLength: 256 }),
                   },
                   {
                     key: "author",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-author", { maxLength: 256 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-author", { maxLength: 256 }),
                   },
                   {
                     key: "description",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-description", {
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-description", {
                       maxLength: 4096,
                     }),
                   },
@@ -161,31 +161,31 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
                     key: "showGameField",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerBooleanStructure("od-twitch-notifier:live-show-game", {}),
+                    checker: new api.ODCheckerBooleanStructure("ot-twitch-notifier:live-show-game", {}),
                   },
                   {
                     key: "showViewersField",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerBooleanStructure("od-twitch-notifier:live-show-viewers", {}),
+                    checker: new api.ODCheckerBooleanStructure("ot-twitch-notifier:live-show-viewers", {}),
                   },
                   {
                     key: "showStartField",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerBooleanStructure("od-twitch-notifier:live-show-start", {}),
+                    checker: new api.ODCheckerBooleanStructure("ot-twitch-notifier:live-show-start", {}),
                   },
                   {
                     key: "gameFieldName",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-game-name", { maxLength: 256 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-game-name", { maxLength: 256 }),
                   },
                   {
                     key: "viewersFieldName",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-viewers-name", {
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-viewers-name", {
                       maxLength: 256,
                     }),
                   },
@@ -193,13 +193,13 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
                     key: "startFieldName",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-start-name", { maxLength: 256 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-start-name", { maxLength: 256 }),
                   },
                   {
                     key: "watchButtonLabel",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-button-label", {
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-button-label", {
                       maxLength: 80,
                     }),
                   },
@@ -207,7 +207,7 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
                     key: "footer",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:live-footer", { maxLength: 2048 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:live-footer", { maxLength: 2048 }),
                   },
                 ],
               }),
@@ -217,31 +217,31 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
               key: "offline",
               optional: false,
               priority: 0,
-              checker: new api.ODCheckerObjectStructure("od-twitch-notifier:offline-embed", {
+              checker: new api.ODCheckerObjectStructure("ot-twitch-notifier:offline-embed", {
                 children: [
                   {
                     key: "color",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:offline-color", {}),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:offline-color", {}),
                   },
                   {
                     key: "title",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:offline-title", { maxLength: 256 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:offline-title", { maxLength: 256 }),
                   },
                   {
                     key: "author",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:offline-author", { maxLength: 256 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:offline-author", { maxLength: 256 }),
                   },
                   {
                     key: "footer",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:offline-footer", { maxLength: 2048 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:offline-footer", { maxLength: 2048 }),
                   },
                 ],
               }),
@@ -251,49 +251,49 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
               key: "list",
               optional: false,
               priority: 0,
-              checker: new api.ODCheckerObjectStructure("od-twitch-notifier:list-embed", {
+              checker: new api.ODCheckerObjectStructure("ot-twitch-notifier:list-embed", {
                 children: [
                   {
                     key: "color",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:list-color", {}),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:list-color", {}),
                   },
                   {
                     key: "title",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:list-title", { maxLength: 256 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:list-title", { maxLength: 256 }),
                   },
                   {
                     key: "entry",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:list-entry", { maxLength: 1024 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:list-entry", { maxLength: 1024 }),
                   },
                   {
                     key: "empty",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:list-empty", { maxLength: 256 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:list-empty", { maxLength: 256 }),
                   },
                   {
                     key: "footer",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:list-footer", { maxLength: 2048 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:list-footer", { maxLength: 2048 }),
                   },
                   {
                     key: "pageButtonLabel",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerStringStructure("od-twitch-notifier:list-page-label", { maxLength: 80 }),
+                    checker: new api.ODCheckerStringStructure("ot-twitch-notifier:list-page-label", { maxLength: 80 }),
                   },
                   {
                     key: "perPage",
                     optional: false,
                     priority: 0,
-                    checker: new api.ODCheckerNumberStructure("od-twitch-notifier:list-per-page", {
+                    checker: new api.ODCheckerNumberStructure("ot-twitch-notifier:list-per-page", {
                       min: 1,
                       max: 25,
                       negativeAllowed: false,
@@ -312,7 +312,7 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
         key: "responses",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerObjectStructure("od-twitch-notifier:responses", {
+        checker: new api.ODCheckerObjectStructure("ot-twitch-notifier:responses", {
           children: [
             { key: "noPermission", optional: false, priority: 0, checker: responseEmbedStructure },
             { key: "notInGuild", optional: false, priority: 0, checker: responseEmbedStructure },
@@ -340,7 +340,7 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
         key: "logMessages",
         optional: false,
         priority: 0,
-        checker: new api.ODCheckerObjectStructure("od-twitch-notifier:log-messages", {
+        checker: new api.ODCheckerObjectStructure("ot-twitch-notifier:log-messages", {
           children: [
             { key: "channelDeleted", optional: false, priority: 0, checker: logMessageStructure },
             { key: "streamerRenamed", optional: false, priority: 0, checker: logMessageStructure },
@@ -352,10 +352,10 @@ export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) =>
 
   checkers.add(
     new api.ODChecker(
-      "od-twitch-notifier:config",
+      "ot-twitch-notifier:config",
       checkers.storage,
       0,
-      opendiscord.configs.get("od-twitch-notifier:config"),
+      opendiscord.configs.get("ot-twitch-notifier:config"),
       configStructure,
     ),
   );

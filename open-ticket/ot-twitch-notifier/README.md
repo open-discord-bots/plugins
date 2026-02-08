@@ -1,4 +1,4 @@
-# 📺 OD Twitch Notifier
+# 📺 OT Twitch Notifier
 
 An OpenDiscord plugin that sends Discord notifications when Twitch streamers go live or offline. Fully customizable embeds, multi-channel support, and automatic detection of channel renames and deletions.
 
@@ -16,7 +16,7 @@ An OpenDiscord plugin that sends Discord notifications when Twitch streamers go 
 
 ## 🚀 Installation
 
-1. Copy the `od-twitch-notifier` folder into your OpenDiscord `plugins/` directory
+1. Copy the `ot-twitch-notifier` folder into your OpenDiscord `plugins/` directory
 2. Configure your Twitch credentials in `config.json` (see below)
 3. Restart the bot
 
@@ -49,7 +49,7 @@ To use this plugin, you need to create a Twitch application and get your Client 
 
 ### Step 4: Configure the Plugin
 
-Open `plugins/od-twitch-notifier/config.json` and add your credentials:
+Open `plugins/ot-twitch-notifier/config.json` and add your credentials:
 
 ```json
 {
@@ -182,7 +182,7 @@ When logs are enabled (`/twitch enable-logs`), the bot will notify about:
 ## 📁 File Structure
 
 ```
-plugins/od-twitch-notifier/
+plugins/ot-twitch-notifier/
 ├── config.json              # Plugin configuration
 ├── plugin.json              # Plugin metadata
 ├── README.md                # Documentation

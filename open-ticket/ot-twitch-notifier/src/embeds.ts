@@ -18,7 +18,7 @@ export const buildLiveEmbed = (
     avatarUrl?: string;
   },
 ) => {
-  const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+  const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
   const ecfg = cfg.data.embeds?.live || {};
   const color = ecfg.color || "Purple";
   const titleTplEmbed = ecfg.title || "{stream-title}";
@@ -30,9 +30,9 @@ export const buildLiveEmbed = (
       .replace(/\{streamer-name\}/g, sub.twitchLogin)
       .replace(/\{stream-title\}/g, stream.title || "No title")
       .replace(/\{custom-message\}/g, sub.customMessage ? sub.customMessage : "");
-  const embed = new api.ODEmbed("od-twitch-notifier:live");
+  const embed = new api.ODEmbed("ot-twitch-notifier:live");
   embed.workers.add(
-    new api.ODWorker("od-twitch-notifier:live:core", 0, async (instance) => {
+    new api.ODWorker("ot-twitch-notifier:live:core", 0, async (instance) => {
       instance.setColor(color);
       const computedTitle =
         titleTplEmbed
@@ -89,7 +89,7 @@ export const buildLiveEmbed = (
 
 /**Build an offline version of the original live embed */
 export const buildOfflineEdit = (original: discord.Embed, endedAt: Date, sub: TwitchSubscription) => {
-  const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+  const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
   const offlineCfg = cfg.data.embeds?.offline || {};
   const liveCfg = cfg.data.embeds?.live || {};
   const authorTpl = offlineCfg.author || "{streamer-name} has ended their stream";
@@ -141,23 +141,23 @@ export const buildOfflineEdit = (original: discord.Embed, endedAt: Date, sub: Tw
   return clone;
 };
 
-export const TWITCH_WATCH_BUTTON_ID = "od-twitch-notifier:watch";
-export const TWITCH_LIST_FIRST_ID = "od-twitch-notifier:list-first";
-export const TWITCH_LIST_PREV_ID = "od-twitch-notifier:list-prev";
-export const TWITCH_LIST_PAGE_ID = "od-twitch-notifier:list-page";
-export const TWITCH_LIST_NEXT_ID = "od-twitch-notifier:list-next";
-export const TWITCH_LIST_LAST_ID = "od-twitch-notifier:list-last";
+export const TWITCH_WATCH_BUTTON_ID = "ot-twitch-notifier:watch";
+export const TWITCH_LIST_FIRST_ID = "ot-twitch-notifier:list-first";
+export const TWITCH_LIST_PREV_ID = "ot-twitch-notifier:list-prev";
+export const TWITCH_LIST_PAGE_ID = "ot-twitch-notifier:list-page";
+export const TWITCH_LIST_NEXT_ID = "ot-twitch-notifier:list-next";
+export const TWITCH_LIST_LAST_ID = "ot-twitch-notifier:list-last";
 
 export const registerWatchButtonBuilder = (buttons: api.ODButtonManager_Default) => {
   if (buttons.exists(TWITCH_WATCH_BUTTON_ID as any)) return;
   buttons.add(new api.ODButton(TWITCH_WATCH_BUTTON_ID as any));
   buttons.get(TWITCH_WATCH_BUTTON_ID as any)!.workers.add(
-    new api.ODWorker("od-twitch-notifier:watch:core", 0, async (instance, params: { login: string }) => {
+    new api.ODWorker("ot-twitch-notifier:watch:core", 0, async (instance, params: { login: string }) => {
       instance.setMode("url");
       instance.setUrl(`https://twitch.tv/${params.login}`);
       instance.setEmoji("▶️");
       try {
-        const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+        const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
         const labelTpl = cfg.data.embeds?.live?.watchButtonLabel || "Watch stream!";
         const label = labelTpl.replace(/\{login\}/g, params.login);
         instance.setLabel(label);
@@ -185,7 +185,7 @@ export const registerListPaginationButtonBuilders = (buttons: api.ODButtonManage
 
   buttons.get(TWITCH_LIST_FIRST_ID as any)!.workers.add(
     new api.ODWorker(
-      "od-twitch-notifier:list:first",
+      "ot-twitch-notifier:list:first",
       0,
       async (instance, params: { page: number; totalPages: number; guildId: string; userId: string }) => {
         gray(instance);
@@ -197,7 +197,7 @@ export const registerListPaginationButtonBuilders = (buttons: api.ODButtonManage
   );
   buttons.get(TWITCH_LIST_PREV_ID as any)!.workers.add(
     new api.ODWorker(
-      "od-twitch-notifier:list:prev",
+      "ot-twitch-notifier:list:prev",
       0,
       async (instance, params: { page: number; totalPages: number; guildId: string; userId: string }) => {
         gray(instance);
@@ -209,12 +209,12 @@ export const registerListPaginationButtonBuilders = (buttons: api.ODButtonManage
   );
   buttons.get(TWITCH_LIST_PAGE_ID as any)!.workers.add(
     new api.ODWorker(
-      "od-twitch-notifier:list:page",
+      "ot-twitch-notifier:list:page",
       0,
       async (instance, params: { page: number; totalPages: number; guildId: string; userId: string }) => {
         gray(instance);
         instance.setCustomId(`ot:tlist:page:${params.guildId}:${params.userId}:${params.page}`);
-        const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+        const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
         const labelTpl = cfg.data.embeds?.list?.pageButtonLabel || "Page {current-page} of {total-pages}";
         const label = labelTpl
           .replace(/\{current-page\}/g, String(params.page + 1))
@@ -226,7 +226,7 @@ export const registerListPaginationButtonBuilders = (buttons: api.ODButtonManage
   );
   buttons.get(TWITCH_LIST_NEXT_ID as any)!.workers.add(
     new api.ODWorker(
-      "od-twitch-notifier:list:next",
+      "ot-twitch-notifier:list:next",
       0,
       async (instance, params: { page: number; totalPages: number; guildId: string; userId: string }) => {
         gray(instance);
@@ -238,7 +238,7 @@ export const registerListPaginationButtonBuilders = (buttons: api.ODButtonManage
   );
   buttons.get(TWITCH_LIST_LAST_ID as any)!.workers.add(
     new api.ODWorker(
-      "od-twitch-notifier:list:last",
+      "ot-twitch-notifier:list:last",
       0,
       async (instance, params: { page: number; totalPages: number; guildId: string; userId: string }) => {
         gray(instance);
@@ -272,11 +272,11 @@ export const buildListEmbed = (
   perPage: number,
   channelName: (id: string) => string,
 ) => {
-  const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+  const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
   const lcfg = cfg.data.embeds?.list || {};
   const per = perPage || lcfg.perPage || 5;
   const { pageSubs, totalPages } = buildListPage(subs, page, per);
-  const embed = new api.ODEmbed("od-twitch-notifier:list");
+  const embed = new api.ODEmbed("ot-twitch-notifier:list");
   const titleTpl = lcfg.title || "📺 Added Streamers ({streamers-count})";
   const entryTpl =
     lcfg.entry ||
@@ -291,7 +291,7 @@ export const buildListEmbed = (
       return "";
     });
   embed.workers.add(
-    new api.ODWorker("od-twitch-notifier:list:core", 0, async (instance) => {
+    new api.ODWorker("ot-twitch-notifier:list:core", 0, async (instance) => {
       instance.setColor(color);
       instance.setTitle(
         rep(titleTpl, {
@@ -329,7 +329,7 @@ export const buildResponseEmbed = async (
   key: string,
   vars: Record<string, string | number> = {},
 ): Promise<{ embed?: any; missing?: boolean }> => {
-  const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+  const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
   const rcfg = cfg.data.responses || {};
   const tpl = rcfg[key];
   if (!tpl) return { missing: true };
@@ -338,9 +338,9 @@ export const buildResponseEmbed = async (
   if (vars.channel && !vars["discord-channel"]) expanded["discord-channel"] = vars.channel;
   const rep = (tplStr: string) =>
     tplStr.replace(/\{([A-Za-z0-9_-]+)\}/g, (m, k) => (expanded[k] != null ? String(expanded[k]) : ""));
-  const embed = new api.ODEmbed(`od-twitch-notifier:resp:${key}`);
+  const embed = new api.ODEmbed(`ot-twitch-notifier:resp:${key}`);
   embed.workers.add(
-    new api.ODWorker(`od-twitch-notifier:resp:${key}:core`, 0, async (instance) => {
+    new api.ODWorker(`ot-twitch-notifier:resp:${key}:core`, 0, async (instance) => {
       if (tpl.color)
         try {
           instance.setColor(tpl.color);
@@ -364,16 +364,16 @@ export const buildLogMessageEmbed = async (
   key: string,
   vars: Record<string, string> = {},
 ): Promise<{ embeds: any[] }> => {
-  const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+  const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
   const logMessages = cfg.data.logMessages || {};
   const tpl = logMessages[key];
   if (!tpl) return { embeds: [{ title: "Error", description: `[Missing log message: ${key}]`, color: 0xff0000 }] };
 
   const rep = (str: string) => str.replace(/\{([A-Za-z0-9_-]+)\}/g, (_, k) => vars[k] ?? "");
 
-  const embed = new api.ODEmbed(`od-twitch-notifier:log:${key}`);
+  const embed = new api.ODEmbed(`ot-twitch-notifier:log:${key}`);
   embed.workers.add(
-    new api.ODWorker(`od-twitch-notifier:log:${key}:core`, 0, async (instance) => {
+    new api.ODWorker(`ot-twitch-notifier:log:${key}:core`, 0, async (instance) => {
       if (tpl.color)
         try {
           instance.setColor(tpl.color);

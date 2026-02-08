@@ -17,7 +17,7 @@ import {
 export async function handleListChannels(instance: any, storage: ReturnType<typeof getTwitchStorage>): Promise<void> {
   if (!storage || !instance.guild) return;
 
-  const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+  const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
   const all = storage
     .listSubscriptions()
     .filter((s) => s.guildId === instance.guild!.id)

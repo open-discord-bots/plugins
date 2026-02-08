@@ -19,7 +19,7 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
  */
 export class TwitchODManager extends api.ODManager<api.ODManagerData> {
   /**The manager ID. */
-  id = new api.ODId("od-twitch-notifier:manager");
+  id = new api.ODId("ot-twitch-notifier:manager");
   /**The polling interval timer. */
   #interval: ReturnType<typeof setTimeout> | null = null;
   /**The Twitch API client. */

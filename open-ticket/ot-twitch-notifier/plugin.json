@@ -1,6 +1,6 @@
 {
   "name": "Twitch Notifier",
-  "id": "od-twitch-notifier",
+  "id": "ot-twitch-notifier",
   "version": "1.0.0",
   "startFile": "index.ts",
   "enabled": true,

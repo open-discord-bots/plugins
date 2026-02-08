@@ -29,25 +29,25 @@ import { registerConfigChecker } from "./src/checker";
 
 declare module "#opendiscord-types" {
   interface ODPluginClassManagerIds_Default {
-    "od-twitch-notifier:manager": TwitchODManager;
+    "ot-twitch-notifier:manager": TwitchODManager;
   }
   interface ODPluginManagerIds_Default {
-    "od-twitch-notifier": api.ODPlugin;
+    "ot-twitch-notifier": api.ODPlugin;
   }
   interface ODConfigManagerIds_Default {
-    "od-twitch-notifier:config": api.ODJsonConfig;
+    "ot-twitch-notifier:config": api.ODJsonConfig;
   }
   interface ODSlashCommandManagerIds_Default {
-    "od-twitch-notifier:twitch": api.ODSlashCommand;
+    "ot-twitch-notifier:twitch": api.ODSlashCommand;
   }
   interface ODCommandResponderManagerIds_Default {
-    "od-twitch-notifier:twitch": { source: "slash" | "text"; params: {}; workers: "od-twitch-notifier:cmd" };
+    "ot-twitch-notifier:twitch": { source: "slash" | "text"; params: {}; workers: "ot-twitch-notifier:cmd" };
   }
 }
 
 //CONFIG LOADER
 opendiscord.events.get("onConfigLoad").listen((configs) => {
-  configs.add(new api.ODJsonConfig("od-twitch-notifier:config", "config.json", "./plugins/od-twitch-notifier/"));
+  configs.add(new api.ODJsonConfig("ot-twitch-notifier:config", "config.json", "./plugins/ot-twitch-notifier/"));
 });
 
 //CONFIG CHECKER
@@ -57,7 +57,7 @@ opendiscord.events.get("onCheckerLoad").listen((checkers) => {
 
 //PLUGIN CLASS LOADER
 opendiscord.events.get("onPluginClassLoad").listen((classes) => {
-  if (!classes.get("od-twitch-notifier:manager" as any)) {
+  if (!classes.get("ot-twitch-notifier:manager" as any)) {
     classes.add(new TwitchODManager(opendiscord.debug));
   }
 });
@@ -73,7 +73,7 @@ const act = discord.ApplicationCommandType;
 const acot = discord.ApplicationCommandOptionType;
 opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
   slash.add(
-    new api.ODSlashCommand("od-twitch-notifier:twitch", {
+    new api.ODSlashCommand("ot-twitch-notifier:twitch", {
       name: "twitch",
       description: "Manage Twitch stream notifications",
       type: act.ChatInput,
@@ -150,13 +150,13 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
 //COMMAND RESPONDER
 opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
   const general = opendiscord.configs.get("opendiscord:general");
-  commands.add(new api.ODCommandResponder("od-twitch-notifier:twitch", general.data.prefix, "twitch"));
+  commands.add(new api.ODCommandResponder("ot-twitch-notifier:twitch", general.data.prefix, "twitch"));
   const workers: api.ODWorker<any, any, any>[] = [];
 
   //PERMISSION WORKER
   workers.push(
-    new api.ODWorker("od-twitch-notifier:perm", 1, async (instance, params, source, cancel) => {
-      const config = opendiscord.configs.get("od-twitch-notifier:config");
+    new api.ODWorker("ot-twitch-notifier:perm", 1, async (instance, params, source, cancel) => {
+      const config = opendiscord.configs.get("ot-twitch-notifier:config");
       const permissionMode = config.data.commandPermission;
       if (permissionMode == "none") return;
       else if (permissionMode == "everyone") return;
@@ -198,8 +198,8 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
   //MAIN COMMAND WORKER
   workers.push(
-    new api.ODWorker("od-twitch-notifier:cmd", 0, async (instance, params, source, cancel) => {
-      const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+    new api.ODWorker("ot-twitch-notifier:cmd", 0, async (instance, params, source, cancel) => {
+      const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
       if (!instance.guild) {
         await instance.reply({
           id: new api.ODId("twitch-not-in-guild"),
@@ -217,7 +217,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
       const useEnv = creds.useEnv;
       const clientId = useEnv ? process.env.twitchClientId : creds.twitchClientId;
 
-      const manager = opendiscord.plugins.classes.get("od-twitch-notifier:manager") as TwitchODManager;
+      const manager = opendiscord.plugins.classes.get("ot-twitch-notifier:manager") as TwitchODManager;
       if (manager && !clientId) {
         return instance.reply({
           id: new api.ODId("twitch-config-missing"),
@@ -250,20 +250,20 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     }),
   );
 
-  commands.get("od-twitch-notifier:twitch").workers.add(workers);
+  commands.get("ot-twitch-notifier:twitch").workers.add(workers);
 });
 
 //POLLER START
 let pollerStarted = false;
 opendiscord.events.get("afterClientReady").listen(() => {
   if (pollerStarted) return;
-  const cfg = opendiscord.configs.get("od-twitch-notifier:config");
+  const cfg = opendiscord.configs.get("ot-twitch-notifier:config");
   const creds = cfg.data.credentials || {};
   const useEnv = creds.useEnv;
   const clientId = useEnv ? process.env.twitchClientId : creds.twitchClientId;
   const clientSecret = useEnv ? process.env.twitchClientSecret : creds.twitchClientSecret;
   const poll = cfg.data.pollIntervalMs;
-  const manager = opendiscord.plugins.classes.get("od-twitch-notifier:manager") as TwitchODManager;
+  const manager = opendiscord.plugins.classes.get("ot-twitch-notifier:manager") as TwitchODManager;
   if (manager && clientId && clientSecret) {
     manager.configure({ clientId, clientSecret, pollIntervalMs: poll });
     manager.start();
@@ -370,7 +370,7 @@ opendiscord.events.get("afterClientReady").listen(() => {
           .listSubscriptions()
           .filter((s) => s.guildId === guildId)
           .sort((a, b) => a.twitchLogin.localeCompare(b.twitchLogin));
-        const perPageCfg = opendiscord.configs.get("od-twitch-notifier:config").data.embeds?.list?.perPage;
+        const perPageCfg = opendiscord.configs.get("ot-twitch-notifier:config").data.embeds?.list?.perPage;
         const perPage = perPageCfg && perPageCfg > 0 && perPageCfg < 50 ? Number(perPageCfg) : 5;
         const totalPages = Math.max(1, Math.ceil(subs.length / perPage));
         let newPage = page;

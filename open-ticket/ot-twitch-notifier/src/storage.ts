@@ -57,7 +57,7 @@ export interface TwitchRegistersConfig {
  */
 export class TwitchStorage {
   /**The database ID for this storage. */
-  dbId = new api.ODId("od-twitch-notifier:db");
+  dbId = new api.ODId("ot-twitch-notifier:db");
 
   constructor(private database: api.ODFormattedJsonDatabase) {}
 
@@ -153,10 +153,10 @@ opendiscord.events.get("onDatabaseLoad").listen((databases) => {
   );
   databases.add(
     new api.ODFormattedJsonDatabase(
-      "od-twitch-notifier:db",
+      "ot-twitch-notifier:db",
       "twitch-notifier.json",
       formatter,
-      "./plugins/od-twitch-notifier/database/",
+      "./plugins/ot-twitch-notifier/database/",
     ),
   );
 });
@@ -171,7 +171,7 @@ let _storageInstance: TwitchStorage | null = null;
  */
 export const getTwitchStorage = (): TwitchStorage | null => {
   if (_storageInstance) return _storageInstance;
-  const db = opendiscord.databases.get("od-twitch-notifier:db") as api.ODFormattedJsonDatabase | null;
+  const db = opendiscord.databases.get("ot-twitch-notifier:db") as api.ODFormattedJsonDatabase | null;
   if (!db) return null;
   _storageInstance = new TwitchStorage(db);
   return _storageInstance;
