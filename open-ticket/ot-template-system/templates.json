@@ -1,0 +1,80 @@
+[
+    {
+        "id":"request-accepted",
+        "name":"REQUEST ACCEPTED",
+        "description":"Template for accepted request",
+        
+        "message":{
+            "enabled":true,
+            "text":"",
+            "embed":{
+                "enabled":true,
+                "title":"Request Status",
+                "description":"Your request has been accepted! It will be processed as soon as possible.",
+                "customColor":"#00ff00",
+
+                "image":"",
+                "thumbnail":"",
+                "fields":[],
+                "timestamp":true
+            },
+            "ping":{
+                "@here":false,
+                "@everyone":false,
+                "custom":[]
+            }
+        }
+    },
+    {
+        "id":"request-denied",
+        "name":"REQUEST DENIED",
+        "description":"Template for denied request",
+        
+        "message":{
+            "enabled":true,
+            "text":"",
+            "embed":{
+                "enabled":true,
+                "title":"Request Status",
+                "description":"Your request has been denied. Please review the reasons and consult with staff if you have any questions.",
+                "customColor":"#ff0000",
+
+                "image":"",
+                "thumbnail":"",
+                "fields":[],
+                "timestamp":true
+            },
+            "ping":{
+                "@here":false,
+                "@everyone":false,
+                "custom":[]
+            }
+        }
+    },
+    {
+        "id":"request-review",
+        "name":"REQUEST UNDER REVIEW",
+        "description":"Template for request under review",
+        
+        "message":{
+            "enabled":true,
+            "text":"",
+            "embed":{
+                "enabled":true,
+                "title":"Request Status",
+                "description":"Your request is under review. The team is evaluating it and you will receive a response soon.",
+                "customColor":"#ffaa00",
+
+                "image":"",
+                "thumbnail":"",
+                "fields":[],
+                "timestamp":true
+            },
+            "ping":{
+                "@here":false,
+                "@everyone":false,
+                "custom":[]
+            }
+        }
+    }
+]
