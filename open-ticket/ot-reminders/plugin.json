@@ -1,6 +1,6 @@
 {
-    "name":"OD Reminders",
-    "id":"od-reminders",
+    "name":"OT Reminders",
+    "id":"ot-reminders",
     "version":"1.0.0",
     "startFile":"index.ts",
 

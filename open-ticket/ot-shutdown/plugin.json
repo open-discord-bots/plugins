@@ -1,6 +1,6 @@
 {
-    "name":"OD Shutdown",
-    "id":"od-shutdown",
+    "name":"OT Shutdown",
+    "id":"ot-shutdown",
     "version":"1.0.4",
     "startFile":"index.ts",
 

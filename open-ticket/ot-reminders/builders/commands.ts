@@ -6,7 +6,7 @@ import { ODReminder, ODReminderManager, ODReminderData, ODReminderJson } from ".
 opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
     const act = discord.ApplicationCommandType
     const acot = discord.ApplicationCommandOptionType
-    slash.add(new api.ODSlashCommand("od-reminders:reminder", {
+    slash.add(new api.ODSlashCommand("ot-reminders:reminder", {
         name: "reminder",
         description: "Create, pause, resume, delete, or list reminders.",
         type: act.ChatInput,
@@ -207,7 +207,7 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
         if (interaction.commandName !== "reminder") return
     
         const focusedValue = interaction.options.getFocused().toLowerCase();
-        const reminderManager = opendiscord.plugins.classes.get("od-reminders:manager")
+        const reminderManager = opendiscord.plugins.classes.get("ot-reminders:manager")
         const reminderIds = reminderManager.getAll().map((reminder) => reminder.id.value)
 
         const filtered = reminderIds.filter((id) => id.toLowerCase().includes(focusedValue))
@@ -218,12 +218,12 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
 
 // REGISTER COMMAND RESPONDER
 opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
-    const reminderManager = opendiscord.plugins.classes.get("od-reminders:manager")
+    const reminderManager = opendiscord.plugins.classes.get("ot-reminders:manager")
     const generalConfig = opendiscord.configs.get("opendiscord:general")
 
-    commands.add(new api.ODCommandResponder("od-reminders:create", generalConfig.data.prefix, "reminder"))
-    commands.get("od-reminders:create").workers.add([
-        new api.ODWorker("od-reminders:create",0,async (instance,params,source,cancel) => {
+    commands.add(new api.ODCommandResponder("ot-reminders:create", generalConfig.data.prefix, "reminder"))
+    commands.get("ot-reminders:create").workers.add([
+        new api.ODWorker("ot-reminders:create",0,async (instance,params,source,cancel) => {
             const { guild, channel, user } = instance
             if (!guild) {
                 await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
@@ -249,7 +249,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
                 //if id already exists or is invalid don't create another reminder
                 const id = instance.options.getString("id",true)
-                if (reminderManager.get(`od-reminders:${id}`)) {
+                if (reminderManager.get(`ot-reminders:${id}`)) {
                     await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Reminder already exists.",layout:"simple"}))
                     return cancel()
                 } else if (id.includes(" ")) {
@@ -292,23 +292,23 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 const startTime = (startTimeRaw.toLowerCase() === "now") ? "now" : startTimeRaw
 
                 //create and store new reminder
-                const reminder = new ODReminder(`od-reminders:${id}`, [
-                    new ODReminderData("od-reminders:channel", ch.id),
-                    new ODReminderData("od-reminders:text", text),
-                    new ODReminderData("od-reminders:embed-color", color),
-                    new ODReminderData("od-reminders:embed-title", title),
-                    new ODReminderData("od-reminders:embed-description", description),
-                    new ODReminderData("od-reminders:embed-footer", footer),
-                    new ODReminderData("od-reminders:embed-author", author),
-                    new ODReminderData("od-reminders:embed-timestamp", timestamp),
-                    new ODReminderData("od-reminders:embed-image", image),
-                    new ODReminderData("od-reminders:embed-thumbnail", thumbnail),
-                    new ODReminderData("od-reminders:author-image", authorImage),
-                    new ODReminderData("od-reminders:footer-image", footerImage),
-                    new ODReminderData("od-reminders:ping", mentionable),
-                    new ODReminderData("od-reminders:start-time", startTime),
-                    new ODReminderData("od-reminders:interval", { value: intervalValue, unit: intervalUnit }),
-                    new ODReminderData("od-reminders:paused", false)
+                const reminder = new ODReminder(`ot-reminders:${id}`, [
+                    new ODReminderData("ot-reminders:channel", ch.id),
+                    new ODReminderData("ot-reminders:text", text),
+                    new ODReminderData("ot-reminders:embed-color", color),
+                    new ODReminderData("ot-reminders:embed-title", title),
+                    new ODReminderData("ot-reminders:embed-description", description),
+                    new ODReminderData("ot-reminders:embed-footer", footer),
+                    new ODReminderData("ot-reminders:embed-author", author),
+                    new ODReminderData("ot-reminders:embed-timestamp", timestamp),
+                    new ODReminderData("ot-reminders:embed-image", image),
+                    new ODReminderData("ot-reminders:embed-thumbnail", thumbnail),
+                    new ODReminderData("ot-reminders:author-image", authorImage),
+                    new ODReminderData("ot-reminders:footer-image", footerImage),
+                    new ODReminderData("ot-reminders:ping", mentionable),
+                    new ODReminderData("ot-reminders:start-time", startTime),
+                    new ODReminderData("ot-reminders:interval", { value: intervalValue, unit: intervalUnit }),
+                    new ODReminderData("ot-reminders:paused", false)
                 ])
                 reminderManager.add(reminder)
                 reminder.schedule()
@@ -321,12 +321,12 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Reminder not found.",layout:"simple"}))
                     return cancel()
                 }
-                if(reminder.get("od-reminders:paused").value) {
+                if(reminder.get("ot-reminders:paused").value) {
                     await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"This reminder is already paused.",layout:"simple"}))
                     return cancel()
                 }
 
-                reminder.get("od-reminders:paused").value = true
+                reminder.get("ot-reminders:paused").value = true
                 const sReminder = ODReminderManager.scheduledReminders.get(reminder.id)
                 if (sReminder && sReminder.timeout) {
                     clearTimeout(sReminder.timeout)
@@ -339,12 +339,12 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Reminder not found.",layout:"simple"}))
                     return cancel()
                 }
-                if(!reminder.get("od-reminders:paused").value) {
+                if(!reminder.get("ot-reminders:paused").value) {
                     await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"This reminder is not paused.",layout:"simple"}))
                     return cancel()
                 }
 
-                reminder.get("od-reminders:paused").value = false
+                reminder.get("ot-reminders:paused").value = false
                 reminder.schedule()
 
             } else if (scope === "delete") { //delete a reminder
@@ -366,15 +366,15 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"No reminders found.",layout:"simple"}))
                     return cancel()
                 }
-                await instance.reply(await opendiscord.builders.messages.getSafe("od-reminders:list-message").build(source,{reminders:reminders}))
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-reminders:list-message").build(source,{reminders:reminders}))
             } 
             
             if (scope !== "list") {
                 const scp = scope === "create" ? "created" : scope === "pause" ? "paused" : scope === "resume" ? "resumed" : "deleted"
-                await instance.reply(await opendiscord.builders.messages.getSafe("od-reminders:success-message").build(source,{ scope: scp }))
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-reminders:success-message").build(source,{ scope: scp }))
             }
         }),
-        new api.ODWorker("od-reminders:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-reminders:logs",-1,(instance,params,source,cancel) => {
             const scope = instance.options.getSubCommand()
             opendiscord.log(instance.user.displayName+" used the 'reminder "+scope+"' command!","plugin",[
                 {key:"user",value:instance.user.username},

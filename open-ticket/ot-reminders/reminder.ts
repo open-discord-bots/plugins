@@ -3,14 +3,14 @@ import * as discord from "discord.js"
 import { safeTimeout, parseDate, convertTime } from "./utils/time"
 
 /**## ODReminderManager `class`
- * This is an OD Reminders manager.
+ * This is an OT Reminders manager.
  * 
  * This class manages all registered reminders in the bot. Only reminders which are available in this manager can be auto-updated.
  * 
  * All reminders which are added, removed or modified in this manager will be updated automatically in the database.
  */
 export class ODReminderManager extends api.ODManager<ODReminder> {
-    id: api.ODId = new api.ODId("od-reminders:manager")
+    id: api.ODId = new api.ODId("ot-reminders:manager")
     // Track scheduled reminders timeouts/intervals
     static scheduledReminders = new Map<api.ODValidId,{timeout: NodeJS.Timeout|null}>()
 
@@ -46,27 +46,27 @@ export interface ODReminderJson {
  * It's used to generate typescript declarations for this class.
  */
 export interface ODReminderIds {
-    "od-reminders:name":ODReminderData<string>,
-    "od-reminders:channel":ODReminderData<string>,
-    "od-reminders:text":ODReminderData<string>,
-    "od-reminders:embed-color":ODReminderData<discord.ColorResolvable>,
-    "od-reminders:embed-title":ODReminderData<string|null>,
-    "od-reminders:embed-description":ODReminderData<string|null>,
-    "od-reminders:embed-footer":ODReminderData<string|null>,
-    "od-reminders:embed-author":ODReminderData<string|null>,
-    "od-reminders:embed-timestamp":ODReminderData<boolean|null>,
-    "od-reminders:embed-image":ODReminderData<string|null>,
-    "od-reminders:embed-thumbnail":ODReminderData<string|null>,
-    "od-reminders:author-image":ODReminderData<string|null>,
-    "od-reminders:footer-image":ODReminderData<string|null>,
-    "od-reminders:ping":ODReminderData<string|null>,
-    "od-reminders:start-time":ODReminderData<string>,
-    "od-reminders:interval":ODReminderData<{value:number,unit:"seconds"|"minutes"|"hours"|"days"|"months"|"years"}>,
-    "od-reminders:paused":ODReminderData<boolean>
+    "ot-reminders:name":ODReminderData<string>,
+    "ot-reminders:channel":ODReminderData<string>,
+    "ot-reminders:text":ODReminderData<string>,
+    "ot-reminders:embed-color":ODReminderData<discord.ColorResolvable>,
+    "ot-reminders:embed-title":ODReminderData<string|null>,
+    "ot-reminders:embed-description":ODReminderData<string|null>,
+    "ot-reminders:embed-footer":ODReminderData<string|null>,
+    "ot-reminders:embed-author":ODReminderData<string|null>,
+    "ot-reminders:embed-timestamp":ODReminderData<boolean|null>,
+    "ot-reminders:embed-image":ODReminderData<string|null>,
+    "ot-reminders:embed-thumbnail":ODReminderData<string|null>,
+    "ot-reminders:author-image":ODReminderData<string|null>,
+    "ot-reminders:footer-image":ODReminderData<string|null>,
+    "ot-reminders:ping":ODReminderData<string|null>,
+    "ot-reminders:start-time":ODReminderData<string>,
+    "ot-reminders:interval":ODReminderData<{value:number,unit:"seconds"|"minutes"|"hours"|"days"|"months"|"years"}>,
+    "ot-reminders:paused":ODReminderData<boolean>
 }
 
 /**## ODReminder `class`
- * This is an OD Reminders plugin reminder.
+ * This is an OT Reminders plugin reminder.
  * 
  * This class contains all data related to this reminder (parsed from the database).
  */
@@ -125,15 +125,15 @@ export class ODReminder extends api.ODManager<ODReminderData<api.ODValidJsonType
     }
 
     schedule() {
-        const paused = this.get("od-reminders:paused").value;
+        const paused = this.get("ot-reminders:paused").value;
         if (paused) return; //don't continue if paused
     
         const now = new Date();
-        const rawInterval = this.get("od-reminders:interval").value;
+        const rawInterval = this.get("ot-reminders:interval").value;
         const interval = convertTime(rawInterval.value, rawInterval.unit);
         let startOffset = 0;
     
-        const rawStartTime = this.get("od-reminders:start-time").value;
+        const rawStartTime = this.get("ot-reminders:start-time").value;
     
         if (rawStartTime !== "now") {
             const startTime = parseDate(rawStartTime);
@@ -147,7 +147,7 @@ export class ODReminder extends api.ODManager<ODReminderData<api.ODValidJsonType
         ODReminderManager.scheduledReminders.set(this.id,timeout);
 
         const callback = () => {
-            if (this.get("od-reminders:paused").value) return; //don't continue if paused
+            if (this.get("ot-reminders:paused").value) return; //don't continue if paused
             this.send();
             safeTimeout(callback, interval, timeout);
         };
@@ -159,10 +159,10 @@ export class ODReminder extends api.ODManager<ODReminderData<api.ODValidJsonType
         try {
             const guild = opendiscord.client.mainServer
             if (!guild) return
-            const channel = await opendiscord.client.fetchGuildTextChannel(guild, this.get("od-reminders:channel").value)
+            const channel = await opendiscord.client.fetchGuildTextChannel(guild, this.get("ot-reminders:channel").value)
             if (!channel) return
-            await channel.send((await opendiscord.builders.messages.get("od-reminders:reminder-message").build("other",{reminder:this})).message)
-            this.get("od-reminders:start-time").value = utilities.dateString(new Date())
+            await channel.send((await opendiscord.builders.messages.get("ot-reminders:reminder-message").build("other",{reminder:this})).message)
+            this.get("ot-reminders:start-time").value = utilities.dateString(new Date())
         } catch (err) {
             process.emit("uncaughtException",err)
             opendiscord.log("Error sending reminder! (See error above)","error")
@@ -171,7 +171,7 @@ export class ODReminder extends api.ODManager<ODReminderData<api.ODValidJsonType
 }
 
 /**## ODReminderData `class`
- * This is OD Reminders plugin Reminder data.
+ * This is OT Reminders plugin Reminder data.
  * 
  * This class contains a single property for a Reminder. (string, number, boolean, object, array, null)
  * 

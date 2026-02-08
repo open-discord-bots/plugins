@@ -1,4 +1,4 @@
-# OD Shutdown
+# OT Shutdown
 A simple plugin to turn off the bot from a discord command (server & bot owner only).
 
 > ### Temporary Shutdown

@@ -50,8 +50,8 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`example-command`](./open-ticket/example-command/)                   |📄 Example                  |Sample custom command using the Open Discord system. |
 |[`ot-jump-to-top`](./open-ticket/ot-jump-to-top/)                     |📢 Command                  |Add a simple command to jump to the top of the ticket. |
 |[`ot-kill-switch`](./open-ticket/ot-kill-switch/)                     |📢 Command                  |Temporarily disable the ticket system using a kill switch. |
-|[`od-hosting-status`](./open-ticket/od-hosting-status/)               |📢 Command                  |A simple command to send hosting status updates to a channel. |
-|[`od-shutdown`](./open-ticket/od-shutdown/)                           |📢 Command                  |A simple command to turn off the bot from a slash command (server & bot owner only). |
+|[`ot-hosting-status`](./open-ticket/ot-hosting-status/)               |📢 Command                  |A simple command to send hosting status updates to a channel. |
+|[`ot-shutdown`](./open-ticket/ot-shutdown/)                           |📢 Command                  |A simple command to turn off the bot from a slash command (server & bot owner only). |
 |[`ot-sqlite-database`](./open-ticket/ot-sqlite-database/)             |⚙️ Utility                  |With this plugin, the database will be an SQLite file. It's a must-have for large servers! |
 |[`od-no-slash-clear`](./open-ticket/od-no-slash-clear/)               |⚙️ Utility                  |Disable the automatic removal of slash commands that aren't used by Open Ticket. |
 |[`ot-migrate-v3`](./open-ticket/ot-migrate-v3/)                       |⚙️ Utility                  |Use this plugin to migrate all tickets from Open Ticket v3 to v4. |
@@ -78,7 +78,7 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`ot-feedback`](./open-ticket/ot-feedback/)                          |an_developer                |💼 Management               |A plugin to gather feedback of your support service. |
 |[`ot-assign-role`](./open-ticket/ot-assign-role/)                    |rapid.fast                  |💼 Management               |This plugin assigns a predefined role to a user upon creating a ticket. |
 |[`ot-volume-warning`](./open-ticket/ot-volume-warning/)              |guillee.3                   |💼 Management               |Alerts ticket creators when too many tickets are open, indicating possible response delays. |
-|[`od-reminders`](./open-ticket/od-reminders/)                        |guillee.3                   |💼 Management               |Set reminders that will be sent to a channel every specified time. |
+|[`ot-reminders`](./open-ticket/ot-reminders/)                        |guillee.3                   |💼 Management               |Set reminders that will be sent to a channel every specified time. |
 |[`od-moderation`](./open-ticket/od-moderation/)                      |NotMukundOP                 |💼 Management               |A simple moderation plugin for Open Discord with ban, kick & warnings. |
 |[`ot-followups`](./open-ticket/ot-followups/)                        |guillee.3                   |💼 Management               |Send additional follow-up messages to a ticket. |
 |[`ot-twitch-notifier`](./open-ticket/ot-twitch-notifier/)            |guillee.3                   |💼 Management               |Get notified when your favorite Twitch streamers go live. |
