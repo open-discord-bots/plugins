@@ -3,7 +3,7 @@ import {api, opendiscord, utilities} from "#opendiscord"
 //DECLARATION
 declare module "#opendiscord-types" {
     export interface ODPluginManagerIds_Default {
-        "od-no-slash-clear":api.ODPlugin
+        "ot-no-slash-clear":api.ODPlugin
     }
 }
 

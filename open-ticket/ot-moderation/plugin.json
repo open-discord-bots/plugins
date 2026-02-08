@@ -1,6 +1,6 @@
 {
-    "name":"OD Moderation",
-    "id":"od-moderation",
+    "name":"OT Moderation",
+    "id":"ot-moderation",
     "version":"1.0.0",
     "startFile":"index.ts",
 

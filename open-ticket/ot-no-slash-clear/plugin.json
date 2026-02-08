@@ -1,6 +1,6 @@
 {
-    "name":"OD No Slash Clear",
-    "id":"od-no-slash-clear",
+    "name":"OT No Slash Clear",
+    "id":"ot-no-slash-clear",
     "version":"1.0.2",
     "startFile":"index.ts",
 
