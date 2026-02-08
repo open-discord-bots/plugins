@@ -1,0 +1,104 @@
+{
+  "credentials": {
+    "useEnv": false,
+    "twitchClientId": "your-client-id-from-dev.twitch.tv/console/apps",
+    "twitchClientSecret": "your-client-secret-from-dev.twitch.tv/console/apps"
+  },
+  "pollIntervalMs": 60000,
+  "maxTwitchChannels": 50,
+  "commandPermission": "admin | everyone | none | <roleId>",
+  "embeds": {
+    "live": {
+      "color": "Blurple",
+      "title": "{stream-title}",
+      "author": "{streamer-name} is now live!",
+      "description": "{custom-message}",
+      "showGameField": true,
+      "showViewersField": true,
+      "showStartField": true,
+      "gameFieldName": "Game",
+      "viewersFieldName": "Viewers",
+      "startFieldName": "Started",
+      "watchButtonLabel": "Watch stream!",
+      "footer": "Live on Twitch"
+    },
+    "offline": {
+      "color": "Red",
+      "title": "{stream-title}",
+      "author": "{streamer-name} has ended their stream",
+      "footer": "Offline"
+    },
+    "list": {
+      "color": "Blurple",
+      "title": "📺 Monitored Streamers ({streamers-count})",
+      "entry": "🔹 **User: {streamer-name}**\n📍 **Channel:** {discord-channel}\n💬 **Message:** {custom-message|No custom message}\n📎 **[Visit channel]({streamer-url})**",
+      "empty": "(empty page)",
+      "footer": "Page {current-page}/{total-pages} • Twitch Notifier",
+      "pageButtonLabel": "Page {current-page} of {total-pages}",
+      "perPage": 5
+    }
+  },
+  "responses": {
+    "noPermission": {
+      "color": "Red",
+      "title": "Permission Denied",
+      "description": "❌ You don't have permission to use this command"
+    },
+    "notInGuild": { "color": "Red", "title": "Error", "description": "❌ This command can only be used in a server" },
+    "configMissing": { "color": "Red", "title": "Twitch Config", "description": "❌ Twitch credentials are missing" },
+    "storageMissing": { "color": "Red", "title": "Storage", "description": "❌ Storage is not available" },
+    "alreadyExists": {
+      "color": "Yellow",
+      "title": "Already Exists",
+      "description": "⚠️ The streamer {streamer-name} is already configured in #{discord-channel}"
+    },
+    "added": { "color": "Green", "title": "Added", "description": "✅ Added {streamer-name} to #{discord-channel}" },
+    "removedOne": {
+      "color": "Green",
+      "title": "Removed",
+      "description": "🗑️ Removed {streamer-name} from #{discord-channel}"
+    },
+    "removedAll": {
+      "color": "Green",
+      "title": "Removed",
+      "description": "🗑️ Removed {streamer-name} from all channels"
+    },
+    "listEmpty": { "color": "Yellow", "title": "No Streamers", "description": "(no streamers being monitored)" },
+    "streamerNotFound": {
+      "color": "Red",
+      "title": "Not Found",
+      "description": "❌ The streamer {streamer-name} does not exist on Twitch"
+    },
+    "apiError": { "color": "Red", "title": "API Error", "description": "❌ Error connecting to Twitch API" },
+    "limitReached": {
+      "color": "Red",
+      "title": "Limit Reached",
+      "description": "❌ You have reached the limit of {max-subscriptions} streamers per server"
+    },
+    "invalidChannel": { "color": "Red", "title": "Invalid Channel", "description": "❌ Invalid channel" },
+    "registersEnabled": {
+      "color": "Green",
+      "title": "Logs",
+      "description": "✅ Logs enabled in #{discord-channel}"
+    },
+    "registersDisabled": { "color": "Green", "title": "Logs", "description": "✅ Logs disabled" },
+    "registersNotEnabled": {
+      "color": "Yellow",
+      "title": "Logs",
+      "description": "⚠️ Logs are not enabled in this server"
+    },
+    "unknownSub": { "color": "Red", "title": "Error", "description": "❌ Unknown subcommand" }
+  },
+  "logMessages": {
+    "channelDeleted": {
+      "color": "Red",
+      "title": "Channel Deleted",
+      "description": "🔔 The Twitch channel `{streamer-name}` no longer exists. Removed from the list."
+    },
+    "streamerRenamed": {
+      "color": "Blue",
+      "title": "Name Changed",
+      "description": "🔁 **{old-name}** → **{new-name}**"
+    }
+  }
+}

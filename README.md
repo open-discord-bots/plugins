@@ -81,6 +81,7 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`od-reminders`](./open-ticket/od-reminders/)                        |guillee.3                   |💼 Management               |Set reminders that will be sent to a channel every specified time. |
 |[`od-moderation`](./open-ticket/od-moderation/)                      |NotMukundOP                 |💼 Management               |A simple moderation plugin for Open Discord with ban, kick & warnings. |
 |[`ot-followups`](./open-ticket/ot-followups/)                        |guillee.3                   |💼 Management               |Send additional follow-up messages to a ticket. |
+|[`od-twitch-notifier`](./open-ticket/od-twitch-notifier/)            |guillee.3                   |💼 Management               |Get notified when your favorite Twitch streamers go live. |
 |[`ot-translate-cmds`](./open-ticket/ot-translate-cmds/)              |guillee.3                   |🤖 Client                  |Translate all built-in command names, descriptions & options. |
 
 ## 🛠️ Contributors
