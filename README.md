@@ -86,21 +86,21 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 
 ## 🛠️ Contributors
 ### 🖥️ Team & Contributors
-A list of people that contributed or provided the most support for Open Ticket.
+A list of people that contributed or provided support for Open Ticket, Open Moderation & Open Discord.
 <table>
 <tr>
 <td align="center"><img src="https://github.com/DJj123dj.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/guillee3.png" alt="Profile Picture" width="80px"></td>
 <td align="center"><img src="https://github.com/smetsliam.png" alt="Profile Picture" width="80px"></td>
 <td align="center"><img src="https://github.com/FrankVissers.png" alt="Profile Picture" width="80px"></td>
 <td align="center"><img src="https://github.com/Sank34.png" alt="Profile Picture" width="80px"></td>
-<td align="center"><img src="https://github.com/guillee3.png" alt="Profile Picture" width="80px"></td>
 </tr>
 <tr>
-<th><a href="https://github.com/DJj123dj">💻 DJj123dj</a></th>
+<th><a href="https://github.com/DJj123dj">💻🧩💬 DJj123dj</a></th>
+<th><a href="https://github.com/guillee3">🧩💬 Guillee3</a></th>
 <th><a href="https://github.com/smetsliam">💬 smetsliam</a></th>
 <th><a href="https://github.com/FrankVissers">💬 Frank Vissers</a></th>
 <th><a href="https://github.com/Sank34">💬 Sanke</a></th>
-<th><a href="https://github.com/guillee3">🧩 Guillee3</a></th>
 </tr>
 </table>
 
@@ -110,9 +110,11 @@ A big thanks to all our sponsors! Without them, it wouldn't be possible to creat
 <table>
 <tr>
 <td><img src="https://github.com/guillee3.png" alt="Profile Picture" width="100px"></td>
+<td><img src="https://github.com/yeeetSK.png" alt="Profile Picture" width="100px"></td>
 </tr>
 <tr>
 <td align="center"><a href="https://github.com/guillee3"><b>guillee3</b></a></td>
+<td align="center"><a href="https://github.com/yeeetSK"><b>yeeetSK</b></a></td>
 </tr>
 </table>
 
