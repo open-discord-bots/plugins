@@ -1,6 +1,6 @@
 {
-    "name":"Templates System",
-    "id":"templates-system",
+    "name":"OT Template System",
+    "id":"ot-template-system",
     "version":"1.0.0",
     "startFile":"index.ts",
 

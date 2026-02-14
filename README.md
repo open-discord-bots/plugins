@@ -80,6 +80,7 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`ot-volume-warning`](./open-ticket/ot-volume-warning/)              |guillee.3                   |💼 Management               |Alerts ticket creators when too many tickets are open, indicating possible response delays. |
 |[`od-reminders`](./open-ticket/od-reminders/)                        |guillee.3                   |💼 Management               |Set reminders that will be sent to a channel every specified time. |
 |[`od-moderation`](./open-ticket/od-moderation/)                      |NotMukundOP                 |💼 Management               |A simple moderation plugin for Open Discord with ban, kick & warnings. |
+|[`ot-template-system`](./open-ticket/ot-template-system/)            |DanoGlez                    |💼 Management               |Predefined template system for sending quick messages. |
 |[`ot-followups`](./open-ticket/ot-followups/)                        |guillee.3                   |💼 Management               |Send additional follow-up messages to a ticket. |
 |[`ot-translate-cmds`](./open-ticket/ot-translate-cmds/)              |guillee.3                   |🤖 Client                  |Translate all built-in command names, descriptions & options. |
 
