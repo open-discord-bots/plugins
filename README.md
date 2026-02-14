@@ -88,6 +88,7 @@ Need help or want to get involved? Feel free to join our <a href="https://discor
 |[`ot-volume-warning`](./open-ticket/ot-volume-warning/)              |guillee.3                   |💼 Management               |Alerts ticket creators when too many tickets are open, indicating possible response delays. |
 |[`ot-reminders`](./open-ticket/ot-reminders/)                        |guillee.3                   |💼 Management               |Set reminders that will be sent to a channel every specified time. |
 |[`ot-moderation`](./open-ticket/ot-moderation/)                      |NotMukundOP                 |💼 Management               |A simple moderation plugin for Open Discord with ban, kick & warnings. |
+|[`ot-template-system`](./open-ticket/ot-template-system/)            |DanoGlez                    |💼 Management               |Predefined template system for sending quick messages. |
 |[`ot-followups`](./open-ticket/ot-followups/)                        |guillee.3                   |💼 Management               |Send additional follow-up messages to a ticket. |
 |[`ot-twitch-notifier`](./open-ticket/ot-twitch-notifier/)            |guillee.3                   |💼 Management               |Get notified when your favorite Twitch streamers go live. |
 |[`ot-translate-cmds`](./open-ticket/ot-translate-cmds/)              |guillee.3                   |🤖 Client                   |Translate all built-in command names, descriptions & options. |
