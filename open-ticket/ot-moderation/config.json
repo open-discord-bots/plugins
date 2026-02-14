@@ -1,0 +1,38 @@
+{
+  "adminRoles": {
+    "description": "Role IDs that can use moderation commands. Leave empty to use Discord permissions.",
+    "type": "array",
+    "default": [],
+    "value": [ROLEID]
+  },
+  "moderatorRoles": {
+    "description": "Role IDs that can use kick, warn, timeout, and mute commands (less severe actions).",
+    "type": "array",
+    "default": [],
+    "value": [ROLEID]
+  },
+  "muteRoleName": {
+    "description": "Name of the mute role to create/use.",
+    "type": "string",
+    "default": "Muted",
+    "value": "Muted"
+  },
+  "sendDMNotifications": {
+    "description": "Send DM notifications to users when they are moderated.",
+    "type": "boolean",
+    "default": true,
+    "value": true
+  },
+  "logChannel": {
+    "description": "Channel ID for moderation logs. Leave empty to disable.(Have some issues)",
+    "type": "string",
+    "default": "",
+    "value": ""
+  },
+  "requireReason": {
+    "description": "Require a reason for all moderation actions.",
+    "type": "boolean",
+    "default": false,
+    "value": false
+  }
+}
