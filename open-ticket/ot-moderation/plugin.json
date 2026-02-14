@@ -1,7 +1,7 @@
 {
     "name":"OT Moderation",
     "id":"ot-moderation",
-    "version":"1.0.0",
+    "version":"2.0.0",
     "startFile":"index.ts",
 
     "enabled":true,
@@ -13,11 +13,11 @@
     "incompatiblePlugins":[],
 
     "details":{
-        "author":"NotMukundOP",
+        "author":"NotMukundOP,Updated by:aboreda12",
         "shortDescription":"A simple moderation plugin for Open Discord/Ticket.",
         "longDescription":"A simple moderation plugin for Open Discord/Ticket.",
         "imageUrl":"",
         "projectUrl":"",
-        "tags":["moderation","ban","kick","warn"]
+        "tags":["moderation","ban","kick","warn","mute","unmute","unban","timeout","untimeout"]
     }
 }
