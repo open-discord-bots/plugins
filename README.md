@@ -1,6 +1,7 @@
 <p align="center">
-<img src="https://apis.dj-dj.be/cdn/opendiscord/logo.png" alt="Open Ticket" width="650px"><br>
-<a href="https://otgithub.dj-dj.be"><img src="https://apis.dj-dj.be/cdn/openticket/logo.png" alt="Open Ticket" width="170px"></a><br>
+<img src="https://apis.dj-dj.be/cdn/opendiscord/logo.png" alt="Open Discord" width="650px"><br>
+<span align="center"><b>A collection of awesome plugins to supercharge Open Ticket and Open Moderation</b></span><br><br>
+<a href="https://otgithub.dj-dj.be"><img src="https://apis.dj-dj.be/cdn/openticket/logo.png" alt="Open Ticket" height="55px"></a> <a href="https://omgithub.dj-dj.be"><img src="https://apis.dj-dj.be/cdn/openmoderation/logo.png" alt="Open Ticket" height="61px"></a><br><br>
 <a href="https://discord.com/invite/26vT9wt3n3"><img alt="Discord Invite Link" src="https://img.shields.io/badge/discord-support%20server-5865F2.svg?style=flat-square&logo=discord"></img></a>
 <a href="https://github.com/open-discord-bots/plugins/blob/main/LICENSE"><img alt="Open Discord Plugins License" src="https://img.shields.io/badge/license-MIT-important.svg?style=flat-square"></img></a>
 <a href="https://discord.dj-dj.be"><img alt="Open Discord Plugins Stars" src="https://img.shields.io/github/stars/open-discord-bots/plugins?color=yellow&label=stars&logo=github&style=flat-square"></img></a>
@@ -8,23 +9,30 @@
 </p>
 
 <p align="center">
-This repository is a collection of all plugins made for the projects powered by Open Discord. At the moment, only <a href="https://otgithub.dj-dj.be"><b>Open Ticket</b></a> is available.
-Every plugin can be installed in the <code>./plugins/</code> directory of the project it is made for.
-All plugins are checked for malicious code, bugs & errors before being listed here! If you need any help, feel free to join our <a href="https://discord.dj-dj.be">discord server</a>!
+A collection of plugins for projects powered by the <a href="https://odframework.dj-dj.be"><b>Open Discord Framework</b></a> (<a href="https://otgithub.dj-dj.be"><b>Open Ticket</b></a> and <a href="https://omgithub.dj-dj.be"><b>Open Moderation</b></a>).<br>
+Plugins must be installed in the <code>./plugins/</code> directory of the project. Please only use plugins in the project they're intended for.
+All plugins in this repository are checked for malicious code, bugs & errors!<br><br>
+Need help or want to get involved? Feel free to join our <a href="https://discord.dj-dj.be"><b>Discord server</b></a>.
 </p>
 
-<p align="center"><b>⭐️ Help us grow by giving a star! ⭐️</b></p>
+<h3 align="center"><b>⭐️ Support Open Discord Plugins by starring this repo! ⭐️</b></h3>
+<p align="center"><sup>❤️ Love Open Discord? <a href="https://github.com/sponsors/DJj123dj">Sponsorships</a> help fuel our servers and future features! ❤️</sup></p>
+
+---
 
 ### 📌 Features
-- **🚨 security** - All plugins are checked for malicous code, bugs & errors before being listed here!
-- **✅ up-to-date** - Plugins are kept up-to-date by the creator, community & developers of Open Discord!
-- **🎨 customisation** - Plugins are able to create their own config files, translations, etc!
-- **📝 advanced plugins** - Create the most advanced plugins that you want or use premade ones by our community! 
-- **🖥️ interactions** - The bot has full support for Buttons, Dropdowns, Slash Commands and Modals!
-- **🎛️ dependencies** - We try to use as little external dependencies as needed!
+- **🚨 Secure** - All plugins are checked for malicous code, bugs & errors.
+- **✅ Updated** - Plugins are kept up-to-date by the developer & community of Open Discord.
+- **🛠 Easy Installation** – Install and enable plugins with minimal setup.
+- **🎨 Customisability** - Many plugins contain their own config file for even more customisation!
+- **🎛️ Dependencies** - Plugins try to use as as little external dependencies as possible.
+- **🧩 Uploading** - Want to upload your own plugin? Don't wait and tell us. We will help you with the process!
+- **🌐 Compatibility** – Works seamlessly with Open Ticket, Open Moderation and other Open Discord bots.
+- **📚 Quality Measures** - Only the best of the best plugins are listed in this repository!
+- **🧪 Tested** – All plugins are thoroughly tested before being added to the repository.
 
-> ### 📦 Quick Download
-> Use the `.zip` file provided in every plugin to download it quickly! **But remember to unzip the plugin before using it!**
+> #### 📦 Quick Download
+> Use the `.zip` file provided in every plugin for quick downloading! **(Remember to unzip the plugin before usage!)**
 
 ## 🧩 Plugins
 > #### ⭐ Featured Plugins (Top 5 Most Used)
@@ -84,29 +92,8 @@ All plugins are checked for malicious code, bugs & errors before being listed he
 |[`ot-twitch-notifier`](./open-ticket/ot-twitch-notifier/)            |guillee.3                   |💼 Management               |Get notified when your favorite Twitch streamers go live. |
 |[`ot-translate-cmds`](./open-ticket/ot-translate-cmds/)              |guillee.3                   |🤖 Client                   |Translate all built-in command names, descriptions & options. |
 
-## 🛠️ Contributors
-### 🖥️ Team & Contributors
-A list of people that contributed or provided support for Open Ticket, Open Moderation & Open Discord.
-<table>
-<tr>
-<td align="center"><img src="https://github.com/DJj123dj.png" alt="Profile Picture" width="80px"></td>
-<td align="center"><img src="https://github.com/guillee3.png" alt="Profile Picture" width="80px"></td>
-<td align="center"><img src="https://github.com/smetsliam.png" alt="Profile Picture" width="80px"></td>
-<td align="center"><img src="https://github.com/FrankVissers.png" alt="Profile Picture" width="80px"></td>
-<td align="center"><img src="https://github.com/Sank34.png" alt="Profile Picture" width="80px"></td>
-</tr>
-<tr>
-<th><a href="https://github.com/DJj123dj">💻🧩💬 DJj123dj</a></th>
-<th><a href="https://github.com/guillee3">🧩💬 Guillee3</a></th>
-<th><a href="https://github.com/smetsliam">💬 smetsliam</a></th>
-<th><a href="https://github.com/FrankVissers">💬 Frank Vissers</a></th>
-<th><a href="https://github.com/Sank34">💬 Sanke</a></th>
-</tr>
-</table>
-
 ### ❤️ Sponsors
-A big thanks to all our sponsors! Without them, it wouldn't be possible to create this project!
-
+Huge thanks to our sponsors for making this project possible. Your support means everything to us.
 <table>
 <tr>
 <td><img src="https://github.com/guillee3.png" alt="Profile Picture" width="100px"></td>
@@ -126,10 +113,31 @@ A big thanks to all our sponsors! Without them, it wouldn't be possible to creat
 <img src="https://github.com/BENZORICH.png" alt="BENZORICH" width="40px">
 </a>
 
+### 🛠️ Contributors
+A list of amazing people who have contributed or provided supported for **Open Ticket**, **Open Moderation** or **Open Discord**.
+<table>
+<tr>
+<td align="center"><img src="https://github.com/DJj123dj.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/guillee3.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/smetsliam.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/FrankVissers.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/Sank34.png" alt="Profile Picture" width="80px"></td>
+<td align="center"><img src="https://github.com/SKaranjaN.png" alt="Profile Picture" width="80px"></td>
+</tr>
+<tr>
+<th><a href="https://github.com/DJj123dj">💻🧩💬 DJj123dj</a></th>
+<th><a href="https://github.com/guillee3">🧩💬 Guillee3</a></th>
+<th><a href="https://github.com/smetsliam">💬 smetsliam</a></th>
+<th><a href="https://github.com/FrankVissers">💬 Frank Vissers</a></th>
+<th><a href="https://github.com/Sank34">💬 Sanke</a></th>
+<th><a href="https://github.com/SKaranjaN">🧩 SKaranjaN</a></th>
+</tr>
+</table>
+
 ---
 <img src="https://apis.dj-dj.be/cdn/opendiscord/logo.png" alt="Open Ticket Logo" width="170px">
 
 **README.md**<br>
-[open-ticket](https://otgithub.dj-dj.be) - [discord](https://discord.dj-dj.be)<br>
+[Open Ticket](https://otgithub.dj-dj.be) - [Open Moderation](https://omgithub.dj-dj.be) - [Framework](https://odframework.dj-dj.be) - [Support Server](https://discord.dj-dj.be)<br>
 
-© 2025 - [DJdj Development](https://www.dj-dj.be) - [Terms](https://www.dj-dj.be/terms) - [Privacy Policy](https://www.dj-dj.be/privacy) - [Support Us](https://github.com/sponsors/DJj123dj)
+© 2021 - 2026 - [DJdj Development](https://www.dj-dj.be) - [Terms](https://www.dj-dj.be/terms) - [Privacy Policy](https://www.dj-dj.be/privacy) - [Support Us](https://github.com/sponsors/DJj123dj)
