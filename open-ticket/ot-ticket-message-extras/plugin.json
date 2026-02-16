@@ -3,6 +3,7 @@
     "id":"ot-ticket-message-extras",
     "version":"1.0.1",
     "startFile":"index.ts",
+    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
     "enabled":true,
     "priority":0,
@@ -14,6 +15,7 @@
 
     "details":{
         "author":"DJj123dj",
+        "contributors":[],
         "shortDescription":"A plugin which adds a few little features to the ticket message!",
         "longDescription":"A plugin which adds a few little features to the ticket message that make it more customisable!",
         "imageUrl":"",

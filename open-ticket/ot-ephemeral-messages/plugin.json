@@ -3,6 +3,7 @@
     "id":"ot-ephemeral-messages",
     "version":"1.0.2",
     "startFile":"index.ts",
+    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
     "enabled":true,
     "priority":0,
@@ -14,6 +15,7 @@
 
     "details":{
         "author":"DJj123dj",
+        "contributors":[],
         "shortDescription":"Customise for every messages if it needs to be ephemeral or not.",
         "longDescription":"Customise which messages need to be ephemeral and which ones not. This includes claim, reopen, close & delete messages!",
         "imageUrl":"",

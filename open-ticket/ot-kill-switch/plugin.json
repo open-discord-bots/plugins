@@ -3,6 +3,7 @@
     "id":"ot-kill-switch",
     "version":"1.0.3",
     "startFile":"index.ts",
+    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
     "enabled":true,
     "priority":0,
@@ -14,6 +15,7 @@
 
     "details":{
         "author":"DJj123dj",
+        "contributors":[],
         "shortDescription":"Temporarily disable the ticket system using a kill switch.",
         "longDescription":"Temporarily disable the ticket system using a kill switch. When active, no-one is able to create a ticket.",
         "imageUrl":"",

@@ -3,6 +3,7 @@
     "id":"ot-no-slash-clear",
     "version":"1.0.2",
     "startFile":"index.ts",
+    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
     "enabled":true,
     "priority":0,
@@ -14,6 +15,7 @@
 
     "details":{
         "author":"DJj123dj",
+        "contributors":[],
         "shortDescription":"Disable the automatic removal of slash commands that aren't used by Open Discord bots.",
         "longDescription":"Disable the automatic removal of slash commands that aren't used by Open Discord bots. This is useful if you've added your own commands and you don't want to use the Open Discord system.",
         "imageUrl":"",

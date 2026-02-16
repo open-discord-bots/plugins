@@ -3,6 +3,7 @@
     "id":"ot-move-actions",
     "version":"1.0.2",
     "startFile":"index.ts",
+    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
     "enabled":true,
     "priority":0,
@@ -14,6 +15,7 @@
 
     "details":{
         "author":"DJj123dj",
+        "contributors":[],
         "shortDescription":"Automatically unclaim/unpin a ticket when it's moved using /move.",
         "longDescription":"Automatically unclaim/unpin a ticket when it's moved using /move.",
         "imageUrl":"",

@@ -3,6 +3,7 @@
     "id":"ot-rename-keep-prefix",
     "version":"1.0.1",
     "startFile":"index.ts",
+    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
     "enabled":true,
     "priority":0,
@@ -14,6 +15,7 @@
 
     "details":{
         "author":"DJj123dj",
+        "contributors":[],
         "shortDescription":"Simple plugin to keep the channel prefix on /rename.",
         "longDescription":"Simple plugin to keep the channel prefix when using the /rename command.",
         "imageUrl":"",

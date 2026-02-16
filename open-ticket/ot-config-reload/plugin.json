@@ -3,6 +3,7 @@
     "id":"ot-config-reload",
     "version":"1.0.3",
     "startFile":"index.ts",
+    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
     "enabled":true,
     "priority":0,
@@ -14,6 +15,7 @@
 
     "details":{
         "author":"guillee.3",
+        "contributors":[],
         "shortDescription":"Adds a config reload command.",
         "longDescription":"This plugin adds a new command that allows reloading the Open Ticket config files without the need for a restart. Note that this command only reloads the Open Ticket configuration and does not affect the configuration of other plugins.",
         "imageUrl":"",

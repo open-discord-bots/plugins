@@ -3,6 +3,7 @@
     "id":"ot-sqlite-database",
     "version":"1.0.3",
     "startFile":"index.ts",
+    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
     "enabled":true,
     "priority":0,
@@ -14,6 +15,7 @@
 
     "details":{
         "author":"DJj123dj",
+        "contributors":[],
         "shortDescription":"With this plugin, the database will be an SQLite file! It's a must-have for large servers!",
         "longDescription":"Tired of having the database as JSON files? With this plugin, the database will be an SQLite file! It's a must-have for large servers!",
         "imageUrl":"",
