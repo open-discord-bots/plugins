@@ -99,10 +99,12 @@ Huge thanks to our sponsors for making this project possible. Your support means
 <tr>
 <td><img src="https://github.com/guillee3.png" alt="Profile Picture" width="100px"></td>
 <td><img src="https://github.com/yeeetSK.png" alt="Profile Picture" width="100px"></td>
+<td><img src="https://github.com/jacobhumston.png" alt="Profile Picture" width="100px"></td>
 </tr>
 <tr>
 <td align="center"><a href="https://github.com/guillee3"><b>guillee3</b></a></td>
 <td align="center"><a href="https://github.com/yeeetSK"><b>yeeetSK</b></a></td>
+<td align="center"><a href="https://github.com/jacobhumston"><b>jacobhumston</b></a></td>
 </tr>
 </table>
 
