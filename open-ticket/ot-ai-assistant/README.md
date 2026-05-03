@@ -2,7 +2,7 @@
 
 An AI-powered plugin for [Open Ticket](https://github.com/open-discord-bots/open-ticket) that adds a smart chatbot channel, automatic ticket summaries, and AI-assisted automod to your Discord server — all running on **free** models via OpenRouter.
 
-**Author:** [yow.sef]-discord [aboreda12]-github
+**Author:** [yow.sef]-discord [aboreda12]-github[https://github.com/aboreda12/ot-ai-assistant]
 **Compatible with:** OTv4.0.x · OTv4.1.x · OTv4.2.x
 **Dependency:** npm install axios
 ---
