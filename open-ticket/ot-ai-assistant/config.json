@@ -1,0 +1,140 @@
+{
+    "_comment": "Server AI Chatbot — Plugin Config | Full documentation: see README or plugin.json details field",
+
+    "openrouter": {
+        "_comment_apiKey":        "Get a free API key at https://openrouter.ai — sign up, go to Keys, create one(You can use any provider or model by changing baseUrl)",
+        "_comment_model":         "Primary model to use. Browse free models at https://openrouter.ai/models?q=:free (You can use any provider or model)",
+        "_comment_fallbackModels":"If the primary model fails or is rate-limited, these are tried in order (top to bottom).",
+        "apiKey":         "sk-or-v1-YOUR_KEY_HERE",
+        "model":          "main-model",
+        "fallbackModels": [
+            "fallback1",
+            "fallback2",
+            "fallback3",
+            "fallback4"
+        ],
+        "baseUrl": "https://openrouter.ai/api/v1"
+    },
+
+    "chatbot": {
+        "_comment_channelId":             "The Discord channel ID where the AI chatbot will listen and respond.",
+        "_comment_systemPrompt":          "The AI's personality and main instructions. Tell it who it is, what server it belongs to, and how to behave.",
+        "_comment_maxContextMessages":    "How many past messages per user to remember for follow-up questions (1–10). Higher = smarter but slower.",
+        "_comment_typingIndicator":       "Show the typing indicator while the AI is generating a response.",
+        "_comment_respondToMentionsOnly": "If true, the bot only replies when @mentioned inside the chatbot channel. If false, it replies to all messages.",
+        "_comment_vipUserIds":            "Discord user IDs that can summon the bot via @mention in ANY channel, not just the chatbot channel. Leave empty [] to disable.",
+        "channelId":             "YOUR_CHATBOT_CHANNEL_ID",
+        "systemPrompt":          "You are a friendly support assistant for [Your Server Name]. Answer clearly and concisely. Be helpful, polite, and professional.",
+        "maxContextMessages":    5,
+        "typingIndicator":       true,
+        "respondToMentionsOnly": false,
+        "vipUserIds": []
+    },
+
+    "giphy": {
+        "_comment": "Giphy GIF integration. Get a free API key at https://developers.giphy.com — sign up, create an app, copy the key. gifChance is 0.0–1.0 (e.g. 0.85 = 85% chance to send a GIF when the AI decides one fits the mood). Set enabled to false to turn off GIFs entirely.",
+        "enabled":   false,
+        "apiKey":    "YOUR_GIPHY_API_KEY_HERE",
+        "gifChance": 0.85
+    },
+
+    "knowledge": {
+        "_comment":       "Paths to your knowledge files. These are read by the AI as context for every conversation and ticket. Edit the .md files in the knowledge/ folder with your server's real information.",
+        "serverInfoPath": "./plugins/ot-ai-assistant/knowledge/server-info.md",
+        "faqPath":        "./plugins/ot-ai-assistant/knowledge/faqs.md"
+    },
+
+    "ticketAI": {
+        "_comment_enabled":        "Master switch for AI ticket summaries. Set to false to disable all ticket AI.",
+        "_comment_summaryDelayMs": "Milliseconds to wait after a ticket opens before the AI reads and summarizes it. 300–500ms is usually enough for other bots to post their embeds first.",
+        "_comment_options":        "One entry per Open Ticket option you want the AI to handle. The 'id' MUST exactly match the option ID in your Open Ticket config.yml (e.g. 'ban-appeal', 'report', 'general-support'). Remove or add entries as needed.",
+        "enabled":        true,
+        "summaryDelayMs": 350,
+
+        "options": [
+            {
+                "_comment":        "Example: Ban Appeal ticket. Replace 'YOUR-BAN-APPEAL-OPTION-ID' with the exact ID from your Open Ticket config.",
+                "id":              "YOUR-BAN-APPEAL-OPTION-ID",
+                "systemPrompt":    "You are a support bot speaking DIRECTLY to the user who just opened a ban appeal ticket. Do NOT address staff.\n\nRead their answers and write a short, friendly response that:\n1. Briefly confirms what they submitted (1–2 sentences summarizing their appeal)\n2. Tells them clearly what happens next: their appeal will be reviewed by the moderation team and they should wait — do not spam or open another ticket\n3. If they forgot to include their username or a reason, remind them to add it in this ticket\n\nKeep it short, calm, and respectful. Do not judge their case.",
+                "embedTitle":      "🤖 Appeal Received",
+                "embedColor":      "#e74c3c",
+                "questionIndexes": "all",
+                "readBotEmbeds":   true,
+                "maxTokens":       350
+            },
+            {
+                "_comment":        "Example: Player Report ticket.",
+                "id":              "YOUR-REPORT-OPTION-ID",
+                "systemPrompt":    "You are a support bot speaking DIRECTLY to the user who just submitted a report ticket. Do NOT address staff.\n\nRead their answers and write a short, friendly response that:\n1. Briefly confirms what they reported (1–2 sentences)\n2. Tells them what to do next: attach any screenshots or video evidence in this ticket, and wait for staff to review it\n3. If they did not mention evidence, remind them to provide it\n\nKeep it short and professional. Do not make any judgment about the reported user.",
+                "embedTitle":      "🤖 Report Received",
+                "embedColor":      "#e67e22",
+                "questionIndexes": "all",
+                "readBotEmbeds":   false,
+                "maxTokens":       350
+            },
+            {
+                "_comment":        "Example: General Support ticket.",
+                "id":              "YOUR-GENERAL-SUPPORT-OPTION-ID",
+                "systemPrompt":    "You are a support bot speaking DIRECTLY to the user who just opened a support ticket. Do NOT address staff.\n\nRead their answers and write a short, friendly response that:\n1. Briefly confirms what they need help with (1 sentence)\n2. Give one quick actionable tip or answer if you can find it in the server knowledge — if you cannot answer it, simply tell them that a staff member will assist them shortly\n3. Ask them to keep any relevant screenshots or details ready for the staff\n\nKeep it short, warm, and helpful.",
+                "embedTitle":      "🤖 Ticket Received",
+                "embedColor":      "#3498db",
+                "questionIndexes": "all",
+                "readBotEmbeds":   true,
+                "maxTokens":       350
+            },
+            {
+                "_comment":        "Example: Bug Report ticket.",
+                "id":              "YOUR-BUG-REPORT-OPTION-ID",
+                "systemPrompt":    "You are a support bot speaking DIRECTLY to the user who just submitted a bug report. Do NOT address staff.\n\nRead their answers and write a short, friendly response that:\n1. Briefly confirms the bug they reported (1 sentence)\n2. Thank them for reporting it\n3. Tell them not to abuse or share the bug with others, and to wait for the team to investigate\n\nKeep it short and appreciative.",
+                "embedTitle":      "🤖 Bug Report Received",
+                "embedColor":      "#2ecc71",
+                "questionIndexes": "all",
+                "readBotEmbeds":   true,
+                "maxTokens":       300
+            },
+            {
+                "_comment":        "Example: Store / Purchase Issue ticket.",
+                "id":              "YOUR-STORE-ISSUE-OPTION-ID",
+                "systemPrompt":    "You are a support bot speaking DIRECTLY to the user who just opened a store issue ticket. Do NOT address staff.\n\nRead their answers and write a short, friendly response that:\n1. Briefly confirm the store issue they described (1 sentence)\n2. Tell them what to have ready: their username, proof of purchase (screenshot of the transaction), and exactly what item/rank they purchased\n3. Let them know the team will look into it and they should wait — do not open another ticket for the same issue\n\nKeep it short, calm, and reassuring.",
+                "embedTitle":      "🤖 Store Issue Received",
+                "embedColor":      "#9b59b6",
+                "questionIndexes": "all",
+                "readBotEmbeds":   true,
+                "maxTokens":       300
+            }
+        ]
+    },
+
+    "automod": {
+        "_comment_enabled":              "Master switch for AI-powered automod.",
+        "_comment_monitoredChannels":    "List of channel IDs to monitor. Leave as an empty array [] to monitor ALL channels.",
+        "_comment_exemptRoles":          "Role IDs that are never moderated (e.g. staff, admin roles).",
+        "_comment_exemptUsers":          "User IDs that are never moderated.",
+        "_comment_logChannelId":         "Channel ID for private staff automod logs (full details including the flagged message).",
+        "_comment_publicEmbedChannelId": "Channel ID for the public moderation action announcement. Can be the same as logChannelId.",
+        "_comment_deleteMessage":        "Whether to delete the flagged message.",
+        "_comment_timeoutDurationSec":   "Base timeout duration in seconds (e.g. 300 = 5 minutes). Scales up with repeated offenses: 1x → 2x → 4x.",
+        "_comment_offenseResetSec":      "Seconds of silence before a user's offense count resets (e.g. 3600 = 1 hour).",
+        "_comment_blocklist":            "Custom words or phrases to always flag, in addition to the built-in slur list. Supports any language including Unicode (e.g. Arabic). The AI will still confirm before taking action.",
+        "enabled":              true,
+        "monitoredChannels":    [],
+        "exemptRoles":          [],
+        "exemptUsers":          [],
+        "logChannelId":         "YOUR_LOG_CHANNEL_ID",
+        "publicEmbedChannelId": "YOUR_PUBLIC_LOG_CHANNEL_ID",
+        "deleteMessage":        true,
+        "timeoutDurationSec":   300,
+        "offenseResetSec":      3600,
+        "blocklist": [
+            "example-slur-1",
+            "example-slur-2"
+        ]
+    },
+
+    "conversation": {
+        "_comment_maxTokens":   "Maximum tokens the AI can use for chatbot replies (100–1000). Higher = longer replies but slower.",
+        "_comment_temperature": "AI creativity/randomness (0.0–1.0). Lower = more focused, higher = more creative. 0.65 is a good default.",
+        "maxTokens":   450,
+        "temperature": 0.65
+    }
+}
