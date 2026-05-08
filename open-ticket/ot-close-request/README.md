@@ -30,4 +30,10 @@ You can find the configuration in `config.json` within the plugin folder:
 
 ## 🛠️ Requirements
 
-- **Open Ticket** 
+- **Open Ticket**
+
+  
+## Made By: **aboreda12**, Discord: **yow.sef**
+
+
+
