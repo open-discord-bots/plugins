@@ -249,22 +249,7 @@ async function closeTicket(channel: discord.TextChannel, staffMember: discord.Gu
             return true;
         }
 
-        const closeEmbed = new discord.EmbedBuilder()
-            .setTitle("🔒  Ticket Closed")
-            .setDescription("This ticket has been closed with owner confirmation.")
-            .setColor(0x57F287)
-            .addFields(
-                { name: "Closed by", value: staffMember.user.tag, inline: true },
-                { name: "Reason",    value: "Owner agreed to close request", inline: true },
-            )
-            .setTimestamp();
-
-        await channel.send({ embeds: [closeEmbed] });
-        await channel.permissionOverwrites.edit(channel.guild.roles.everyone, {
-            SendMessages: false,
-            ViewChannel:  false,
-        });
-        return true;
+        return false;
     } catch (err) {
         console.error("[CloseRequest] Failed to close ticket:", err);
         return false;
