@@ -1,0 +1,25 @@
+{
+    "name":"Ticket Analytics Plugin",
+    "id":"ticket-analytics-plugin",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.1.x","OTv4.2.x"],
+
+    "enabled":true,
+    "priority":1,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"Custom",
+        "contributors":[],
+        "shortDescription":"Adds /ticket-analytics with live ticket metrics.",
+        "longDescription":"Shows live metrics from active ticket data, including volume, open/closed ratio, average resolution time, and top support members.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["analytics","tickets","stats"]
+    }
+}

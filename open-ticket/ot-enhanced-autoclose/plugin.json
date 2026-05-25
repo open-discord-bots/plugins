@@ -1,0 +1,25 @@
+{
+    "name":"Enhanced Auto-close Plugin",
+    "id":"enhanced-autoclose-plugin",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.1.x","OTv4.2.x"],
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"Custom",
+        "contributors":[],
+        "shortDescription":"Automatically closes inactive tickets using plugin-specific thresholds.",
+        "longDescription":"Runs an inactivity loop and closes stale tickets with configurable checks, while avoiding conflicts with core autoclose when configured.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["autoclose","automation","tickets"]
+    }
+}

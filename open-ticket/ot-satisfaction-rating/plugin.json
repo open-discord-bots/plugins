@@ -1,0 +1,25 @@
+{
+    "name":"Satisfaction Rating Plugin",
+    "id":"satisfaction-rating-plugin",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.1.x","OTv4.2.x"],
+
+    "enabled":true,
+    "priority":1,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"Custom",
+        "contributors":[],
+        "shortDescription":"Collects 1-5 star ratings on closed tickets.",
+        "longDescription":"Sends interactive rating buttons after ticket close and stores one rating per ticket in plugin-owned JSON storage.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["rating","feedback","satisfaction"]
+    }
+}

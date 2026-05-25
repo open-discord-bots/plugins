@@ -1,0 +1,6 @@
+{
+    "enabled":true,
+    "prompt":"How satisfied are you with this support experience?",
+    "thankYou":"Thank you for your feedback!",
+    "allowUpdate":false
+}
