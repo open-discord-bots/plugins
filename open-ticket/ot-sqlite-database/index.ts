@@ -2,26 +2,23 @@ import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
 import * as sqlite from "sqlite3"
 import * as fs from "fs"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
-class OTSQLiteDatabaseConfig extends api.ODJsonConfig {
-    declare data: {
-        migrateFromJson:boolean,
-        migrateToJson:boolean,
-    }
-}
+class OTSQLiteDatabaseConfig extends api.ODJsonConfig<{
+    migrateFromJson:boolean,
+    migrateToJson:boolean,
+}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-sqlite-database":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-sqlite-database:config": OTSQLiteDatabaseConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-sqlite-database:config": api.ODChecker
     }
-    export interface ODPluginClassManagerIds_Default {
+    export interface ODPluginClassManagerIdMappings {
         "ot-sqlite-database:manager": ODSqliteManager
     }
 }

@@ -1,26 +1,25 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
 import crypto from "crypto"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-migrate-v3":api.ODPlugin
     }
-    export interface ODButtonManagerIds_Default {
-        "ot-migrate-v3:migrate-button":{source:"other",params:{},workers:"ot-migrate-v3:migrate-button"},
+    export interface ODButtonManagerIdMappings {
+        "ot-migrate-v3:migrate-button":{origin:"other",params:{},workers:"ot-migrate-v3:migrate-button"},
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-migrate-v3:migrate-message":{source:"other",params:{},workers:"ot-migrate-v3:migrate-message"},
-        "ot-migrate-v3:success-message":{source:"other",params:{},workers:"ot-migrate-v3:success-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-migrate-v3:migrate-message":{origin:"other",params:{},workers:"ot-migrate-v3:migrate-message"},
+        "ot-migrate-v3:success-message":{origin:"other",params:{},workers:"ot-migrate-v3:success-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-migrate-v3:migrate-embed":{source:"other",params:{},workers:"ot-migrate-v3:migrate-embed"},
-        "ot-migrate-v3:success-embed":{source:"other",params:{},workers:"ot-migrate-v3:success-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-migrate-v3:migrate-embed":{origin:"other",params:{},workers:"ot-migrate-v3:migrate-embed"},
+        "ot-migrate-v3:success-embed":{origin:"other",params:{},workers:"ot-migrate-v3:success-embed"},
     }
-    export interface ODButtonResponderManagerIds_Default {
-        "ot-migrate-v3:migrate-button":{source:"button",params:{},workers:"ot-migrate-v3:migrate-button"},
+    export interface ODButtonResponderManagerIdMappings {
+        "ot-migrate-v3:migrate-button":{origin:"button",params:{},workers:"ot-migrate-v3:migrate-button"},
     }
 }
 
@@ -28,7 +27,7 @@ declare module "#opendiscord-types" {
 opendiscord.events.get("onButtonBuilderLoad").listen((buttons) => {
     buttons.add(new api.ODButton("ot-migrate-v3:migrate-button"))
     buttons.get("ot-migrate-v3:migrate-button").workers.add(
-        new api.ODWorker("ot-migrate-v3:migrate-button",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-migrate-v3:migrate-button",0,(instance,params,origin,cancel) => {
             instance.setMode("button")
             instance.setColor("red")
             instance.setLabel("Migrate To v4")
@@ -42,7 +41,7 @@ opendiscord.events.get("onButtonBuilderLoad").listen((buttons) => {
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("ot-migrate-v3:migrate-embed"))
     embeds.get("ot-migrate-v3:migrate-embed").workers.add(
-        new api.ODWorker("ot-migrate-v3:migrate-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-migrate-v3:migrate-embed",0,(instance,params,origin,cancel) => {
             instance.setTitle(utilities.emojiTitle("🔀","Migrate Ticket"))
             instance.setColor("Red")
             instance.setDescription("This channel has been detected as an Open Ticket v3 ticket!\nClick the button below to migrate this ticket to the new version.")
@@ -51,7 +50,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     )
     embeds.add(new api.ODEmbed("ot-migrate-v3:success-embed"))
     embeds.get("ot-migrate-v3:success-embed").workers.add(
-        new api.ODWorker("ot-migrate-v3:success-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-migrate-v3:success-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             instance.setTitle(utilities.emojiTitle("🔀","Ticket Migrated Succesfully!"))
             instance.setColor(generalConfig.data.mainColor)
@@ -66,18 +65,18 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-migrate-v3:migrate-message"))
     messages.get("ot-migrate-v3:migrate-message").workers.add(
-        new api.ODWorker("ot-migrate-v3:migrate-message",0,async (instance,params,source,cancel) => {
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-migrate-v3:migrate-embed").build(source,{}))
-            instance.addComponent(await opendiscord.builders.buttons.getSafe("ot-migrate-v3:migrate-button").build(source,{}))
+        new api.ODWorker("ot-migrate-v3:migrate-message",0,async (instance,params,origin,cancel) => {
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-migrate-v3:migrate-embed").build(origin,{}))
+            instance.addComponent(await opendiscord.builders.buttons.getSafe("ot-migrate-v3:migrate-button").build(origin,{}))
         })
     )
     messages.add(new api.ODMessage("ot-migrate-v3:success-message"))
     messages.get("ot-migrate-v3:success-message").workers.add(
-        new api.ODWorker("ot-migrate-v3:success-message",0,async (instance,params,source,cancel) => {
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-migrate-v3:success-embed").build(source,{}))
+        new api.ODWorker("ot-migrate-v3:success-message",0,async (instance,params,origin,cancel) => {
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-migrate-v3:success-embed").build(origin,{}))
 
             //add disabled transfer button
-            const migrateButton = await opendiscord.builders.buttons.getSafe("ot-migrate-v3:migrate-button").build(source,{})
+            const migrateButton = await opendiscord.builders.buttons.getSafe("ot-migrate-v3:migrate-button").build(origin,{})
             if (migrateButton.component && typeof migrateButton.component != "string") migrateButton.component.setDisabled(true)
             instance.addComponent(migrateButton)
         })
@@ -123,7 +122,7 @@ opendiscord.events.get("onReadyForUsage").listen(async () => {
 opendiscord.events.get("onButtonResponderLoad").listen((buttons) => {
     buttons.add(new api.ODButtonResponder("ot-migrate-v3:migrate-button",/^od:migrate-v3-migrate$/))
     buttons.get("ot-migrate-v3:migrate-button").workers.add(
-        new api.ODWorker("ot-migrate-v3:migrate-button",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-migrate-v3:migrate-button",0,async (instance,params,origin,cancel) => {
             const {user,channel,guild,message} = instance
             const optionDatabase = opendiscord.databases.get("opendiscord:options")
             const client = opendiscord.client.client
@@ -326,8 +325,8 @@ opendiscord.events.get("onButtonResponderLoad").listen((buttons) => {
             opendiscord.tickets.add(ticket)
     
             //manage stats
-            await opendiscord.stats.get("opendiscord:global").setStat("opendiscord:tickets-created",1,"increase")
-            await opendiscord.stats.get("opendiscord:user").setStat("opendiscord:tickets-created",user.id,1,"increase")
+            await opendiscord.statistics.get("opendiscord:global").setStat("opendiscord:tickets-created",1,"increase")
+            await opendiscord.statistics.get("opendiscord:user").setStat("opendiscord:tickets-created",user.id,1,"increase")
 
             //edit ticket-message
             await ticketMessage.edit((await opendiscord.builders.messages.getSafe("opendiscord:ticket-message").build("other",{guild,channel,user,ticket})).message)

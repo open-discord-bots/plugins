@@ -1,5 +1,5 @@
 import { api, opendiscord } from "#opendiscord";
-import { formsConfigStructure } from "./checkerStructures";
+import { formsConfigStructure } from "./checkerStructures.js";
 
 //REGISTER CONFIG
 opendiscord.events.get("onConfigLoad").listen((configManager) => {

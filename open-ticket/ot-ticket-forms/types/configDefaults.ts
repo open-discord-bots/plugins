@@ -79,6 +79,4 @@ export interface OTForms_DropdownChoice extends OTForms_Choice {
 /** ## ODJsonConfig_DefaultForms `class`
  * This is the default structure of the forms config
  */
-export class ODJsonConfig_DefaultForms extends api.ODJsonConfig {
-    declare data: OTForms_Form[]
-}
+export class ODJsonConfig_DefaultForms extends api.ODJsonConfig<OTForms_Form[]> {}

@@ -1,0 +1,25 @@
+{
+    "name":"OT Advanced Categories",
+    "id":"ot-advanced-categories",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.2.x"],
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "contributors":[],
+        "shortDescription":"Bring back the ability to set custom claim, close or backup categories per ticket option.",
+        "longDescription":"Bring back the ability to set custom claim, close or backup categories per ticket option.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["categories","close","claim","backup","backup-category"]
+    }
+}

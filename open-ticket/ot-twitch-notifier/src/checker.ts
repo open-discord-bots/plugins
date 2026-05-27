@@ -8,7 +8,7 @@ import { api, opendiscord } from "#opendiscord";
  *
  * Validates all config.json properties including credentials, embeds, responses, and log messages.
  */
-export const registerConfigChecker = (checkers: api.ODCheckerManager_Default) => {
+export const registerConfigChecker = (checkers: api.ODMappedCheckerManager) => {
   const responseEmbedStructure = new api.ODCheckerObjectStructure("ot-twitch-notifier:response-embed", {
     children: [
       {

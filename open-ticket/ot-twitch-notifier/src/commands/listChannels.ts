@@ -3,16 +3,8 @@
 ///////////////////////////////////////
 import { api, opendiscord } from "#opendiscord";
 import * as discord from "discord.js";
-import { getTwitchStorage } from "../storage";
-import {
-  buildResponseMessage,
-  buildListEmbed,
-  TWITCH_LIST_FIRST_ID,
-  TWITCH_LIST_PREV_ID,
-  TWITCH_LIST_PAGE_ID,
-  TWITCH_LIST_NEXT_ID,
-  TWITCH_LIST_LAST_ID,
-} from "../embeds";
+import { getTwitchStorage } from "../storage.js";
+import { buildResponseMessage, buildListEmbed, TWITCH_LIST_FIRST_ID, TWITCH_LIST_PREV_ID, TWITCH_LIST_PAGE_ID, TWITCH_LIST_NEXT_ID, TWITCH_LIST_LAST_ID } from "../embeds.js";
 
 export async function handleListChannels(instance: any, storage: ReturnType<typeof getTwitchStorage>): Promise<void> {
   if (!storage || !instance.guild) return;

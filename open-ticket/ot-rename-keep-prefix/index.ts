@@ -1,9 +1,8 @@
 import {api, opendiscord, utilities} from "#opendiscord"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-rename-keep-prefix":api.ODPlugin
     }
 }

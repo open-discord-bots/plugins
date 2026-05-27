@@ -1,9 +1,9 @@
 {
     "name":"OT Migrate v3",
     "id":"ot-migrate-v3",
-    "version":"1.0.2",
+    "version":"1.0.3",
     "startFile":"index.ts",
-    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
+    "supportedVersions":["OTv4.2.x"],
 
     "enabled":true,
     "priority":1,

@@ -1,8 +1,8 @@
 import { api, opendiscord } from "#opendiscord"
 import * as discord from "discord.js"
-import { OTForms_Question, OTForms_ButtonQuestion, OTForms_DropdownQuestion, OTForms_ModalQuestion } from "../types/configDefaults"
-import { OTForms_Form } from "./Form"
-import { OTForms_AnswersManager } from "./AnswersManager"
+import { OTForms_Question, OTForms_ButtonQuestion, OTForms_DropdownQuestion, OTForms_ModalQuestion } from "../types/configDefaults.js"
+import { OTForms_Form } from "./Form.js"
+import { OTForms_AnswersManager } from "./AnswersManager.js"
 
 /* FORM SESSION CLASS
  * This is the main clas of a form session (every user answering a form is a OTForms_FormSession).
@@ -18,7 +18,7 @@ export class OTForms_FormSession {
     private answers: { question: OTForms_Question, answer: string | null }[] = [];
     private instance: api.ODButtonResponderInstance | api.ODDropdownResponderInstance | api.ODModalResponderInstance | undefined;
     private answersManager: OTForms_AnswersManager | undefined;
-    private sessionMessage: api.ODMessageBuildSentResult<boolean> | null = null;
+    private sessionMessage: api.ODResponderSendResult<boolean> | null = null;
 
     constructor(id: string, user: discord.User, form: OTForms_Form) {
         this.id = id;
@@ -138,8 +138,8 @@ export class OTForms_FormSession {
     private async sendModalQuestions(): Promise<void> {
         const modalQuestions: OTForms_ModalQuestion[] = [];
         let count = 0;
-
-        if(!this.instance || this.instance.didReply) {
+        //if (this.instance instanceof api.ODButtonResponderInstance) this.instance
+        if(!this.instance || this.instance.interaction.replied) {
             opendiscord.log("Error: Modal questions have not been sent. Instance not found or already replied.", "plugin");
             return;
         }
@@ -190,7 +190,7 @@ export class OTForms_FormSession {
 
         if(!this.sessionMessage) {
             // Send dropdown question message
-            if(this.instance.didReply) {
+            if(this.instance.interaction.replied) {
                 opendiscord.log("Error: Dropdown question has not been sent. Interaction already replied.", "plugin");
                 return;
             }
@@ -221,7 +221,7 @@ export class OTForms_FormSession {
 
         if(!this.sessionMessage) {
             // Send button question message
-            if(this.instance.didReply) {
+            if(this.instance.interaction.replied) {
                 opendiscord.log("Error: Button question has not been sent. Interaction already replied.", "plugin");
                 return;
             }

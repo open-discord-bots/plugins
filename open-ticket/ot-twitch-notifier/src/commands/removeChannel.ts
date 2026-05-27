@@ -3,8 +3,8 @@
 ///////////////////////////////////////
 import { api, opendiscord } from "#opendiscord";
 import * as discord from "discord.js";
-import { getTwitchStorage } from "../storage";
-import { buildResponseMessage } from "../embeds";
+import { getTwitchStorage } from "../storage.js";
+import { buildResponseMessage } from "../embeds.js";
 
 export async function handleRemoveChannel(instance: any, storage: ReturnType<typeof getTwitchStorage>): Promise<void> {
   if (!storage || !instance.guild) return;

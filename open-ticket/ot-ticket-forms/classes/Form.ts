@@ -1,7 +1,7 @@
 import * as discord from "discord.js"
 import { opendiscord } from "#opendiscord"
-import { OTForms_Question } from "../types/configDefaults"
-import { OTForms_FormSession } from "./FormSession"
+import { OTForms_Question } from "../types/configDefaults.js"
+import { OTForms_FormSession } from "./FormSession.js"
 
 /* FORM CLASS
  * This is the main class of a form (every form message sent is a OTForms_Form). 

@@ -3,23 +3,23 @@ import * as discord from "discord.js"
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "example-command":api.ODPlugin
     }
-    export interface ODSlashCommandManagerIds_Default {
+    export interface ODSlashCommandManagerIdMappings {
         "example-command:ping":api.ODSlashCommand
     }
-    export interface ODTextCommandManagerIds_Default {
+    export interface ODTextCommandManagerIdMappings {
         "example-command:ping":api.ODTextCommand
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "example-command:ping":{source:"slash"|"text",params:{},workers:"example-command:ping"|"example-command:logs"},
+    export interface ODCommandResponderManagerIdMappings {
+        "example-command:ping":{origin:"slash"|"text",params:{},workers:"example-command:ping"|"example-command:logs"},
     }
-    export interface ODMessageManagerIds_Default {
-        "example-command:ping-message":{source:"slash"|"text"|"other",params:{},workers:"example-command:ping-message"},
+    export interface ODMessageManagerIdMappings {
+        "example-command:ping-message":{origin:"slash"|"text"|"other",params:{},workers:"example-command:ping-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "example-command:ping-embed":{source:"slash"|"text"|"other",params:{},workers:"example-command:ping-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "example-command:ping-embed":{origin:"slash"|"text"|"other",params:{},workers:"example-command:ping-embed"},
     }
 }
 
@@ -51,8 +51,8 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
     menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("example-command:ping",0,{
         slashName:"ping",
         textName:"ping",
-        slashDescription:"Test Command!",
-        textDescription:"Test Command!"
+        slashDescription:"Example Command!",
+        textDescription:"Example Command!"
     }))
 })
 
@@ -60,7 +60,7 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("example-command:ping-embed"))
     embeds.get("example-command:ping-embed").workers.add(
-        new api.ODWorker("example-command:ping-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("example-command:ping-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             instance.setTitle("Pong!")
             instance.setColor(generalConfig.data.mainColor)
@@ -73,8 +73,8 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("example-command:ping-message"))
     messages.get("example-command:ping-message").workers.add(
-        new api.ODWorker("example-command:ping-message",0,async (instance,params,source,cancel) => {
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("example-command:ping-embed").build(source,{}))
+        new api.ODWorker("example-command:ping-message",0,async (instance,params,origin,cancel) => {
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("example-command:ping-embed").build(origin,{}))
         })
     )
 })
@@ -85,20 +85,20 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("example-command:ping",generalConfig.data.prefix,"ping"))
     commands.get("example-command:ping").workers.add([
-        new api.ODWorker("example-command:ping",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("example-command:ping",0,async (instance,params,origin,cancel) => {
             const {guild,channel,user} = instance
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
-            await instance.reply(await opendiscord.builders.messages.getSafe("example-command:ping-message").build(source,{}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("example-command:ping-message").build(origin,{}))
         }),
-        new api.ODWorker("example-command:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("example-command:logs",-1,(instance,params,origin,cancel) => {
             opendiscord.log(instance.user.displayName+" used the 'ping' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source}
+                {key:"method",value:origin}
             ])
         })
     ])

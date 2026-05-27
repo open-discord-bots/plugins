@@ -30,56 +30,56 @@ export interface OTFeedbackConfigChoiceQuestion extends OTFeedbackConfigQuestion
 export type OTFeedbackConfigValidQuestion = (OTFeedbackConfigDefaultQuestion|OTFeedbackConfigImageQuestion|OTFeedbackConfigAttachmentQuestion|OTFeedbackConfigChoiceQuestion)
 export type OTFeedbackConfigAnsweredValidQuestion = (OTFeedbackConfigDefaultQuestion|OTFeedbackConfigImageQuestion|OTFeedbackConfigAttachmentQuestion|OTFeedbackConfigChoiceQuestion) & {answer:null|string|discord.Attachment}
 
-class OTFeedbackConfig extends api.ODJsonConfig {
-    declare data: {
-        webhookUrl:string,
-        questionsText:string,
-        completedText:string,
-        ignoredText:string,
-        canceledText:string,
-        
-        customColor:discord.ColorResolvable,
-        footer:string,
+class OTFeedbackConfig extends api.ODJsonConfig<{
+    webhookUrl:string,
+    questionsText:string,
+    completedText:string,
+    ignoredText:string,
+    canceledText:string,
+    
+    customColor:discord.ColorResolvable,
+    footer:string,
 
-        trigger:"close"|"delete"|"first-close-only",
-        minutesPerQuestion:number,
-        sendWebhookWhenEmpty:boolean,
+    trigger:"close"|"delete"|"first-close-only",
+    minutesPerQuestion:number,
+    sendWebhookWhenEmpty:boolean,
 
-        questions:OTFeedbackConfigValidQuestion[]
-    }
-}
+    questions:OTFeedbackConfigValidQuestion[]
+}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-feedback":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-feedback:config": OTFeedbackConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-feedback:config": api.ODChecker
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-feedback:response": {source:"other",params:{questions:OTFeedbackConfigAnsweredValidQuestion[]},workers:"ot-feedback:response"}
-        "ot-feedback:overview": {source:"other",params:{ticket:api.ODTicket,user:discord.User,questions:OTFeedbackConfigAnsweredValidQuestion[],channelName:string},workers:"ot-feedback:overview"}
+    export interface ODEmbedManagerIdMappings {
+        "ot-feedback:response": {origin:"other",params:{questions:OTFeedbackConfigAnsweredValidQuestion[]},workers:"ot-feedback:response"}
+        "ot-feedback:overview": {origin:"other",params:{ticket:api.ODTicket,user:discord.User,questions:OTFeedbackConfigAnsweredValidQuestion[],channelName:string},workers:"ot-feedback:overview"}
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-feedback:response": {source:"other",params:{questions:OTFeedbackConfigAnsweredValidQuestion[]},workers:"ot-feedback:response"}
-        "ot-feedback:question": {source:"other",params:{question:OTFeedbackConfigValidQuestion},workers:"ot-feedback:question"}
-        "ot-feedback:completed": {source:"other",params:{responses:OTFeedbackConfigAnsweredValidQuestion[]},workers:"ot-feedback:completed"}
-        "ot-feedback:canceled": {source:"other",params:{question:OTFeedbackConfigValidQuestion},workers:"ot-feedback:canceled"}
-        "ot-feedback:overview": {source:"other",params:{ticket:api.ODTicket,user:discord.User,questions:OTFeedbackConfigAnsweredValidQuestion[],channelName:string},workers:"ot-feedback:overview"}
+    export interface ODMessageManagerIdMappings {
+        "ot-feedback:response": {origin:"other",params:{questions:OTFeedbackConfigAnsweredValidQuestion[]},workers:"ot-feedback:response"}
+        "ot-feedback:question": {origin:"other",params:{question:OTFeedbackConfigValidQuestion},workers:"ot-feedback:question"}
+        "ot-feedback:completed": {origin:"other",params:{responses:OTFeedbackConfigAnsweredValidQuestion[]},workers:"ot-feedback:completed"}
+        "ot-feedback:canceled": {origin:"other",params:{question:OTFeedbackConfigValidQuestion},workers:"ot-feedback:canceled"}
+        "ot-feedback:overview": {origin:"other",params:{ticket:api.ODTicket,user:discord.User,questions:OTFeedbackConfigAnsweredValidQuestion[],channelName:string},workers:"ot-feedback:overview"}
     }
-    export interface ODEventIds_Default {
-        "ot-feedback:onFeedback":api.ODEvent_Default<(questions:OTFeedbackConfigValidQuestion[]) => api.ODPromiseVoid>
-        "ot-feedback:afterFeedback":api.ODEvent_Default<(responses:OTFeedbackConfigAnsweredValidQuestion[]) => api.ODPromiseVoid>
+    export interface ODEventManagerIdMappings {
+        "ot-feedback:onFeedback":api.ODEvent<(questions:OTFeedbackConfigValidQuestion[]) => api.ODPromiseVoid>
+        "ot-feedback:afterFeedback":api.ODEvent<(responses:OTFeedbackConfigAnsweredValidQuestion[]) => api.ODPromiseVoid>
     }
-    export interface ODTicketIds {
+    export interface ODTicketIdMappings {
         "ot-feedback:close-count":api.ODTicketData<number>
     }
-    export interface ODStatGlobalScopeIds_DefaultGlobal {
-        "ot-feedback:feedback-created":api.ODBasicStat
+    export interface ODGlobalStatisticScopeIdMappings {
+        "ot-feedback:feedback-created":api.ODBaseStatistic
     }
 }
+
+type idk = api.ODGlobalStatisticScopeIdMappings
 
 //UTILITY FUNCTIONS
 const isExecutableFile = (name:string) => {
@@ -173,7 +173,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     const generalConfig = opendiscord.configs.get("opendiscord:general")
 
     embeds.add(new api.ODEmbed("ot-feedback:response"))
-    embeds.get("ot-feedback:response").workers.add(new api.ODWorker("ot-feedback:response",0,(instance,params,source,cancel) => {
+    embeds.get("ot-feedback:response").workers.add(new api.ODWorker("ot-feedback:response",0,(instance,params,origin,cancel) => {
         instance.setTitle(utilities.emojiTitle("📢","Feedback"))
         instance.setColor(config.data.customColor ? config.data.customColor : generalConfig.data.mainColor)
         if (config.data.footer) instance.setFooter(config.data.footer)
@@ -203,7 +203,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     }))
 
     embeds.add(new api.ODEmbed("ot-feedback:overview"))
-    embeds.get("ot-feedback:overview").workers.add(new api.ODWorker("ot-feedback:overview",0,async (instance,params,source,cancel) => {
+    embeds.get("ot-feedback:overview").workers.add(new api.ODWorker("ot-feedback:overview",0,async (instance,params,origin,cancel) => {
         const {questions,ticket,user,channelName} = params
 
         instance.setTitle(utilities.emojiTitle("📢","Feedback Received"))
@@ -241,12 +241,12 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     const config = opendiscord.configs.get("ot-feedback:config")
 
     messages.add(new api.ODMessage("ot-feedback:response"))
-    messages.get("ot-feedback:response").workers.add(new api.ODWorker("ot-feedback:response",0,async (instance,params,source) => {
-        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-feedback:response").build(source,params))
+    messages.get("ot-feedback:response").workers.add(new api.ODWorker("ot-feedback:response",0,async (instance,params,origin) => {
+        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-feedback:response").build(origin,params))
     }))
 
     messages.add(new api.ODMessage("ot-feedback:question"))
-    messages.get("ot-feedback:question").workers.add(new api.ODWorker("ot-feedback:question",0,async (instance,params,source) => {
+    messages.get("ot-feedback:question").workers.add(new api.ODWorker("ot-feedback:question",0,async (instance,params,origin) => {
         const ratingText = (params.question.type == "rating") ? "\n-# Please give a number from 1 to 10." : ""
         const attachmentText = (params.question.type == "image" || params.question.type == "attachment") ? "\n-# Please upload a local attachment. URLs won't work!" : ""
         const choiceText = (params.question.type == "choice") ? "\n"+params.question.choices.map((c,i) => "-# - **"+transformToLetter(params.question.type == "choice" ? params.question.choiceOrdering : "numeric",i)+":** "+c).join("\n") : ""
@@ -254,19 +254,19 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     }))
 
     messages.add(new api.ODMessage("ot-feedback:completed"))
-    messages.get("ot-feedback:completed").workers.add(new api.ODWorker("ot-feedback:completed",0,async (instance,params,source) => {
+    messages.get("ot-feedback:completed").workers.add(new api.ODWorker("ot-feedback:completed",0,async (instance,params,origin) => {
         if (params.responses.every((r) => r.answer === null)) instance.setContent("**"+config.data.ignoredText+"**")
         else instance.setContent("**"+config.data.completedText+"**")
     }))
 
     messages.add(new api.ODMessage("ot-feedback:canceled"))
-    messages.get("ot-feedback:canceled").workers.add(new api.ODWorker("ot-feedback:canceled",0,async (instance,params,source) => {
+    messages.get("ot-feedback:canceled").workers.add(new api.ODWorker("ot-feedback:canceled",0,async (instance,params,origin) => {
         instance.setContent("**"+config.data.canceledText+"**")
     }))
 
     messages.add(new api.ODMessage("ot-feedback:overview"))
-    messages.get("ot-feedback:overview").workers.add(new api.ODWorker("ot-feedback:overview",0,async (instance,params,source) => {
-        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-feedback:overview").build(source,params))
+    messages.get("ot-feedback:overview").workers.add(new api.ODWorker("ot-feedback:overview",0,async (instance,params,origin) => {
+        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-feedback:overview").build(origin,params))
     }))
 })
 
@@ -293,7 +293,7 @@ opendiscord.events.get("onReadyForUsage").listen(() => {
                 else return {label:value.label,type:value.type,answer:null}
             })
             const statusResult = await opendiscord.client.sendUserDm(creator,await opendiscord.builders.messages.getSafe("ot-feedback:response").build("other",{questions:statusQuestions}))
-            if (!statusResult.message) throw new api.ODPluginError("Unable to send OT Feedback status message!")
+            if (!statusResult.success) throw new api.ODPluginError("Unable to send OT Feedback status message!")
             
             opendiscord.log(creator.displayName+" is now able to fill-in the feedback!","plugin",[
                 {key:"user",value:creator.username},
@@ -366,7 +366,7 @@ opendiscord.events.get("onReadyForUsage").listen(() => {
             if (config.data.sendWebhookWhenEmpty || !responses.every((r) => r.answer === null)) await reviewWebhook.send((await opendiscord.builders.messages.getSafe("ot-feedback:overview").build("other",{questions:responses,ticket,user:creator,channelName})).message)
 
             //update stats
-            if (!responses.every((r) => r.answer === null)) await opendiscord.stats.get("opendiscord:global").setStat("ot-feedback:feedback-created",1,"increase")
+            if (!responses.every((r) => r.answer === null)) await opendiscord.statistics.get("opendiscord:global").setStat("ot-feedback:feedback-created",1,"increase")
             
             await opendiscord.events.get("ot-feedback:afterFeedback").emit([responses])
         })
@@ -391,7 +391,7 @@ opendiscord.events.get("onReadyForUsage").listen(() => {
 })
 
 //REGISTER CLOSE COUNT
-opendiscord.events.get("afterCodeExecuted").listen(() => {
+opendiscord.events.get("afterTasksExecuted").listen(() => {
     opendiscord.tickets.loopAll((ticket) => {
         if (!ticket.exists("ot-feedback:close-count")){
             ticket.add(new api.ODTicketData("ot-feedback:close-count",0))
@@ -405,6 +405,6 @@ opendiscord.events.get("afterTicketCreated").listen((ticket) => {
 })
 
 //REGISTER NEW STATISTIC
-opendiscord.events.get("onStatLoad").listen((stats) => {
-    stats.get("opendiscord:global").add(new api.ODBasicStat("ot-feedback:feedback-created",0,"Feedback Created",0))
+opendiscord.events.get("onStatisticLoad").listen((stats) => {
+    stats.get("opendiscord:global").add(new api.ODBaseStatistic("ot-feedback:feedback-created",0,"Feedback Created",0))
 })

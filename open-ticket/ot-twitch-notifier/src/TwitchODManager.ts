@@ -2,9 +2,9 @@
 //TWITCH NOTIFIER - MANAGER
 ///////////////////////////////////////
 import { api, opendiscord } from "#opendiscord";
-import { getTwitchStorage, TwitchSubscription } from "./storage";
-import { TwitchApi, HelixStream, HelixUser, HelixGame } from "./twitch-api";
-import { buildLiveEmbed, buildOfflineEdit, TWITCH_WATCH_BUTTON_ID, buildLogMessageEmbed } from "./embeds";
+import { getTwitchStorage, TwitchSubscription } from "./storage.js";
+import { TwitchApi, HelixStream, HelixUser, HelixGame } from "./twitch-api.js";
+import { buildLiveEmbed, buildOfflineEdit, TWITCH_WATCH_BUTTON_ID, buildLogMessageEmbed } from "./embeds.js";
 import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder } from "discord.js";
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -272,7 +272,7 @@ export class TwitchODManager extends api.ODManager<api.ODManagerData> {
         try {
           const channel = await opendiscord.client.fetchGuildTextChannel(s.guildId, s.discordChannelId);
           if (channel) {
-            const msg = await opendiscord.client.fetchGuildChannelMessage(channel, s.lastLiveMessageId);
+            const msg = await opendiscord.client.fetchChannelMessage(channel, s.lastLiveMessageId);
             if (msg && msg.embeds[0]) {
               const original = msg.embeds[0].toJSON();
               const edited = buildOfflineEdit(original as any, new Date(), s);

@@ -2,8 +2,8 @@
 //TWITCH NOTIFIER - DISABLE REGISTERS COMMAND
 ///////////////////////////////////////
 import { api } from "#opendiscord";
-import { TwitchStorage } from "../storage";
-import { buildResponseMessage } from "../embeds";
+import { TwitchStorage } from "../storage.js";
+import { buildResponseMessage } from "../embeds.js";
 
 export async function handleDisableRegisters(
   instance: api.ODCommandResponderInstance,

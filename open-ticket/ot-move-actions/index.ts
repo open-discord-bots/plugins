@@ -1,24 +1,21 @@
 import { api, opendiscord, utilities } from "#opendiscord";
 import * as discord from "discord.js";
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
-class OTMoveActionsConfig extends api.ODJsonConfig {
-    declare data: {
-        unclaimOnMove:boolean,
-        unpinOnMove:boolean,
-        unclaimOnCategoryChange:boolean,
-        unpinOnCategoryChange:boolean,
-    }
-}
+class OTMoveActionsConfig extends api.ODJsonConfig<{
+    unclaimOnMove:boolean,
+    unpinOnMove:boolean,
+    unclaimOnCategoryChange:boolean,
+    unpinOnCategoryChange:boolean,
+}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-move-actions":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-move-actions:config": OTMoveActionsConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-move-actions:config": api.ODChecker
     }
 }

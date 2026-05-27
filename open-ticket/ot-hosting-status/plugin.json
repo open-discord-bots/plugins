@@ -1,9 +1,9 @@
 {
     "name":"OT Hosting Status",
     "id":"ot-hosting-status",
-    "version":"1.0.2",
+    "version":"1.0.3",
     "startFile":"index.ts",
-    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
+    "supportedVersions":["OTv4.2.x"],
 
     "enabled":true,
     "priority":0,

@@ -1,0 +1,36 @@
+[
+    {
+        "optionId":"INSERT_OPTION_ID",
+        /* Move closed tickets to a separate category. */
+        "closedCategory":{
+            "enabled":false,
+            "categoryId":"DISCORD_CATEGORY_ID"
+        },
+        /* Create tickets in a backup category when the original category exceeds 50 channels. */
+        "backupCategory":{
+            "enabled":false,
+            "categoryId":"DISCORD_CATEGORY_ID"
+        },
+        /* Move claimed tickets to a matching category of the user that claimed the ticket. Set to empty list [] to disable. */
+        "claimedCategories":[
+            {"user":"DISCORD_USER_ID","category":"DISCORD_CATEGORY_ID"}
+        ]
+    },
+    {
+        "optionId":"INSERT_OPTION_ID",
+        /* Move closed tickets to a separate category. */
+        "closedCategory":{
+            "enabled":false,
+            "categoryId":"DISCORD_CATEGORY_ID"
+        },
+        /* Create tickets in a backup category when the original category exceeds 50 channels. */
+        "backupCategory":{
+            "enabled":false,
+            "categoryId":"DISCORD_CATEGORY_ID"
+        },
+        /* Move claimed tickets to a matching category of the user that claimed the ticket. Set to empty list [] to disable. */
+        "claimedCategories":[
+            {"user":"DISCORD_USER_ID","category":"DISCORD_CATEGORY_ID"}
+        ]
+    }
+]

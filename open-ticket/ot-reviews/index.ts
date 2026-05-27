@@ -1,72 +1,69 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
-class OTReviewsConfig extends api.ODJsonConfig {
-    declare data: {
-        _INFO:string,
-    
-        channel:string,
-        reviewMode:"one-per-ticket"|"unlimited-per-ticket"|"unrestricted",
-        
-        enableRating:boolean,
-        enableImages:boolean,
-        enableAuthor:boolean,
-        allowBlacklisted:boolean,
+class OTReviewsConfig extends api.ODJsonConfig <{
+    _INFO:string,
 
-        customisation:{
-            title:string,
-            ratingTitle:string,
-            reviewTitle:string,
-            
-            customColor:discord.ColorResolvable,
-            url:string,
-            thumbnail:string,
-            footer:string,
-            timestamp:boolean
-        }
+    channel:string,
+    reviewMode:"one-per-ticket"|"unlimited-per-ticket"|"unrestricted",
+    
+    enableRating:boolean,
+    enableImages:boolean,
+    enableAuthor:boolean,
+    allowBlacklisted:boolean,
+
+    customisation:{
+        title:string,
+        ratingTitle:string,
+        reviewTitle:string,
+        
+        customColor:discord.ColorResolvable,
+        url:string,
+        thumbnail:string,
+        footer:string,
+        timestamp:boolean
     }
-}
+}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-reviews":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-reviews:config": OTReviewsConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-reviews:config": api.ODChecker
     }
-    export interface ODSlashCommandManagerIds_Default {
+    export interface ODSlashCommandManagerIdMappings {
         "ot-reviews:review":api.ODSlashCommand
     }
-    export interface ODTextCommandManagerIds_Default {
+    export interface ODTextCommandManagerIdMappings {
         "ot-reviews:review":api.ODTextCommand
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "ot-reviews:review":{source:"slash"|"text",params:{},workers:"ot-reviews:permissions"|"ot-reviews:review"|"ot-reviews:logs"},
+    export interface ODCommandResponderManagerIdMappings {
+        "ot-reviews:review":{origin:"slash"|"text",params:{},workers:"ot-reviews:permissions"|"ot-reviews:review"|"ot-reviews:logs"},
     }
-    export interface ODPostManagerIds_Default {
+    export interface ODPostManagerIdMappings {
         "ot-reviews:reviews":api.ODPost<discord.GuildTextBasedChannel>
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-reviews:review-message":{source:"slash"|"text"|"other",params:{user:discord.User,channel:discord.GuildTextBasedChannel,review:string,rating:number|null,image:discord.Attachment|null},workers:"ot-reviews:review-message"},
-        "ot-reviews:response-message":{source:"slash"|"text"|"other",params:{user:discord.User,channel:discord.GuildTextBasedChannel,review:string,rating:number|null,image:discord.Attachment|null},workers:"ot-reviews:response-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-reviews:review-message":{origin:"slash"|"text"|"other",params:{user:discord.User,channel:discord.GuildTextBasedChannel,review:string,rating:number|null,image:discord.Attachment|null},workers:"ot-reviews:review-message"},
+        "ot-reviews:response-message":{origin:"slash"|"text"|"other",params:{user:discord.User,channel:discord.GuildTextBasedChannel,review:string,rating:number|null,image:discord.Attachment|null},workers:"ot-reviews:response-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-reviews:review-embed":{source:"slash"|"text"|"other",params:{user:discord.User,channel:discord.GuildTextBasedChannel,review:string,rating:number|null,image:discord.Attachment|null},workers:"ot-reviews:review-embed"},
-        "ot-reviews:response-embed":{source:"slash"|"text"|"other",params:{user:discord.User,channel:discord.GuildTextBasedChannel,review:string,rating:number|null,image:discord.Attachment|null},workers:"ot-reviews:response-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-reviews:review-embed":{origin:"slash"|"text"|"other",params:{user:discord.User,channel:discord.GuildTextBasedChannel,review:string,rating:number|null,image:discord.Attachment|null},workers:"ot-reviews:review-embed"},
+        "ot-reviews:response-embed":{origin:"slash"|"text"|"other",params:{user:discord.User,channel:discord.GuildTextBasedChannel,review:string,rating:number|null,image:discord.Attachment|null},workers:"ot-reviews:response-embed"},
     }
-    export interface ODEventIds_Default {
-        "ot-reviews:onReview":api.ODEvent_Default<(user:discord.User,review:string,rating:number|null,image:discord.Attachment|null) => api.ODPromiseVoid>
-        "ot-reviews:afterReview":api.ODEvent_Default<(user:discord.User,review:string,rating:number|null,image:discord.Attachment|null) => api.ODPromiseVoid>
+    export interface ODEventManagerIdMappings {
+        "ot-reviews:onReview":api.ODEvent<(user:discord.User,review:string,rating:number|null,image:discord.Attachment|null) => api.ODPromiseVoid>
+        "ot-reviews:afterReview":api.ODEvent<(user:discord.User,review:string,rating:number|null,image:discord.Attachment|null) => api.ODPromiseVoid>
     }
-    export interface ODStatGlobalScopeIds_DefaultGlobal {
-        "ot-reviews:reviews-created":api.ODBasicStat
+    export interface ODGlobalStatisticScopeIdMappings {
+        "ot-reviews:reviews-created":api.ODBaseStatistic
     }
-    export interface ODStatScopeIds_DefaultUser {
-        "ot-reviews:reviews-created":api.ODBasicStat
+    export interface ODStatScopeIdMappingsUser {
+        "ot-reviews:reviews-created":api.ODBaseStatistic
     }
 }
 
@@ -161,7 +158,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 
     embeds.add(new api.ODEmbed("ot-reviews:review-embed"))
     embeds.get("ot-reviews:review-embed").workers.add(
-        new api.ODWorker("ot-reviews:review-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-reviews:review-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             instance.setTitle(utilities.emojiTitle("💬",config.data.customisation.title))
             instance.setColor(config.data.customisation.customColor ? config.data.customisation.customColor : generalConfig.data.mainColor)
@@ -180,7 +177,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 
     embeds.add(new api.ODEmbed("ot-reviews:response-embed"))
     embeds.get("ot-reviews:response-embed").workers.add(
-        new api.ODWorker("ot-reviews:response-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-reviews:response-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             instance.setTitle(utilities.emojiTitle("💬","Review Created"))
             instance.setColor(config.data.customisation.customColor ? config.data.customisation.customColor : generalConfig.data.mainColor)
@@ -198,17 +195,17 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-reviews:review-message"))
     messages.get("ot-reviews:review-message").workers.add(
-        new api.ODWorker("ot-reviews:review-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-reviews:review-message",0,async (instance,params,origin,cancel) => {
             const {user,channel,review,rating,image} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-reviews:review-embed").build(source,{user,channel,review,rating,image}))
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-reviews:review-embed").build(origin,{user,channel,review,rating,image}))
         })
     )
 
     messages.add(new api.ODMessage("ot-reviews:response-message"))
     messages.get("ot-reviews:response-message").workers.add(
-        new api.ODWorker("ot-reviews:response-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-reviews:response-message",0,async (instance,params,origin,cancel) => {
             const {user,channel,review,rating,image} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-reviews:response-embed").build(source,{user,channel,review,rating,image}))
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-reviews:response-embed").build(origin,{user,channel,review,rating,image}))
             instance.setEphemeral(true)
         })
     )
@@ -221,10 +218,10 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("ot-reviews:review",generalConfig.data.prefix,"review"))
     commands.get("ot-reviews:review").workers.add([
-        new api.ODWorker("ot-reviews:permissions",1,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-reviews:permissions",1,async (instance,params,origin,cancel) => {
             const {guild,channel,user} = instance
-            const reviewsCreated = (await opendiscord.stats.get("opendiscord:user").getStat("ot-reviews:reviews-created",user.id)) as number|null ?? 0
-            const ticketsCreated = (await opendiscord.stats.get("opendiscord:user").getStat("opendiscord:tickets-created",user.id)) as number|null ?? 0
+            const reviewsCreated = (await opendiscord.statistics.get("opendiscord:user").getStat("ot-reviews:reviews-created",user.id)) as number|null ?? 0
+            const ticketsCreated = (await opendiscord.statistics.get("opendiscord:user").getStat("opendiscord:tickets-created",user.id)) as number|null ?? 0
             
             if (!config.data.allowBlacklisted && opendiscord.blacklist.exists(user.id)){
                 opendiscord.log(user.displayName+" tried to create a review but is blacklisted!","info",[
@@ -232,22 +229,22 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     {key:"userid",value:user.id,hidden:true},
                     {key:"review",value:instance.options.getString("text",true)}
                 ])
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"You're unable to create a review when you are blacklisted.",layout:"simple"}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"You're unable to create a review when you are blacklisted.",layout:"simple"}))
                 return cancel()
             }
 
             if (config.data.reviewMode == "one-per-ticket" && reviewsCreated >= ticketsCreated){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"You can only create a review when you've created a ticket.",layout:"simple"}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"You can only create a review when you've created a ticket.",layout:"simple"}))
                 return cancel()
             }else if (config.data.reviewMode == "unlimited-per-ticket" && ticketsCreated < 1){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"You can only create a review when you've created at least 1 ticket.",layout:"simple"}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"You can only create a review when you've created at least 1 ticket.",layout:"simple"}))
                 return cancel()
             }else return
         }),
-        new api.ODWorker("ot-reviews:review",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-reviews:review",0,async (instance,params,origin,cancel) => {
             const {guild,channel,user} = instance
             if (!guild || channel.isDMBased()){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
             if (!(instance.interaction instanceof discord.ChatInputCommandInteraction)) return cancel()
@@ -264,22 +261,22 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             await opendiscord.events.get("ot-reviews:onReview").emit([user,review,rating,image])
 
             //update stats
-            await opendiscord.stats.get("opendiscord:global").setStat("ot-reviews:reviews-created",1,"increase")
-            await opendiscord.stats.get("opendiscord:user").setStat("ot-reviews:reviews-created",user.id,1,"increase")
+            await opendiscord.statistics.get("opendiscord:global").setStat("ot-reviews:reviews-created",1,"increase")
+            await opendiscord.statistics.get("opendiscord:user").setStat("ot-reviews:reviews-created",user.id,1,"increase")
 
             //reply to command
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-reviews:response-message").build(source,{user,channel,review,rating,image}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-reviews:response-message").build(origin,{user,channel,review,rating,image}))
             
             //send review
-            await opendiscord.posts.get("ot-reviews:reviews").send(await opendiscord.builders.messages.getSafe("ot-reviews:review-message").build(source,{user,channel,review,rating,image}))
+            await opendiscord.posts.get("ot-reviews:reviews").send(await opendiscord.builders.messages.getSafe("ot-reviews:review-message").build(origin,{user,channel,review,rating,image}))
             await opendiscord.events.get("ot-reviews:afterReview").emit([user,review,rating,image])
         }),
-        new api.ODWorker("ot-reviews:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-reviews:logs",-1,(instance,params,origin,cancel) => {
             opendiscord.log(instance.user.displayName+" used the 'review' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source},
+                {key:"method",value:origin},
                 {key:"review",value:instance.options.getString("text",true)}
             ])
         })
@@ -287,7 +284,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 })
 
 //REGISTER NEW STATISTICS
-opendiscord.events.get("onStatLoad").listen((stats) => {
-    stats.get("opendiscord:global").add(new api.ODBasicStat("ot-reviews:reviews-created",0,"Reviews Created",0))
-    stats.get("opendiscord:user").add(new api.ODBasicStat("ot-reviews:reviews-created",0,"Reviews Created",0))
+opendiscord.events.get("onStatisticLoad").listen((stats) => {
+    stats.get("opendiscord:global").add(new api.ODBaseStatistic("ot-reviews:reviews-created",0,"Reviews Created",0))
+    stats.get("opendiscord:user").add(new api.ODBaseStatistic("ot-reviews:reviews-created",0,"Reviews Created",0))
 })

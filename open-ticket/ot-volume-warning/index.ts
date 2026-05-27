@@ -1,49 +1,45 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
-class OTVolumeWarningConfig extends api.ODJsonConfig {
-    declare data: {
-        amountOfTicketsBeforeWarning: number,
-        customMessage: {
+class OTVolumeWarningConfig extends api.ODJsonConfig<{
+    amountOfTicketsBeforeWarning: number,
+    customMessage: {
+        enabled: boolean,
+        ping: boolean,
+        text: string,
+        embed: {
             enabled: boolean,
-            ping: boolean,
-            text: string,
-            embed: {
-                enabled: boolean,
-                title: string,
-                titleEmoji: string,
-                description: string,
-                customColor: discord.ColorResolvable,
-                image: string,
-                thumbnail: string,
-                fields: {
-                    name: string,
-                    value: string,
-                    inline: boolean
-                }[]
-                timestamp: boolean
-            }
+            title: string,
+            titleEmoji: string,
+            description: string,
+            customColor: discord.ColorResolvable,
+            image: string,
+            thumbnail: string,
+            fields: {
+                name: string,
+                value: string,
+                inline: boolean
+            }[]
+            timestamp: boolean
         }
     }
-}
-
+}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-volume-warning":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-volume-warning:config":OTVolumeWarningConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-volume-warning:config":api.ODChecker;
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-volume-warning:delay-warning-message":{source:"ticket"|"other",params:{user:discord.User},workers:"ot-volume-warning:delay-warning-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-volume-warning:delay-warning-message":{origin:"ticket"|"other",params:{user:discord.User},workers:"ot-volume-warning:delay-warning-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-volume-warning:delay-warning-embed":{source:"ticket"|"other",params:{user:discord.User,custom:boolean},workers:"ot-volume-warning:delay-warning-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-volume-warning:delay-warning-embed":{origin:"ticket"|"other",params:{user:discord.User,custom:boolean},workers:"ot-volume-warning:delay-warning-embed"},
     }
 }
 
@@ -91,7 +87,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 
     embeds.add(new api.ODEmbed("ot-volume-warning:delay-warning-embed"))
     embeds.get("ot-volume-warning:delay-warning-embed").workers.add(
-        new api.ODWorker("ot-volume-warning:delay-warning-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-volume-warning:delay-warning-embed",0,(instance,params,origin,cancel) => {
             const { custom } = params;
 
             if(!custom) {
@@ -126,7 +122,7 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
 
     messages.add(new api.ODMessage("ot-volume-warning:delay-warning-message"))
     messages.get("ot-volume-warning:delay-warning-message").workers.add(
-        new api.ODWorker("ot-volume-warning:delay-warning-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-volume-warning:delay-warning-message",0,async (instance,params,origin,cancel) => {
             const { user } = params
 
             const customMessage = config.data.customMessage;
@@ -134,11 +130,11 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
                 //custom message
                 const content = `${customMessage.ping ? `${discord.userMention(user.id)} ` : ""}${customMessage.text}`;
                 if(content) instance.setContent(content);
-                if(customMessage.embed.enabled) instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-volume-warning:delay-warning-embed").build(source,{user,custom:true}));
+                if(customMessage.embed.enabled) instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-volume-warning:delay-warning-embed").build(origin,{user,custom:true}));
             
             }else{
                 //pre-made message
-                instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-volume-warning:delay-warning-embed").build(source,{user,custom:false}));
+                instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-volume-warning:delay-warning-embed").build(origin,{user,custom:false}));
             }
         })
     )

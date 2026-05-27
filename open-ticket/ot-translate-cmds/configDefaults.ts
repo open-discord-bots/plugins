@@ -1,5 +1,5 @@
 import { api, opendiscord, utilities } from "#opendiscord"
-import discord from "discord.js"
+import * as discord from "discord.js"
 
 export interface OTTranslateCmdsConfigChoice {
     name: string,
@@ -15,12 +15,10 @@ export interface OTTranslateCmdsConfigOption {
     options?: OTTranslateCmdsConfigOption[]
 }
 
-export class OTTranslateCmdsConfig extends api.ODJsonConfig {
-    declare data: {
-        name: string,
-        type: string,
-        nameTranslations: Record<discord.Locale,string>,
-        descriptionTranslations: Record<discord.Locale,string>,
-        options?: OTTranslateCmdsConfigOption[]
-    }[]
-}
+export class OTTranslateCmdsConfig extends api.ODJsonConfig<{
+    name: string,
+    type: string,
+    nameTranslations: Record<discord.Locale,string>,
+    descriptionTranslations: Record<discord.Locale,string>,
+    options?: OTTranslateCmdsConfigOption[]
+}[]> {}

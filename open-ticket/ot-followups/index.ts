@@ -2,8 +2,6 @@ import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
 import ansis from "ansis"
 
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
-
 //DECLARATION
 export interface OTFollowUpsEmbedData {
     enabled:boolean,
@@ -32,15 +30,11 @@ export interface OTFollowUpsMessageData {
         custom:string[]
     }
 }
-export class OTFollowUpsDefaultConfig extends api.ODJsonConfig {
-    declare data: {
-        optionId:string,
-        messages:string[]
-    }[]
-}
-export class OTFollowUpsMessagesConfig extends api.ODJsonConfig {
-    declare data: OTFollowUpsMessageData[]
-}
+export class OTFollowUpsDefaultConfig extends api.ODJsonConfig<{
+    optionId:string,
+    messages:string[]
+}[]> {}
+export class OTFollowUpsMessagesConfig extends api.ODJsonConfig<OTFollowUpsMessageData[]> {}
 export class OTFollowUp extends api.ODManagerData {
     data: OTFollowUpsMessageData
     constructor(id:api.ODValidId,data:OTFollowUpsMessageData){
@@ -61,29 +55,29 @@ export class OTFollowUpsManager extends api.ODManager<OTFollowUp> {
 }
 
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-followups":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-followups:config":OTFollowUpsDefaultConfig,
         "ot-followups:messages":OTFollowUpsMessagesConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-followups:config":api.ODChecker,
         "ot-followups:messages":api.ODChecker
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-followups:message":{source:"slash"|"other",params:{message:OTFollowUpsMessageData},workers:"ot-followups:message"}
+    export interface ODMessageManagerIdMappings {
+        "ot-followups:message":{origin:"slash"|"other",params:{message:OTFollowUpsMessageData},workers:"ot-followups:message"}
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-followups:embed":{source:"slash"|"other",params:{embed:OTFollowUpsEmbedData},workers:"ot-followups:embed"}
+    export interface ODEmbedManagerIdMappings {
+        "ot-followups:embed":{origin:"slash"|"other",params:{embed:OTFollowUpsEmbedData},workers:"ot-followups:embed"}
     }
-    export interface ODPluginClassManagerIds_Default {
+    export interface ODPluginClassManagerIdMappings {
         "ot-followups:manager":OTFollowUpsManager
     }
-    export interface ODEventIds_Default {
-        "ot-followups:onMessagesLoad":api.ODEvent_Default<(messages:OTFollowUpsManager) => api.ODPromiseVoid>
-        "ot-followups:afterMessagesLoaded":api.ODEvent_Default<(messages:OTFollowUpsManager) => api.ODPromiseVoid>
+    export interface ODEventManagerIdMappings {
+        "ot-followups:onMessagesLoad":api.ODEvent<(messages:OTFollowUpsManager) => api.ODPromiseVoid>
+        "ot-followups:afterMessagesLoaded":api.ODEvent<(messages:OTFollowUpsManager) => api.ODPromiseVoid>
     }
 }
 
@@ -159,7 +153,7 @@ opendiscord.events.get("onCheckerLoad").listen((checkers) => {
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("ot-followups:embed"))
     embeds.get("ot-followups:embed").workers.add(
-        new api.ODWorker("ot-followups:embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-followups:embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             const {embed} = params
 
@@ -181,10 +175,10 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-followups:message"))
     messages.get("ot-followups:message").workers.add(
-        new api.ODWorker("ot-followups:message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-followups:message",0,async (instance,params,origin,cancel) => {
             const {message} = params
 
-            if (message.embed.enabled) instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-followups:embed").build(source,{embed:message.embed}))
+            if (message.embed.enabled) instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-followups:embed").build(origin,{embed:message.embed}))
 
             const pings: string[] = []
             if (message.ping["@everyone"]) pings.push("@everyone")

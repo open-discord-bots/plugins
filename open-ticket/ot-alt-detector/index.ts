@@ -16,20 +16,20 @@ export class ODAltDetector extends api.ODManagerData {
     }
 }
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-alt-detector":api.ODPlugin
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-alt-detector:log-message":{source:"other",params:{member:discord.GuildMember,result:AltDetectorResult},workers:"ot-alt-detector:log-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-alt-detector:log-message":{origin:"other",params:{member:discord.GuildMember,result:AltDetectorResult},workers:"ot-alt-detector:log-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-alt-detector:log-embed":{source:"other",params:{member:discord.GuildMember,result:AltDetectorResult},workers:"ot-alt-detector:log-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-alt-detector:log-embed":{origin:"other",params:{member:discord.GuildMember,result:AltDetectorResult},workers:"ot-alt-detector:log-embed"},
     }
-    export interface ODEventIds_Default {
-        "ot-alt-detector:onAltDetect":api.ODEvent_Default<(member:discord.GuildMember) => api.ODPromiseVoid>
-        "ot-alt-detector:afterAltDetected":api.ODEvent_Default<(member:discord.GuildMember, result:AltDetectorResult) => api.ODPromiseVoid>
+    export interface ODEventManagerIdMappings {
+        "ot-alt-detector:onAltDetect":api.ODEvent<(member:discord.GuildMember) => api.ODPromiseVoid>
+        "ot-alt-detector:afterAltDetected":api.ODEvent<(member:discord.GuildMember, result:AltDetectorResult) => api.ODPromiseVoid>
     }
-    export interface ODPluginClassManagerIds_Default {
+    export interface ODPluginClassManagerIdMappings {
         "ot-alt-detector:detector": ODAltDetector
     }
 }
@@ -49,7 +49,7 @@ opendiscord.events.get("onPluginClassLoad").listen((classes) => {
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("ot-alt-detector:log-embed"))
     embeds.get("ot-alt-detector:log-embed").workers.add(
-        new api.ODWorker("ot-alt-detector:log-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-alt-detector:log-embed",0,(instance,params,origin,cancel) => {
             const {result,member} = params
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             const {detector} = opendiscord.plugins.classes.get("ot-alt-detector:detector")
@@ -78,9 +78,9 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-alt-detector:log-message"))
     messages.get("ot-alt-detector:log-message").workers.add(
-        new api.ODWorker("ot-alt-detector:log-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-alt-detector:log-message",0,async (instance,params,origin,cancel) => {
             const {result,member} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-alt-detector:log-embed").build(source,{result,member}))
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-alt-detector:log-embed").build(origin,{result,member}))
         })
     )
 })
@@ -93,12 +93,16 @@ opendiscord.events.get("onClientReady").listen((clientManager) => {
 
     //send result to log channel when logging is enabled
     client.on("guildMemberAdd",async (member) => {
-        if (generalConfig.data.system.logs.enabled){
+        if (generalConfig.data.logs.enabled){
             const logChannel = opendiscord.posts.get("opendiscord:logs")
             if (!logChannel) return
+
+            await opendiscord.events.get("ot-alt-detector:onAltDetect").emit([member])
             
             const result = detector.check(member)
             await logChannel.send(await opendiscord.builders.messages.getSafe("ot-alt-detector:log-message").build("other",{result,member}))
+
+            await opendiscord.events.get("ot-alt-detector:afterAltDetected").emit([member,result])
         }
     })
 })

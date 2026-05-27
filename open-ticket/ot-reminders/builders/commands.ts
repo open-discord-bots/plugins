@@ -1,6 +1,6 @@
 import { opendiscord, api, utilities } from "#opendiscord"
 import * as discord from "discord.js"
-import { ODReminder, ODReminderManager, ODReminderData, ODReminderJson } from "../reminder"
+import { ODReminder, ODReminderManager, ODReminderData, ODReminderJson } from "../reminder.js"
 
 //LOAD COMMANDS
 opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
@@ -223,37 +223,37 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("ot-reminders:create", generalConfig.data.prefix, "reminder"))
     commands.get("ot-reminders:create").workers.add([
-        new api.ODWorker("ot-reminders:create",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-reminders:create",0,async (instance,params,origin,cancel) => {
             const { guild, channel, user } = instance
             if (!guild) {
-                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
 
             if (!opendiscord.permissions.hasPermissions("admin",await opendiscord.permissions.getPermissions(instance.user,instance.channel,instance.guild))){
                 //no permissions
-                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
                 return cancel()
             }
 
             //command doesn't support text-commands!
-            if (source == "text") return cancel()
+            if (origin == "text") return cancel()
             const scope = instance.options.getSubCommand() as "create"|"pause"|"resume"|"delete"|"list"
 
             if (scope === "create") { //create a new reminder
                 //max 25 reminders
                 if (reminderManager.getAll().length >= 25) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"You have reached the maximum number of reminders.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"You have reached the maximum number of reminders.",layout:"simple"}))
                     return cancel()
                 }
 
                 //if id already exists or is invalid don't create another reminder
                 const id = instance.options.getString("id",true)
                 if (reminderManager.get(`ot-reminders:${id}`)) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Reminder already exists.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Reminder already exists.",layout:"simple"}))
                     return cancel()
                 } else if (id.includes(" ")) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"ID cannot contain spaces.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"ID cannot contain spaces.",layout:"simple"}))
                     return cancel()
                 }
 
@@ -268,7 +268,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 if (description) description = description.replace(/\\n/g, '\n')
                 
                 if (!text && !title && !description) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"You must provide a text, title, or description.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"You must provide a text, title, or description.",layout:"simple"}))
                     return cancel()
                 }
 
@@ -318,11 +318,11 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 const reminder = reminderManager.get(id)
                 
                 if (!reminder) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Reminder not found.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Reminder not found.",layout:"simple"}))
                     return cancel()
                 }
                 if(reminder.get("ot-reminders:paused").value) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"This reminder is already paused.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"This reminder is already paused.",layout:"simple"}))
                     return cancel()
                 }
 
@@ -336,11 +336,11 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 const id = instance.options.getString("id",true)
                 const reminder = reminderManager.get(id)
                 if (!reminder) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Reminder not found.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Reminder not found.",layout:"simple"}))
                     return cancel()
                 }
                 if(!reminder.get("ot-reminders:paused").value) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"This reminder is not paused.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"This reminder is not paused.",layout:"simple"}))
                     return cancel()
                 }
 
@@ -351,7 +351,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 const id = instance.options.getString("id",true)
                 const reminder = reminderManager.remove(id)
                 if (!reminder) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Reminder not found.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Reminder not found.",layout:"simple"}))
                     return cancel()
                 }
                 const sReminder = ODReminderManager.scheduledReminders.get(reminder.id)
@@ -363,24 +363,24 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             } else if (scope === "list") { //list all reminders
                 const reminders = reminderManager.getAll()
                 if (reminders.length === 0) {
-                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"No reminders found.",layout:"simple"}))
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"No reminders found.",layout:"simple"}))
                     return cancel()
                 }
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-reminders:list-message").build(source,{reminders:reminders}))
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-reminders:list-message").build(origin,{reminders:reminders}))
             } 
             
             if (scope !== "list") {
                 const scp = scope === "create" ? "created" : scope === "pause" ? "paused" : scope === "resume" ? "resumed" : "deleted"
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-reminders:success-message").build(source,{ scope: scp }))
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-reminders:success-message").build(origin,{ scope: scp }))
             }
         }),
-        new api.ODWorker("ot-reminders:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-reminders:logs",-1,(instance,params,origin,cancel) => {
             const scope = instance.options.getSubCommand()
             opendiscord.log(instance.user.displayName+" used the 'reminder "+scope+"' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source}
+                {key:"method",value:origin}
             ])
         })
     ])
