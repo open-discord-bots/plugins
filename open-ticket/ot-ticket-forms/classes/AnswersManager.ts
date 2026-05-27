@@ -1,6 +1,6 @@
 import { api, opendiscord } from "#opendiscord";
 import * as discord from "discord.js";
-import { OTForms_Question } from "../types/configDefaults";
+import { OTForms_Question } from "../types/configDefaults.js";
 
 const MAX_EMBED_SIZE = 6000;
 const MAX_EMBED_FIELDS = 25;
@@ -198,7 +198,7 @@ export class OTForms_AnswersManager {
                 formId: string,
                 sessionId: string,
                 messageId: string | null,
-                source: "button" | "other",
+                origin: "button" | "other",
                 type: "initial" | "partial" | "completed",
                 userId: string,
                 formColor: discord.ColorResolvable,
@@ -210,7 +210,7 @@ export class OTForms_AnswersManager {
             const formId = data.formId;
             const sessionId = data.sessionId;
             const messageId = data.messageId;
-            const source = data.source;
+            const origin = data.origin;
             const type = data.type;
             const userId = data.userId;
             const formColor = data.formColor;
@@ -259,7 +259,7 @@ export class OTForms_AnswersManager {
                 return;
             }
 
-            const answersManager = new OTForms_AnswersManager(formId, sessionId, source, type, user, formColor, answers);
+            const answersManager = new OTForms_AnswersManager(formId, sessionId, origin, type, user, formColor, answers);
             answersManager._currentPage = currentPage;
             answersManager.timestamp = new Date(data.timestamp);
             answersManager._message = message;

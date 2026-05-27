@@ -1,9 +1,9 @@
 {
     "name":"OT Ticket Message Extra's",
     "id":"ot-ticket-message-extras",
-    "version":"1.0.1",
+    "version":"1.0.2",
     "startFile":"index.ts",
-    "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
+    "supportedVersions":["OTv4.2.x"],
 
     "enabled":true,
     "priority":0,

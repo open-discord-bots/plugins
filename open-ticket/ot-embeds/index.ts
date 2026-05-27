@@ -1,7 +1,6 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
 import ansis from "ansis"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
 export interface OTCustomEmbedsEmbed {
@@ -27,10 +26,7 @@ export interface OTCustomEmbedsEmbed {
     }
 }
 
-export class OTCustomEmbedsConfig extends api.ODJsonConfig {
-    declare data: OTCustomEmbedsEmbed[]
-}
-
+export class OTCustomEmbedsConfig extends api.ODJsonConfig<OTCustomEmbedsEmbed[]> {}
 export class OTCustomEmbed extends api.ODManagerData {
     data: OTCustomEmbedsEmbed
 
@@ -49,36 +45,36 @@ export class OTCustomEmbedManager extends api.ODManager<OTCustomEmbed> {
 }
 
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-embeds":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-embeds:config":OTCustomEmbedsConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-embeds:config":api.ODChecker
     }
-    export interface ODSlashCommandManagerIds_Default {
+    export interface ODSlashCommandManagerIdMappings {
         "ot-embeds:embed":api.ODSlashCommand
     }
-    export interface ODTextCommandManagerIds_Default {
+    export interface ODTextCommandManagerIdMappings {
         "ot-embeds:embed":api.ODTextCommand
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "ot-embeds:embed":{source:"slash"|"text",params:{},workers:"ot-embeds:embed"|"ot-embeds:logs"},
+    export interface ODCommandResponderManagerIdMappings {
+        "ot-embeds:embed":{origin:"slash"|"text",params:{},workers:"ot-embeds:embed"|"ot-embeds:logs"},
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-embeds:embed-message":{source:"slash"|"other",params:{embed:OTCustomEmbedsEmbed},workers:"ot-embeds:embed-message"},
-        "ot-embeds:success-message":{source:"slash"|"other",params:{},workers:"ot-embeds:success-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-embeds:embed-message":{origin:"slash"|"other",params:{embed:OTCustomEmbedsEmbed},workers:"ot-embeds:embed-message"},
+        "ot-embeds:success-message":{origin:"slash"|"other",params:{},workers:"ot-embeds:success-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-embeds:embed-embed":{source:"slash"|"other",params:{embed:OTCustomEmbedsEmbed},workers:"ot-embeds:embed-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-embeds:embed-embed":{origin:"slash"|"other",params:{embed:OTCustomEmbedsEmbed},workers:"ot-embeds:embed-embed"},
     }
-    export interface ODEventIds_Default {
-        "ot-embeds:onEmbedLoad":api.ODEvent_Default<(embeds:OTCustomEmbedManager) => api.ODPromiseVoid>
-        "ot-embeds:afterEmbedsLoaded":api.ODEvent_Default<(embeds:OTCustomEmbedManager) => api.ODPromiseVoid>
+    export interface ODEventManagerIdMappings {
+        "ot-embeds:onEmbedLoad":api.ODEvent<(embeds:OTCustomEmbedManager) => api.ODPromiseVoid>
+        "ot-embeds:afterEmbedsLoaded":api.ODEvent<(embeds:OTCustomEmbedManager) => api.ODPromiseVoid>
     }
-    export interface ODPluginClassManagerIds_Default {
+    export interface ODPluginClassManagerIdMappings {
         "ot-embeds:manager":OTCustomEmbedManager
     }
 }
@@ -302,7 +298,7 @@ opendiscord.events.get("afterBlacklistLoaded").listen(async () => {
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("ot-embeds:embed-embed"))
     embeds.get("ot-embeds:embed-embed").workers.add(
-        new api.ODWorker("ot-embeds:embed-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-embeds:embed-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             const {embed} = params
 
@@ -325,9 +321,9 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-embeds:embed-message"))
     messages.get("ot-embeds:embed-message").workers.add(
-        new api.ODWorker("ot-embeds:embed-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-embeds:embed-message",0,async (instance,params,origin,cancel) => {
             const {embed} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-embeds:embed-embed").build(source,{embed}))
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-embeds:embed-embed").build(origin,{embed}))
 
             //create pings
             const pings: string[] = []
@@ -344,7 +340,7 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
 
     messages.add(new api.ODMessage("ot-embeds:success-message"))
     messages.get("ot-embeds:success-message").workers.add(
-        new api.ODWorker("ot-embeds:success-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-embeds:success-message",0,async (instance,params,origin,cancel) => {
             instance.setContent("✅ The embed has been created successfully!")
             instance.setEphemeral(true)
         })
@@ -358,21 +354,21 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("ot-embeds:embed",generalConfig.data.prefix,"embed"))
     commands.get("ot-embeds:embed").workers.add([
-        new api.ODWorker("ot-embeds:embed",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-embeds:embed",0,async (instance,params,origin,cancel) => {
             const {guild,channel,user} = instance
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
 
             if (!opendiscord.permissions.hasPermissions("admin",await opendiscord.permissions.getPermissions(instance.user,instance.channel,instance.guild))){
                 //no permissions
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
                 return cancel()
             }
 
             //command doesn't support text-commands!
-            if (source == "text") return cancel()
+            if (origin == "text") return cancel()
             const scope = instance.options.getSubCommand() as "custom"|"preset"
 
             if (scope == "custom"){
@@ -396,7 +392,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     }
                 }
 
-                await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(source,{embed:{
+                await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(origin,{embed:{
                     id:"_CUSTOM_",
                     content:"",
                     title,
@@ -425,11 +421,11 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 
                 const embed = embedManager.get(embedId)
                 if (!embed){
-                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"Invalid embed id. Please try again!"}))
+                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"Invalid embed id. Please try again!"}))
                     return cancel()
                 }
 
-                await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(source,{embed:{
+                await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(origin,{embed:{
                     id:embed.id.value,
                     content:embed.data.content,
                     title:embed.data.title,
@@ -450,15 +446,15 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             }
 
             //reply
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-embeds:success-message").build(source,{}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-embeds:success-message").build(origin,{}))
         }),
-        new api.ODWorker("ot-embeds:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-embeds:logs",-1,(instance,params,origin,cancel) => {
             const scope = instance.options.getSubCommand() as "custom"|"preset"
             opendiscord.log(instance.user.displayName+" used the 'embed "+scope+"' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source}
+                {key:"method",value:origin}
             ])
         })
     ])

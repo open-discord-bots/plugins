@@ -1,6 +1,5 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
 export class OTKillSwitchManager extends api.ODManagerData {
@@ -8,27 +7,27 @@ export class OTKillSwitchManager extends api.ODManagerData {
 }
 
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-kill-switch":api.ODPlugin
     }
-    export interface ODSlashCommandManagerIds_Default {
+    export interface ODSlashCommandManagerIdMappings {
         "ot-kill-switch:kill":api.ODSlashCommand
     }
-    export interface ODTextCommandManagerIds_Default {
+    export interface ODTextCommandManagerIdMappings {
         "ot-kill-switch:kill":api.ODTextCommand
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "ot-kill-switch:kill":{source:"slash"|"text",params:{},workers:"ot-kill-switch:kill"|"ot-kill-switch:logs"},
+    export interface ODCommandResponderManagerIdMappings {
+        "ot-kill-switch:kill":{origin:"slash"|"text",params:{},workers:"ot-kill-switch:kill"|"ot-kill-switch:logs"},
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-kill-switch:kill-message":{source:"slash"|"text"|"other",params:{enabled:boolean,user:discord.User},workers:"ot-kill-switch:kill-message"},
-        "ot-kill-switch:active-message":{source:"slash"|"text"|"button"|"dropdown"|"other",params:{},workers:"ot-kill-switch:active-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-kill-switch:kill-message":{origin:"slash"|"text"|"other",params:{enabled:boolean,user:discord.User},workers:"ot-kill-switch:kill-message"},
+        "ot-kill-switch:active-message":{origin:"slash"|"text"|"button"|"dropdown"|"other",params:{},workers:"ot-kill-switch:active-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-kill-switch:kill-embed":{source:"slash"|"text"|"other",params:{enabled:boolean,user:discord.User},workers:"ot-kill-switch:kill-embed"},
-        "ot-kill-switch:active-embed":{source:"slash"|"text"|"button"|"dropdown"|"other",params:{},workers:"ot-kill-switch:active-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-kill-switch:kill-embed":{origin:"slash"|"text"|"other",params:{enabled:boolean,user:discord.User},workers:"ot-kill-switch:kill-embed"},
+        "ot-kill-switch:active-embed":{origin:"slash"|"text"|"button"|"dropdown"|"other",params:{},workers:"ot-kill-switch:active-embed"},
     }
-    export interface ODPluginClassManagerIds_Default {
+    export interface ODPluginClassManagerIdMappings {
         "ot-kill-switch:manager":OTKillSwitchManager,
     }
 }
@@ -97,7 +96,7 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("ot-kill-switch:kill-embed"))
     embeds.get("ot-kill-switch:kill-embed").workers.add(
-        new api.ODWorker("ot-kill-switch:kill-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-kill-switch:kill-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             instance.setTitle(utilities.emojiTitle("💀","Kill Switch "+(params.enabled ? "Enabled" : "Disabled")))
             instance.setColor(generalConfig.data.mainColor)
@@ -110,10 +109,10 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 
     embeds.add(new api.ODEmbed("ot-kill-switch:active-embed"))
     embeds.get("ot-kill-switch:active-embed").workers.add(
-        new api.ODWorker("ot-kill-switch:active-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-kill-switch:active-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             instance.setTitle(utilities.emojiTitle("❌","Temporary Ticket Cooldown!"))
-            instance.setColor(generalConfig.data.system.useRedErrorEmbeds ? "Red" : generalConfig.data.mainColor)
+            instance.setColor(generalConfig.data.ticketSystem.useRedErrorEmbeds ? "Red" : generalConfig.data.mainColor)
             instance.setDescription("The server is currently in a temporary ticket cooldown! Due to this, no-one is able to create tickets at the moment.")
             instance.setFooter(opendiscord.languages.getTranslation("errors.descriptions.askForInfo"))
         })
@@ -124,16 +123,16 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-kill-switch:kill-message"))
     messages.get("ot-kill-switch:kill-message").workers.add(
-        new api.ODWorker("ot-kill-switch:kill-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-kill-switch:kill-message",0,async (instance,params,origin,cancel) => {
             const {enabled,user} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-kill-switch:kill-embed").build(source,{enabled,user}))
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-kill-switch:kill-embed").build(origin,{enabled,user}))
         })
     )
 
     messages.add(new api.ODMessage("ot-kill-switch:active-message"))
     messages.get("ot-kill-switch:active-message").workers.add(
-        new api.ODWorker("ot-kill-switch:active-message",0,async (instance,params,source,cancel) => {
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-kill-switch:active-embed").build(source,{}))
+        new api.ODWorker("ot-kill-switch:active-message",0,async (instance,params,origin,cancel) => {
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-kill-switch:active-embed").build(origin,{}))
             instance.setEphemeral(true)
         })
     )
@@ -146,31 +145,31 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("ot-kill-switch:kill",generalConfig.data.prefix,"kill"))
     commands.get("ot-kill-switch:kill").workers.add([
-        new api.ODWorker("opendiscord:permissions",1,async (instance,params,source,cancel) => {
+        new api.ODWorker("opendiscord:permissions",1,async (instance,params,origin,cancel) => {
             if (!opendiscord.permissions.hasPermissions("admin",await opendiscord.permissions.getPermissions(instance.user,instance.channel,instance.guild,{allowChannelRoleScope:false,allowChannelUserScope:false,allowGlobalRoleScope:true,allowGlobalUserScope:true}))){
                 //no permissions
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
                 return cancel()
             }
         }),
-        new api.ODWorker("ot-kill-switch:kill",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-kill-switch:kill",0,async (instance,params,origin,cancel) => {
             const {guild,channel,user,options} = instance
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
 
             //switch & reply
             const newValue = options.getString("enabled",true) === "true"
             manager.enabled = newValue
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:kill-message").build(source,{enabled:newValue,user}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:kill-message").build(origin,{enabled:newValue,user}))
         }),
-        new api.ODWorker("ot-kill-switch:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-kill-switch:logs",-1,(instance,params,origin,cancel) => {
             opendiscord.log(instance.user.displayName+" used the 'kill' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source},
+                {key:"method",value:origin},
                 {key:"enabled",value:opendiscord.plugins.classes.get("ot-kill-switch:manager").enabled.toString()}
             ])
         })
@@ -179,9 +178,9 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
 //DISABLE COMMAND RESPONDER (on ticket creation)
 opendiscord.events.get("afterCommandRespondersLoaded").listen((commands) => {
-    commands.get("opendiscord:ticket").workers.add(new api.ODWorker("ot-kill-switch:switch",2,async (instance,params,source,cancel) => {
+    commands.get("opendiscord:ticket").workers.add(new api.ODWorker("ot-kill-switch:switch",2,async (instance,params,origin,cancel) => {
         if (opendiscord.plugins.classes.get("ot-kill-switch:manager").enabled){
-            instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:active-message").build(source,{}))
+            instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:active-message").build(origin,{}))
             return cancel()
         }
     }))
@@ -189,9 +188,9 @@ opendiscord.events.get("afterCommandRespondersLoaded").listen((commands) => {
 
 //DISABLE BUTTON RESPONDER (on ticket creation)
 opendiscord.events.get("afterButtonRespondersLoaded").listen((buttons) => {
-    buttons.get("opendiscord:ticket-option").workers.add(new api.ODWorker("ot-kill-switch:switch",2,async (instance,params,source,cancel) => {
+    buttons.get("opendiscord:ticket-option").workers.add(new api.ODWorker("ot-kill-switch:switch",2,async (instance,params,origin,cancel) => {
         if (opendiscord.plugins.classes.get("ot-kill-switch:manager").enabled){
-            instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:active-message").build(source,{}))
+            instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:active-message").build(origin,{}))
             return cancel()
         }
     }))
@@ -199,9 +198,9 @@ opendiscord.events.get("afterButtonRespondersLoaded").listen((buttons) => {
 
 //DISABLE DROPDOWN RESPONDER (on ticket creation)
 opendiscord.events.get("afterDropdownRespondersLoaded").listen((dropdowns) => {
-    dropdowns.get("opendiscord:panel-dropdown-tickets").workers.add(new api.ODWorker("ot-kill-switch:switch",2,async (instance,params,source,cancel) => {
+    dropdowns.get("opendiscord:panel-dropdown").workers.add(new api.ODWorker("ot-kill-switch:switch",2,async (instance,params,origin,cancel) => {
         if (opendiscord.plugins.classes.get("ot-kill-switch:manager").enabled){
-            instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:active-message").build(source,{}))
+            instance.reply(await opendiscord.builders.messages.getSafe("ot-kill-switch:active-message").build(origin,{}))
             return cancel()
         }
     }))

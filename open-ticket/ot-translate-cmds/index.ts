@@ -1,17 +1,16 @@
 import { api, opendiscord, utilities } from "#opendiscord"
-import { OTTranslateCmdsConfig } from "./configDefaults"
-import { translateCmdsConfigStructure } from "./checkerStructures"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
+import { OTTranslateCmdsConfig } from "./configDefaults.js"
+import { translateCmdsConfigStructure } from "./checkerStructures.js"
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-translate-cmds":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-translate-cmds:translations": OTTranslateCmdsConfig;
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-translate-cmds:translations":api.ODChecker;
     }
 }

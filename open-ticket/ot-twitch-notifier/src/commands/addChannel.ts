@@ -3,9 +3,9 @@
 ///////////////////////////////////////
 import { api, opendiscord } from "#opendiscord";
 import * as discord from "discord.js";
-import { TwitchODManager } from "../TwitchODManager";
-import { getTwitchStorage, TwitchSubscription } from "../storage";
-import { buildResponseMessage } from "../embeds";
+import { TwitchODManager } from "../TwitchODManager.js";
+import { getTwitchStorage, TwitchSubscription } from "../storage.js";
+import { buildResponseMessage } from "../embeds.js";
 
 export async function handleAddChannel(
   instance: any,

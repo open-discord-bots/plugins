@@ -5,7 +5,7 @@
     "startFile":"index.ts",
     "supportedVersions":["OTv4.0.x","OTv4.1.x","OTv4.2.x"],
 
-    "enabled":true,
+    "enabled":false,
     "priority":0,
     "events":[],
 

@@ -1,21 +1,18 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
-class OTTicketMessageExtrasConfig extends api.ODJsonConfig {
-    declare data: {
-        ticketCreatorPfpInThumbnail:boolean
-    }
-}
+class OTTicketMessageExtrasConfig extends api.ODJsonConfig< {
+    ticketCreatorPfpInThumbnail:boolean
+}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-ticket-message-extras":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-ticket-message-extras:config": OTTicketMessageExtrasConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-ticket-message-extras:config": api.ODChecker
     }
 }
@@ -39,7 +36,7 @@ opendiscord.events.get("onCheckerLoad").listen((checkers) => {
 opendiscord.events.get("afterEmbedBuildersLoaded").listen((embeds) => {
     const config = opendiscord.configs.get("ot-ticket-message-extras:config")
     
-    embeds.get("opendiscord:ticket-message").workers.add(new api.ODWorker("ot-ticket-message-extras:creator-pfp",1,(instance,params,source,cancel) => {
+    embeds.get("opendiscord:ticket-message").workers.add(new api.ODWorker("ot-ticket-message-extras:creator-pfp",1,(instance,params,origin,cancel) => {
         const {user} = params
         if (config.data.ticketCreatorPfpInThumbnail) instance.setThumbnail(user.displayAvatarURL())
     }))

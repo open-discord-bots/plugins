@@ -2,8 +2,6 @@ import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
 import ansis from "ansis"
 
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
-
 //DECLARATION
 export interface OTRestrictionData {
     optionId:string,
@@ -12,21 +10,18 @@ export interface OTRestrictionData {
     enableBlacklist:boolean,
     blacklistedRoles:string[]
 }
-export class OTRestrictionsConfig extends api.ODJsonConfig {
-    declare data: {
-        priority:"whitelist"|"blacklist",
-        restrictions:OTRestrictionData[]
-    }
-}
-
+export class OTRestrictionsConfig extends api.ODJsonConfig<{
+    priority:"whitelist"|"blacklist",
+    restrictions:OTRestrictionData[]
+}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-restrictions":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-restrictions:config":OTRestrictionsConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-restrictions:config":api.ODChecker
     }
 }

@@ -1,26 +1,21 @@
-import { api, opendiscord, utilities } from "#opendiscord";
-import * as discord from "discord.js";
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
+import { api, opendiscord, utilities } from "#opendiscord"
+import * as discord from "discord.js"
 
 //DECLARATION
-class OTAssignRoleConfig extends api.ODJsonConfig {
-    declare data: {
-        roleId:string
-    }
-}
+class OTAssignRoleConfig extends api.ODJsonConfig<{roleId:string}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-assign-role":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-assign-role:config": OTAssignRoleConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-assign-role:config": api.ODChecker
     }
-    export interface ODEventIds_Default {
-        "ot-assign-role:onRoleAdded":api.ODEvent_Default<(member:discord.GuildMember) => api.ODPromiseVoid>
-        "ot-assign-role:onRoleRemoved":api.ODEvent_Default<(member:discord.GuildMember) => api.ODPromiseVoid>
+    export interface ODEventManagerIdMappings {
+        "ot-assign-role:onRoleAdded":api.ODEvent<(member:discord.GuildMember,role:discord.Role) => api.ODPromiseVoid>
+        "ot-assign-role:onRoleRemoved":api.ODEvent<(member:discord.GuildMember,role:discord.Role) => api.ODPromiseVoid>
     }
 }
 
@@ -75,6 +70,8 @@ opendiscord.events.get("afterTicketCreated").listen(async (ticket,creator,channe
         {key:"user",value:creator.displayName},
         {key:"userid",value:creator.id,hidden:true},
     ])
+
+    await opendiscord.events.get("ot-assign-role:onRoleAdded").emit([member,role])
 })
 
 //REMOVE ROLE ON TICKET DELETION
@@ -112,4 +109,6 @@ opendiscord.events.get("onTicketDelete").listen(async (ticket,deleter,channel,re
         {key:"user",value:creator.displayName},
         {key:"userid",value:creator.id,hidden:true},
     ])
+
+    await opendiscord.events.get("ot-assign-role:onRoleRemoved").emit([member,role])
 })

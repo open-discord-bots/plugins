@@ -1,9 +1,9 @@
 import { opendiscord, api, utilities } from "#opendiscord"
-import { ODReminderManager, ODReminder } from "./reminder"
+import { ODReminderManager, ODReminder, ODReminderJson } from "./reminder.js"
 
-import "./builders/messages";
-import "./builders/embeds";
-import "./builders/commands";
+import "./builders/messages.js";
+import "./builders/embeds.js";
+import "./builders/commands.js";
 
 //REGISTER PLUGIN CLASSES
 opendiscord.events.get("onPluginClassLoad").listen((classes) => {
@@ -11,12 +11,12 @@ opendiscord.events.get("onPluginClassLoad").listen((classes) => {
 })
 
 //Load database savers
-opendiscord.events.get("onCodeLoad").listen(async (code) => {
+opendiscord.events.get("onTaskLoad").listen(async (code) => {
     const reminderManager = opendiscord.plugins.classes.get("ot-reminders:manager")
     const mainVersion = opendiscord.versions.get("opendiscord:version")
     const globalDatabase = opendiscord.databases.get("opendiscord:global")
     
-    opendiscord.code.add(new api.ODCode("ot-reminders",6,() => {
+    opendiscord.tasks.add(new api.ODTask("ot-reminders",6,() => {
         reminderManager.onAdd(async (reminder) => {
             await globalDatabase.set("ot-reminders:reminder",reminder.id.value,reminder.toJson(mainVersion))
         })
@@ -62,7 +62,7 @@ const loadAllReminders = async () => {
     if (!reminders) return
     for (const reminder of reminders){
         try {
-            opendiscord.plugins.classes.get("ot-reminders:manager").add(ODReminder.fromJson(reminder.value))
+            opendiscord.plugins.classes.get("ot-reminders:manager").add(ODReminder.fromJson(reminder.value as ODReminderJson))
         } catch (err){
             process.emit("uncaughtException",err)
             process.emit("uncaughtException",new api.ODPluginError("Failed to load reminder from database! (see error above) => id: "+reminder.key))

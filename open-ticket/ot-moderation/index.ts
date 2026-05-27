@@ -3,38 +3,38 @@ import * as discord from "discord.js";
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-moderation": api.ODPlugin;
     }
-    export interface ODSlashCommandManagerIds_Default {
+    export interface ODSlashCommandManagerIdMappings {
         "ot-moderation:ban": api.ODSlashCommand;
         "ot-moderation:unban": api.ODSlashCommand;
         "ot-moderation:kick": api.ODSlashCommand;
         "ot-moderation:warn": api.ODSlashCommand;
     }
-    export interface ODTextCommandManagerIds_Default {
+    export interface ODTextCommandManagerIdMappings {
         "ot-moderation:ban": api.ODTextCommand;
         "ot-moderation:unban": api.ODTextCommand;
         "ot-moderation:kick": api.ODTextCommand;
         "ot-moderation:warn": api.ODTextCommand;
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "ot-moderation:ban": { source: "slash" | "text", params: {}, workers: "ot-moderation:ban" | "ot-moderation:logs" };
-        "ot-moderation:unban": { source: "slash" | "text", params: {}, workers: "ot-moderation:unban" | "ot-moderation:logs" };
-        "ot-moderation:kick": { source: "slash" | "text", params: {}, workers: "ot-moderation:kick" | "ot-moderation:logs" };
-        "ot-moderation:warn": { source: "slash" | "text", params: {}, workers: "ot-moderation:warn" | "ot-moderation:logs" };
+    export interface ODCommandResponderManagerIdMappings {
+        "ot-moderation:ban": { origin: "slash" | "text", params: {}, workers: "ot-moderation:ban" | "ot-moderation:logs" };
+        "ot-moderation:unban": { origin: "slash" | "text", params: {}, workers: "ot-moderation:unban" | "ot-moderation:logs" };
+        "ot-moderation:kick": { origin: "slash" | "text", params: {}, workers: "ot-moderation:kick" | "ot-moderation:logs" };
+        "ot-moderation:warn": { origin: "slash" | "text", params: {}, workers: "ot-moderation:warn" | "ot-moderation:logs" };
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-moderation:ban-message": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:ban-message" };
-        "ot-moderation:unban-message": { source: "slash" | "text" | "other", params: {author:discord.User,userId:string,reason:string|null}, workers: "ot-moderation:unban-message" };
-        "ot-moderation:kick-message": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:kick-message" };
-        "ot-moderation:warn-message": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:warn-message" };
+    export interface ODMessageManagerIdMappings {
+        "ot-moderation:ban-message": { origin: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:ban-message" };
+        "ot-moderation:unban-message": { origin: "slash" | "text" | "other", params: {author:discord.User,userId:string,reason:string|null}, workers: "ot-moderation:unban-message" };
+        "ot-moderation:kick-message": { origin: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:kick-message" };
+        "ot-moderation:warn-message": { origin: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:warn-message" };
  }
-    export interface ODEmbedManagerIds_Default {
-        "ot-moderation:ban-embed": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:ban-embed" };
-        "ot-moderation:unban-embed": { source: "slash" | "text" | "other", params: {author:discord.User,userId:string,reason:string|null}, workers: "ot-moderation:unban-embed" };
-        "ot-moderation:kick-embed": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:kick-embed" };
-        "ot-moderation:warn-embed": { source: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:warn-embed" };
+    export interface ODEmbedManagerIdMappings {
+        "ot-moderation:ban-embed": { origin: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:ban-embed" };
+        "ot-moderation:unban-embed": { origin: "slash" | "text" | "other", params: {author:discord.User,userId:string,reason:string|null}, workers: "ot-moderation:unban-embed" };
+        "ot-moderation:kick-embed": { origin: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:kick-embed" };
+        "ot-moderation:warn-embed": { origin: "slash" | "text" | "other", params: {author:discord.User,user:discord.User,reason:string|null}, workers: "ot-moderation:warn-embed" };
  }
 }
 
@@ -264,7 +264,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     // Ban Embed
     embeds.add(new api.ODEmbed("ot-moderation:ban-embed"));
     embeds.get("ot-moderation:ban-embed").workers.add(
-        new api.ODWorker("ot-moderation:ban-embed", 0, (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:ban-embed", 0, (instance, params, origin, cancel) => {
             instance.setTitle(utilities.emojiTitle("🚫","User Banned"))
             instance.setColor(generalConfig.data.mainColor);
             instance.setDescription(discord.userMention(params.user.id)+" has been banned from the server.");
@@ -277,7 +277,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     // Unban Embed
     embeds.add(new api.ODEmbed("ot-moderation:unban-embed"));
     embeds.get("ot-moderation:unban-embed").workers.add(
-        new api.ODWorker("ot-moderation:unban-embed", 0, (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:unban-embed", 0, (instance, params, origin, cancel) => {
             instance.setTitle(utilities.emojiTitle("🚫","User Unbanned"))
             instance.setColor(generalConfig.data.mainColor);
             instance.setDescription(discord.userMention(params.userId)+" has been unbanned from the server.");
@@ -290,7 +290,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     // Kick Embed
     embeds.add(new api.ODEmbed("ot-moderation:kick-embed"));
     embeds.get("ot-moderation:kick-embed").workers.add(
-        new api.ODWorker("ot-moderation:kick-embed", 0, (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:kick-embed", 0, (instance, params, origin, cancel) => {
             instance.setTitle(utilities.emojiTitle("👋","User Kicked"))
             instance.setColor(generalConfig.data.mainColor);
             instance.setDescription(discord.userMention(params.user.id)+" has been kicked from the server.");
@@ -303,7 +303,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     // Warn Embed
     embeds.add(new api.ODEmbed("ot-moderation:warn-embed"));
     embeds.get("ot-moderation:warn-embed").workers.add(
-        new api.ODWorker("ot-moderation:warn-embed", 0, (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:warn-embed", 0, (instance, params, origin, cancel) => {
             instance.setTitle(utilities.emojiTitle("⚠️","User Warned"))
             instance.setColor(generalConfig.data.mainColor);
             instance.setDescription(discord.userMention(params.user.id)+" has been warned.");
@@ -319,36 +319,36 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     // Ban Message Builder
     messages.add(new api.ODMessage("ot-moderation:ban-message"))
     messages.get("ot-moderation:ban-message").workers.add(
-        new api.ODWorker("ot-moderation:ban-message", 0, async (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:ban-message", 0, async (instance, params, origin, cancel) => {
             const {user,reason,author} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-moderation:ban-embed").build(source,{user,reason,author}));    
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-moderation:ban-embed").build(origin,{user,reason,author}));    
         })
     );
 
     // Unban Message Builder
     messages.add(new api.ODMessage("ot-moderation:unban-message"))
     messages.get("ot-moderation:unban-message").workers.add(
-        new api.ODWorker("ot-moderation:unban-message", 0, async (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:unban-message", 0, async (instance, params, origin, cancel) => {
             const {userId,reason,author} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-moderation:unban-embed").build(source,{userId,reason,author}));
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-moderation:unban-embed").build(origin,{userId,reason,author}));
         })
     );
 
     // Kick Message Builder
     messages.add(new api.ODMessage("ot-moderation:kick-message"))
     messages.get("ot-moderation:kick-message").workers.add(
-        new api.ODWorker("ot-moderation:kick-message", 0, async (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:kick-message", 0, async (instance, params, origin, cancel) => {
             const {user,reason,author} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-moderation:kick-embed").build(source,{user,reason,author}));
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-moderation:kick-embed").build(origin,{user,reason,author}));
         })
     );
 
     // Warn Message Builder
     messages.add(new api.ODMessage("ot-moderation:warn-message"))
     messages.get("ot-moderation:warn-message").workers.add(
-        new api.ODWorker("ot-moderation:warn-message", 0, async (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:warn-message", 0, async (instance, params, origin, cancel) => {
             const {user,reason,author} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-moderation:warn-embed").build(source,{user,reason,author}));
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-moderation:warn-embed").build(origin,{user,reason,author}));
         })
     );
 });
@@ -360,23 +360,23 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     // Ban Command Responder
     commands.add(new api.ODCommandResponder("ot-moderation:ban",generalConfig.data.prefix,"ban"));
     commands.get("ot-moderation:ban").workers.add([
-        new api.ODWorker("ot-moderation:ban", 0, async (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:ban", 0, async (instance, params, origin, cancel) => {
             const { guild, channel, user, member } = instance;
 
             if (!guild || !member){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}));
                 return cancel();
             }
 
             // Check if the bot has permission to ban members
             if (!guild.members.me || !guild.members.me.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to ban people in this server."}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to ban people in this server."}));
                 return cancel();
             }
 
             // Check if the user has permission to ban members
             if (!member.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild,channel,user,permissions:["admin","discord-administrator"]}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild,channel,user,permissions:["admin","discord-administrator"]}));
                 return cancel();
             }
 
@@ -386,13 +386,13 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             const targetMember = await opendiscord.client.fetchGuildMember(guild,targetUser.id)
 
             if (!targetMember){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"Unable to find target member in server."}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"Unable to find target member in server."}));
                 return cancel();
             }
 
             // Check if the target user has a higher or equal role than the user executing the command
             if (targetMember.roles.highest.position >= member.roles.highest.position) {
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"You do not have permissions to ban a user with a higher role."}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"You do not have permissions to ban a user with a higher role."}));
                 return cancel();
             }
 
@@ -403,12 +403,12 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             // Ban the user
             try{
                 await guild.members.ban(targetUser,{reason:(reason ?? "/")})
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-moderation:ban-message").build(source,{author:user,user:targetUser,reason}));
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-moderation:ban-message").build(origin,{author:user,user:targetUser,reason}));
             }catch(err){
                 process.emit("uncaughtException",err)
             }
         }),
-        new api.ODWorker("ot-moderation:logs", -1, (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:logs", -1, (instance, params, origin, cancel) => {
             const targetUser = instance.options.getUser("user",true);
             const reason = instance.options.getString("reason",false) ?? "/"
             opendiscord.log(`${instance.user.displayName} has banned ${targetUser.displayName} from the server!`, "plugin", [
@@ -416,7 +416,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"target",value:targetUser.username},
                 {key:"targetid",value:targetUser.id,hidden:true},
-                {key:"method",value:source},
+                {key:"method",value:origin},
                 {key:"reason",value:reason},
             ])
         })
@@ -425,23 +425,23 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
  // Unban Command Responder
     commands.add(new api.ODCommandResponder("ot-moderation:unban", generalConfig.data.prefix, "unban"));
     commands.get("ot-moderation:unban").workers.add([
-        new api.ODWorker("ot-moderation:unban", 0, async (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:unban", 0, async (instance, params, origin, cancel) => {
             const { guild, channel, user, member } = instance;
 
             if (!guild || !member){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}));
                 return cancel();
             }
 
             // Check if the bot has permission to ban members
             if (!guild.members.me || !guild.members.me.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to unban people in this server."}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to unban people in this server."}));
                 return cancel();
             }
 
             // Check if the user has permission to ban members
             if (!member.permissions.has(discord.PermissionsBitField.Flags.BanMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild,channel,user,permissions:["admin","discord-administrator"]}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild,channel,user,permissions:["admin","discord-administrator"]}));
                 return cancel();
             }
 
@@ -452,19 +452,19 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             // Unban the user
             try {
                 await guild.members.unban(userId, reason ?? "/");
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-moderation:unban-message").build(source,{author:user,userId,reason}));
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-moderation:unban-message").build(origin,{author:user,userId,reason}));
             }catch(err){
                 process.emit("uncaughtException",err)
             }
         }),
-        new api.ODWorker("ot-moderation:logs", -1, (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:logs", -1, (instance, params, origin, cancel) => {
             const targetUserId = instance.options.getString("userid", true)
             const reason = instance.options.getString("reason",false) ?? "/"
             opendiscord.log(`${instance.user.displayName} has unbanned ${targetUserId} in the server!`, "plugin", [
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"targetid",value:targetUserId},
-                {key:"method",value:source},
+                {key:"method",value:origin},
                 {key:"reason",value:reason},
             ])
         })
@@ -473,23 +473,23 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     // Kick Command Responder
     commands.add(new api.ODCommandResponder("ot-moderation:kick", generalConfig.data.prefix, "kick"));
     commands.get("ot-moderation:kick").workers.add([
-        new api.ODWorker("ot-moderation:kick", 0, async (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:kick", 0, async (instance, params, origin, cancel) => {
             const { guild, channel, user, member } = instance;
 
             if (!guild || !member){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}));
                 return cancel();
             }
 
             // Check if the bot has permission to kick members
             if (!guild.members.me || !guild.members.me.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to kick people in this server."}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"The bot doesn't have permissions to kick people in this server."}));
                 return cancel();
             }
 
             // Check if the user has permission to kick members
             if (!member.permissions.has(discord.PermissionsBitField.Flags.KickMembers)) {
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild,channel,user,permissions:["admin","discord-administrator"]}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild,channel,user,permissions:["admin","discord-administrator"]}));
                 return cancel();
             }
 
@@ -499,13 +499,13 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             const targetMember = await opendiscord.client.fetchGuildMember(guild,targetUser.id)
 
             if (!targetMember){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"Unable to find target member in server."}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"Unable to find target member in server."}));
                 return cancel();
             }
 
             // Check if the target user has a higher or equal role than the user executing the command
             if (targetMember.roles.highest.position >= member.roles.highest.position) {
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,layout:"simple",error:"You do not have permissions to ban a user with a higher role."}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"You do not have permissions to ban a user with a higher role."}));
                 return cancel();
             }
 
@@ -516,12 +516,12 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             // Kick the user
             try{
                 await guild.members.kick(targetUser,reason ?? "/")
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-moderation:kick-message").build(source,{author:user,user:targetUser,reason}));
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-moderation:kick-message").build(origin,{author:user,user:targetUser,reason}));
             }catch(err){
                 process.emit("uncaughtException",err)
             }
         }),
-        new api.ODWorker("ot-moderation:logs", -1, (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:logs", -1, (instance, params, origin, cancel) => {
             const targetUser = instance.options.getUser("user",true);
             const reason = instance.options.getString("reason",false) ?? "/"
             opendiscord.log(`${instance.user.displayName} has kicked ${targetUser.displayName} from the server!`, "plugin", [
@@ -529,7 +529,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"target",value:targetUser.username},
                 {key:"targetid",value:targetUser.id,hidden:true},
-                {key:"method",value:source},
+                {key:"method",value:origin},
                 {key:"reason",value:reason},
             ])
         })
@@ -538,17 +538,17 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     // Warn Command Responder
     commands.add(new api.ODCommandResponder("ot-moderation:warn", generalConfig.data.prefix, "warn"));
     commands.get("ot-moderation:warn").workers.add([
-        new api.ODWorker("ot-moderation:warn", 0, async (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:warn", 0, async (instance, params, origin, cancel) => {
             const { guild, channel, user, member } = instance;
 
             if (!guild || !member){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}));
                 return cancel();
             }
 
             // Check if the user has permission to warn members
             if (!opendiscord.permissions.hasPermissions("support",await opendiscord.permissions.getPermissions(user,channel,guild,{allowChannelRoleScope:false,allowChannelUserScope:false,allowGlobalRoleScope:true,allowGlobalUserScope:true}))){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild,channel,user,permissions:["admin","discord-administrator"]}));
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild,channel,user,permissions:["admin","discord-administrator"]}));
                 return cancel();
             }
 
@@ -563,12 +563,12 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             // Warn the user
             try{
                 //TODO: PRESERVE WARNINGS :)
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-moderation:warn-message").build(source,{author:user,user:targetUser,reason}));
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-moderation:warn-message").build(origin,{author:user,user:targetUser,reason}));
             }catch(err){
                 process.emit("uncaughtException",err)
             }
         }),
-        new api.ODWorker("ot-moderation:logs", -1, (instance, params, source, cancel) => {
+        new api.ODWorker("ot-moderation:logs", -1, (instance, params, origin, cancel) => {
             const targetUser = instance.options.getUser("user",true);
             const reason = instance.options.getString("reason",false) ?? "/"
             opendiscord.log(`${instance.user.displayName} has warned ${targetUser.displayName} in the server!`, "plugin", [
@@ -576,7 +576,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"target",value:targetUser.username},
                 {key:"targetid",value:targetUser.id,hidden:true},
-                {key:"method",value:source},
+                {key:"method",value:origin},
                 {key:"reason",value:reason},
             ])
         })

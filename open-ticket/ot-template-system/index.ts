@@ -1,6 +1,5 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //TEMPLATE DECLARATION
 interface Template {
@@ -28,35 +27,33 @@ interface Template {
     };
 }
 
-class TemplatesConfig extends api.ODJsonConfig {
-    declare data: Template[]
-}
+class TemplatesConfig extends api.ODJsonConfig<Template[]> {}
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-template-system":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-template-system:config":TemplatesConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-template-system:config":api.ODChecker;
     }
-    export interface ODSlashCommandManagerIds_Default {
-        "ot-template-system:plantillas":api.ODSlashCommand
+    export interface ODSlashCommandManagerIdMappings {
+        "ot-template-system:templates":api.ODSlashCommand
     }
-    export interface ODTextCommandManagerIds_Default {
-        "ot-template-system:plantillas":api.ODTextCommand
+    export interface ODTextCommandManagerIdMappings {
+        "ot-template-system:templates":api.ODTextCommand
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "ot-template-system:plantillas":{source:"slash"|"text",params:{},workers:"ot-template-system:plantillas"|"ot-template-system:logs"},
+    export interface ODCommandResponderManagerIdMappings {
+        "ot-template-system:templates":{origin:"slash"|"text",params:{},workers:"ot-template-system:templates"|"ot-template-system:logs"},
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-template-system:template-message":{source:"slash"|"text"|"other",params:{template:Template,user:discord.User},workers:"ot-template-system:template-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-template-system:template-message":{origin:"slash"|"text"|"other",params:{template:Template,user:discord.User},workers:"ot-template-system:template-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-template-system:template-embed":{source:"slash"|"text"|"other",params:{template:Template},workers:"ot-template-system:template-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-template-system:template-embed":{origin:"slash"|"text"|"other",params:{template:Template},workers:"ot-template-system:template-embed"},
     }
 }
 
@@ -174,7 +171,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 
     embeds.add(new api.ODEmbed("ot-template-system:template-embed"))
     embeds.get("ot-template-system:template-embed")?.workers.add(
-        new api.ODWorker("ot-template-system:template-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-template-system:template-embed",0,(instance,params,origin,cancel) => {
             const { template } = params;
 
             if(!template.message.embed.enabled) return cancel();
@@ -198,7 +195,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-template-system:template-message"))
     messages.get("ot-template-system:template-message")?.workers.add(
-        new api.ODWorker("ot-template-system:template-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-template-system:template-message",0,async (instance,params,origin,cancel) => {
             const { template, user } = params;
 
             if(!template.message.enabled) return cancel();
@@ -221,7 +218,7 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
 
             //add custom embed
             if(template.message.embed.enabled) {
-                instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-template-system:template-embed").build(source,{template}));
+                instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-template-system:template-embed").build(origin,{template}));
             }
         })
     )
@@ -234,15 +231,15 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("ot-template-system:templates",generalConfig.data.prefix,"templates"))
     commands.get("ot-template-system:templates")?.workers.add([
-        new api.ODWorker("ot-template-system:templates",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-template-system:templates",0,async (instance,params,origin,cancel) => {
             const {guild,channel,user} = instance
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
 
             if(!templates.data || templates.data.length === 0) {
-                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"No templates available",layout:"simple"}));
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"No templates available",layout:"simple"}));
                 return cancel();
             }
 
@@ -251,7 +248,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             const template = templates.data.find(t => t.id === templateId);
 
             if(!template){
-                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Selected template not found",layout:"simple"}));
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Selected template not found",layout:"simple"}));
                 return cancel();
             }
 
@@ -268,7 +265,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             }).build())
 
             // Then build and send the template message to the channel
-            const messageTemplate = await opendiscord.builders.messages.getSafe("ot-template-system:template-message").build(source,{template, user});
+            const messageTemplate = await opendiscord.builders.messages.getSafe("ot-template-system:template-message").build(origin,{template, user});
             
             if (channel.isTextBased() && channel.isSendable()){
                 await channel.send(messageTemplate.message);
@@ -282,12 +279,12 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 {key:"template",value:template.name}
             ]);
         }),
-        new api.ODWorker("ot-template-system:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-template-system:logs",-1,(instance,params,origin,cancel) => {
             opendiscord.log(instance.user.displayName+" used the 'templates' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source}
+                {key:"method",value:origin}
             ])
         })
     ])

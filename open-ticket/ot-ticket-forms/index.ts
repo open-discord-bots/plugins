@@ -1,21 +1,20 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
-import { OTForms_Form } from "./classes/Form"
-import { OTForms_AnswersManager } from "./classes/AnswersManager";
+import { OTForms_Form } from "./classes/Form.js"
+import { OTForms_AnswersManager } from "./classes/AnswersManager.js";
 
-import "./config/configRegistration";
-import "./builders/messageBuilders";
-import "./builders/embedBuilders";
-import "./builders/buttonBuilders";
-import "./builders/modalBuilders";
-import "./builders/dropdownBuilders";
-import "./builders/commandBuilders";
+import "./config/configRegistration.js";
+import "./builders/messageBuilders.js";
+import "./builders/embedBuilders.js";
+import "./builders/buttonBuilders.js";
+import "./builders/modalBuilders.js";
+import "./builders/dropdownBuilders.js";
+import "./builders/commandBuilders.js";
 
 const forms = new Map<string, OTForms_Form>();
 
-opendiscord.events.get("afterCodeExecuted").listen(async () => {
+opendiscord.events.get("afterTasksExecuted").listen(async () => {
     const formsConfig = opendiscord.configs.get("ot-ticket-forms:config").data;
     for(const formConfig of formsConfig) {
         formConfig.questions.sort((a, b) => a.position - b.position);

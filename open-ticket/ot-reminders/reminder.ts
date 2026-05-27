@@ -1,6 +1,6 @@
 import { opendiscord, api, utilities } from "#opendiscord"
 import * as discord from "discord.js"
-import { safeTimeout, parseDate, convertTime } from "./utils/time"
+import { safeTimeout, parseDate, convertTime } from "./utils/time.js"
 
 /**## ODReminderManager `class`
  * This is an OT Reminders manager.

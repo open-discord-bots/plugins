@@ -1,54 +1,51 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-vanity":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-vanity:config":OTVanityConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-vanity:config":api.ODChecker
     }
-    export interface ODPostManagerIds_Default {
+    export interface ODPostManagerIdMappings {
         "ot-vanity:logs":api.ODPost<discord.GuildTextBasedChannel>|null
     }
-    export interface ODFormattedJsonDatabaseIds_DefaultGlobal {
+    export interface ODGlobalDatabaseIdMappings {
         "ot-vanity:vanity":{startDate:number,rankIds:string[]}
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-vanity:added-message":{source:"presence-update"|"other",params:{member:discord.GuildMember,startDate:Date},workers:"ot-vanity:added-message"},
-        "ot-vanity:removed-message":{source:"presence-update"|"other",params:{member:discord.GuildMember,startDate:Date,rankNames:string,endDate:Date},workers:"ot-vanity:removed-message"},
-        "ot-vanity:upgrade-message":{source:"presence-update"|"other",params:{member:discord.GuildMember,startDate:Date,rankId:string,rankName:string,roles:string[]},workers:"ot-vanity:upgrade-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-vanity:added-message":{origin:"presence-update"|"other",params:{member:discord.GuildMember,startDate:Date},workers:"ot-vanity:added-message"},
+        "ot-vanity:removed-message":{origin:"presence-update"|"other",params:{member:discord.GuildMember,startDate:Date,rankNames:string,endDate:Date},workers:"ot-vanity:removed-message"},
+        "ot-vanity:upgrade-message":{origin:"presence-update"|"other",params:{member:discord.GuildMember,startDate:Date,rankId:string,rankName:string,roles:string[]},workers:"ot-vanity:upgrade-message"},
     }
 }
 
 //REGISTER CONFIG
-export class OTVanityConfig extends api.ODJsonConfig {
-    declare data: {
-        vanityText:string,
-        caseSensitive:boolean,
-        matchWholeText:boolean,
-        
-        _INFO:string,
-        rewardRoles:string[],
-        timedRewardRoles:{
-            id:string,
-            name:string,
-            delayValue:number,
-            delayUnit:"minutes"|"hours"|"days",
-            roles:string[]
-        }[]
-        
-        logs:{
-            enabled:boolean,
-            channel:string
-        }
+export class OTVanityConfig extends api.ODJsonConfig<{
+    vanityText:string,
+    caseSensitive:boolean,
+    matchWholeText:boolean,
+    
+    _INFO:string,
+    rewardRoles:string[],
+    timedRewardRoles:{
+        id:string,
+        name:string,
+        delayValue:number,
+        delayUnit:"minutes"|"hours"|"days",
+        roles:string[]
+    }[]
+    
+    logs:{
+        enabled:boolean,
+        channel:string
     }
-}
+}> {}
 opendiscord.events.get("onConfigLoad").listen((configs) => {
     configs.add(new OTVanityConfig("ot-vanity:config","config.json","./plugins/ot-vanity/"))
 })
@@ -91,7 +88,7 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     const config = opendiscord.configs.get("ot-vanity:config")
 
     messages.add(new api.ODMessage("ot-vanity:added-message"))
-    messages.get("ot-vanity:added-message").workers.add(new api.ODWorker("ot-vanity:added-message",0,async (instance,params,source) => {
+    messages.get("ot-vanity:added-message").workers.add(new api.ODWorker("ot-vanity:added-message",0,async (instance,params,origin) => {
         instance.addEmbed(await (new api.ODQuickEmbed("ot-vanity:added-embed",{
             title:utilities.emojiTitle("📢","Vanity Status Activated"),
             description:discord.userMention(params.member.id)+" has added the vanity text `"+config.data.vanityText+"` to their profile.",
@@ -106,7 +103,7 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     }))
 
     messages.add(new api.ODMessage("ot-vanity:removed-message"))
-    messages.get("ot-vanity:removed-message").workers.add(new api.ODWorker("ot-vanity:removed-message",0,async (instance,params,source) => {
+    messages.get("ot-vanity:removed-message").workers.add(new api.ODWorker("ot-vanity:removed-message",0,async (instance,params,origin) => {
         instance.addEmbed(await (new api.ODQuickEmbed("ot-vanity:removed-embed",{
             title:utilities.emojiTitle("📢","Vanity Status Deactivated"),
             description:discord.userMention(params.member.id)+" has removed the vanity text `"+config.data.vanityText+"` from their profile.\nAll rewarded roles will be removed.",
@@ -122,7 +119,7 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     }))
 
     messages.add(new api.ODMessage("ot-vanity:upgrade-message"))
-    messages.get("ot-vanity:upgrade-message").workers.add(new api.ODWorker("ot-vanity:upgrade-message",0,async (instance,params,source) => {
+    messages.get("ot-vanity:upgrade-message").workers.add(new api.ODWorker("ot-vanity:upgrade-message",0,async (instance,params,origin) => {
         instance.addEmbed(await (new api.ODQuickEmbed("ot-vanity:upgrade-embed",{
             title:utilities.emojiTitle("📢","Vanity Status Upgraded"),
             description:discord.userMention(params.member.id)+" has reached the vanity rank `"+params.rankName+"`.",

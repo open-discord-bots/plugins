@@ -1,16 +1,26 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
+export class OTChannelDisplayConfig extends api.ODJsonConfig<{
+    _INFO:string,
+    channels:{
+        id:string,
+        name:string
+    }[],
+    variables:{
+        name:string,
+        variable:OTChannelDisplayAllVariables
+    }[]
+}> {}
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-channel-display":api.ODPlugin
     }
-    export interface ODConfigManagerIds_Default {
+    export interface ODConfigManagerIdMappings {
         "ot-channel-display:config":OTChannelDisplayConfig
     }
-    export interface ODCheckerManagerIds_Default {
+    export interface ODCheckerManagerIdMappings {
         "ot-channel-display:config":api.ODChecker
     }
 }
@@ -102,19 +112,6 @@ export const channelDisplayConfigStructure = new api.ODCheckerObjectStructure("o
 ]})
 
 //REGISTER CONFIG
-export class OTChannelDisplayConfig extends api.ODJsonConfig {
-    declare data: {
-        _INFO:string,
-        channels:{
-            id:string,
-            name:string
-        }[],
-        variables:{
-            name:string,
-            variable:OTChannelDisplayAllVariables
-        }[]
-    }
-}
 opendiscord.events.get("onConfigLoad").listen((configs) => {
     configs.add(new OTChannelDisplayConfig("ot-channel-display:config","config.json","./plugins/ot-channel-display/"))
 })
@@ -172,17 +169,17 @@ async function processVariables(variables:{name:string,variable:OTChannelDisplay
         else if (vari.variable == "guild.bots") content = (await mainServer.members.list()).filter((m) => m.user.bot).size.toString()
         else if (vari.variable == "guild.roles") content = mainServer.roles.cache.size.toString()
         else if (vari.variable == "guild.channels") content = mainServer.channels.cache.size.toString()
-        else if (vari.variable == "stats.tickets.created") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-created"))?.toString() ?? "0"
-        else if (vari.variable == "stats.tickets.closed") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-closed"))?.toString() ?? "0"
-        else if (vari.variable == "stats.tickets.deleted") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-deleted"))?.toString() ?? "0"
-        else if (vari.variable == "stats.tickets.reopened") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-reopened"))?.toString() ?? "0"
-        else if (vari.variable == "stats.tickets.autoclosed") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-autoclosed"))?.toString() ?? "0"
-        else if (vari.variable == "stats.tickets.autodeleted") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-autodeleted"))?.toString() ?? "0"
-        else if (vari.variable == "stats.tickets.claimed") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-claimed"))?.toString() ?? "0"
-        else if (vari.variable == "stats.tickets.pinned") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-pinned"))?.toString() ?? "0"
-        else if (vari.variable == "stats.tickets.moved") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:tickets-moved"))?.toString() ?? "0"
-        else if (vari.variable == "stats.users.blacklisted") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:users-blacklisted"))?.toString() ?? "0"
-        else if (vari.variable == "stats.transcripts.created") content = (await opendiscord.stats.get("opendiscord:global").getStat("opendiscord:transcripts-created"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.created") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-created"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.closed") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-closed"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.deleted") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-deleted"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.reopened") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-reopened"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.autoclosed") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-autoclosed"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.autodeleted") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-autodeleted"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.claimed") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-claimed"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.pinned") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-pinned"))?.toString() ?? "0"
+        else if (vari.variable == "stats.tickets.moved") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:tickets-moved"))?.toString() ?? "0"
+        else if (vari.variable == "stats.users.blacklisted") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:users-blacklisted"))?.toString() ?? "0"
+        else if (vari.variable == "stats.transcripts.created") content = (await opendiscord.statistics.get("opendiscord:global").getStat("opendiscord:transcripts-created"))?.toString() ?? "0"
         else if (vari.variable == "tickets.open") content = opendiscord.tickets.getFiltered((ticket) => !ticket.get("opendiscord:closed").value).length.toString()
         else if (vari.variable == "tickets.closed") content = opendiscord.tickets.getFiltered((ticket) => ticket.get("opendiscord:closed").value).length.toString()
         else if (vari.variable == "tickets.claimed") content = opendiscord.tickets.getFiltered((ticket) => ticket.get("opendiscord:claimed").value).length.toString()

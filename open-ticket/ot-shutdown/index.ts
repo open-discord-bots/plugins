@@ -3,23 +3,23 @@ import * as discord from "discord.js"
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-shutdown":api.ODPlugin
     }
-    export interface ODSlashCommandManagerIds_Default {
+    export interface ODSlashCommandManagerIdMappings {
         "ot-shutdown:shutdown":api.ODSlashCommand
     }
-    export interface ODTextCommandManagerIds_Default {
+    export interface ODTextCommandManagerIdMappings {
         "ot-shutdown:shutdown":api.ODTextCommand
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "ot-shutdown:shutdown":{source:"slash"|"text",params:{},workers:"ot-shutdown:shutdown"|"ot-shutdown:logs"},
+    export interface ODCommandResponderManagerIdMappings {
+        "ot-shutdown:shutdown":{origin:"slash"|"text",params:{},workers:"ot-shutdown:shutdown"|"ot-shutdown:logs"},
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-shutdown:shutdown-message":{source:"slash"|"text"|"other",params:{},workers:"ot-shutdown:shutdown-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-shutdown:shutdown-message":{origin:"slash"|"text"|"other",params:{},workers:"ot-shutdown:shutdown-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-shutdown:shutdown-embed":{source:"slash"|"text"|"other",params:{},workers:"ot-shutdown:shutdown-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-shutdown:shutdown-embed":{origin:"slash"|"text"|"other",params:{},workers:"ot-shutdown:shutdown-embed"},
     }
 }
 
@@ -60,7 +60,7 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("ot-shutdown:shutdown-embed"))
     embeds.get("ot-shutdown:shutdown-embed").workers.add(
-        new api.ODWorker("ot-shutdown:shutdown-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-shutdown:shutdown-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             instance.setTitle(utilities.emojiTitle("🪫","Shutdown"))
             instance.setColor(generalConfig.data.mainColor)
@@ -73,8 +73,8 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-shutdown:shutdown-message"))
     messages.get("ot-shutdown:shutdown-message").workers.add(
-        new api.ODWorker("ot-shutdown:shutdown-message",0,async (instance,params,source,cancel) => {
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-shutdown:shutdown-embed").build(source,{}))
+        new api.ODWorker("ot-shutdown:shutdown-message",0,async (instance,params,origin,cancel) => {
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-shutdown:shutdown-embed").build(origin,{}))
         })
     )
 })
@@ -85,30 +85,30 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("ot-shutdown:shutdown",generalConfig.data.prefix,"shutdown"))
     commands.get("ot-shutdown:shutdown").workers.add([
-        new api.ODWorker("opendiscord:permissions",1,async (instance,params,source,cancel) => {
+        new api.ODWorker("opendiscord:permissions",1,async (instance,params,origin,cancel) => {
             if (!opendiscord.permissions.hasPermissions("owner",await opendiscord.permissions.getPermissions(instance.user,instance.channel,instance.guild,{allowChannelRoleScope:false,allowChannelUserScope:false,allowGlobalRoleScope:true,allowGlobalUserScope:true}))){
                 //no permissions
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
                 return cancel()
             }
         }),
-        new api.ODWorker("ot-shutdown:shutdown",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-shutdown:shutdown",0,async (instance,params,origin,cancel) => {
             const {guild,channel,user} = instance
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-shutdown:shutdown-message").build(source,{}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-shutdown:shutdown-message").build(origin,{}))
         }),
-        new api.ODWorker("ot-shutdown:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-shutdown:logs",-1,(instance,params,origin,cancel) => {
             opendiscord.log(instance.user.displayName+" used the 'shutdown' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source}
+                {key:"method",value:origin}
             ])
         }),
-        new api.ODWorker("ot-shutdown:exit-process",-2,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-shutdown:exit-process",-2,async (instance,params,origin,cancel) => {
             opendiscord.log("Shutting down the bot...","warning")
             opendiscord.client.activity.setStatus("custom","shutting down...","invisible","",true)
             await utilities.timer(2000)

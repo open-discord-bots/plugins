@@ -13,25 +13,25 @@ export interface ODHostingStatusOptions {
 }
 
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-hosting-status":api.ODPlugin
     }
-    export interface ODSlashCommandManagerIds_Default {
+    export interface ODSlashCommandManagerIdMappings {
         "ot-hosting-status:hosting":api.ODSlashCommand
     }
-    export interface ODTextCommandManagerIds_Default {
+    export interface ODTextCommandManagerIdMappings {
         "ot-hosting-status:hosting":api.ODTextCommand
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "ot-hosting-status:hosting":{source:"slash"|"text",params:{},workers:"ot-hosting-status:hosting"|"ot-hosting-status:logs"},
+    export interface ODCommandResponderManagerIdMappings {
+        "ot-hosting-status:hosting":{origin:"slash"|"text",params:{},workers:"ot-hosting-status:hosting"|"ot-hosting-status:logs"},
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-hosting-status:hosting-message":{source:"slash"|"text"|"other",params:{data:ODHostingStatusOptions},workers:"ot-hosting-status:hosting-message"},
-        "ot-hosting-status:reply-message":{source:"slash"|"text"|"other",params:{},workers:"ot-hosting-status:reply-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-hosting-status:hosting-message":{origin:"slash"|"text"|"other",params:{data:ODHostingStatusOptions},workers:"ot-hosting-status:hosting-message"},
+        "ot-hosting-status:reply-message":{origin:"slash"|"text"|"other",params:{},workers:"ot-hosting-status:reply-message"},
     }
-    export interface ODEmbedManagerIds_Default {
-        "ot-hosting-status:hosting-embed":{source:"slash"|"text"|"other",params:{data:ODHostingStatusOptions},workers:"ot-hosting-status:hosting-embed"},
-        "ot-hosting-status:reply-embed":{source:"slash"|"text"|"other",params:{},workers:"ot-hosting-status:reply-embed"},
+    export interface ODEmbedManagerIdMappings {
+        "ot-hosting-status:hosting-embed":{origin:"slash"|"text"|"other",params:{data:ODHostingStatusOptions},workers:"ot-hosting-status:hosting-embed"},
+        "ot-hosting-status:reply-embed":{origin:"slash"|"text"|"other",params:{},workers:"ot-hosting-status:reply-embed"},
     }
 }
 
@@ -99,7 +99,7 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("ot-hosting-status:hosting-embed"))
     embeds.get("ot-hosting-status:hosting-embed").workers.add(
-        new api.ODWorker("ot-hosting-status:hosting-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-hosting-status:hosting-embed",0,(instance,params,origin,cancel) => {
             const {data} = params
 
             const color: discord.ColorResolvable = (data.type == "info") ? "Blue" : (data.type == "resolved") ? "Green" : (data.type == "planned-outage") ? "Yellow" : (data.type == "issue") ? "Orange" : "Red"
@@ -117,7 +117,7 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 
     embeds.add(new api.ODEmbed("ot-hosting-status:reply-embed"))
     embeds.get("ot-hosting-status:reply-embed").workers.add(
-        new api.ODWorker("ot-hosting-status:reply-embed",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-hosting-status:reply-embed",0,(instance,params,origin,cancel) => {
             const generalConfig = opendiscord.configs.get("opendiscord:general")
             instance.setTitle(utilities.emojiTitle("✅","Hosting Status Sent"))
             instance.setColor(generalConfig.data.mainColor)
@@ -130,10 +130,10 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-hosting-status:hosting-message"))
     messages.get("ot-hosting-status:hosting-message").workers.add(
-        new api.ODWorker("ot-hosting-status:hosting-message",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-hosting-status:hosting-message",0,async (instance,params,origin,cancel) => {
             const {data} = params
             
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-hosting-status:hosting-embed").build(source,{data}))
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-hosting-status:hosting-embed").build(origin,{data}))
 
             if (data.ping instanceof discord.Role) instance.setContent(discord.roleMention(data.ping.id))
             else if (data.ping instanceof discord.GuildMember || data.ping instanceof discord.User) instance.setContent(discord.userMention(data.ping.id))
@@ -142,8 +142,8 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
 
     messages.add(new api.ODMessage("ot-hosting-status:reply-message"))
     messages.get("ot-hosting-status:reply-message").workers.add(
-        new api.ODWorker("ot-hosting-status:reply-message",0,async (instance,params,source,cancel) => {
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-hosting-status:reply-embed").build(source,{}))
+        new api.ODWorker("ot-hosting-status:reply-message",0,async (instance,params,origin,cancel) => {
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-hosting-status:reply-embed").build(origin,{}))
             instance.setEphemeral(true)
         })
     )
@@ -155,18 +155,18 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("ot-hosting-status:hosting",generalConfig.data.prefix,"hosting"))
     commands.get("ot-hosting-status:hosting").workers.add([
-        new api.ODWorker("ot-hosting-status:hosting",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-hosting-status:hosting",0,async (instance,params,origin,cancel) => {
             const {guild,channel,user} = instance
 
             //check for guild & permissions
             if (!opendiscord.permissions.hasPermissions("admin",await opendiscord.permissions.getPermissions(user,channel,guild))){
                 //no permissions
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
                 return cancel()
             }
             //check if in guild
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
 
@@ -176,7 +176,7 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             const detailsOpt = instance.options.getString("details",true)
             const pingOpt = instance.options.getMentionable("ping",false)
 
-            await channelOpt.send((await opendiscord.builders.messages.getSafe("ot-hosting-status:hosting-message").build(source,{data:{
+            await channelOpt.send((await opendiscord.builders.messages.getSafe("ot-hosting-status:hosting-message").build(origin,{data:{
                 title:titleOpt,
                 details:detailsOpt,
                 type:typeOpt,
@@ -184,14 +184,14 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                 guild
             }})).message)
 
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-hosting-status:reply-message").build(source,{}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-hosting-status:reply-message").build(origin,{}))
         }),
-        new api.ODWorker("ot-hosting-status:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-hosting-status:logs",-1,(instance,params,origin,cancel) => {
             opendiscord.log(instance.user.displayName+" used the 'hosting' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source}
+                {key:"method",value:origin}
             ])
         })
     ])

@@ -1,26 +1,25 @@
 import {api, opendiscord, utilities} from "#opendiscord"
 import * as discord from "discord.js"
-if (utilities.project != "openticket") throw new api.ODPluginError("This plugin only works in Open Ticket!")
 
 //DECLARATION
 declare module "#opendiscord-types" {
-    export interface ODPluginManagerIds_Default {
+    export interface ODPluginManagerIdMappings {
         "ot-jump-to-top":api.ODPlugin
     }
-    export interface ODSlashCommandManagerIds_Default {
+    export interface ODSlashCommandManagerIdMappings {
         "ot-jump-to-top:top":api.ODSlashCommand
     }
-    export interface ODTextCommandManagerIds_Default {
+    export interface ODTextCommandManagerIdMappings {
         "ot-jump-to-top:top":api.ODTextCommand
     }
-    export interface ODCommandResponderManagerIds_Default {
-        "ot-jump-to-top:top":{source:"slash"|"text",params:{},workers:"ot-jump-to-top:top"|"ot-jump-to-top:logs"},
+    export interface ODCommandResponderManagerIdMappings {
+        "ot-jump-to-top:top":{origin:"slash"|"text",params:{},workers:"ot-jump-to-top:top"|"ot-jump-to-top:logs"},
     }
-    export interface ODButtonManagerIds_Default {
-        "ot-jump-to-top:top-button":{source:"slash"|"text"|"other",params:{url:string},workers:"ot-jump-to-top:top-button"},
+    export interface ODButtonManagerIdMappings {
+        "ot-jump-to-top:top-button":{origin:"slash"|"text"|"other",params:{url:string},workers:"ot-jump-to-top:top-button"},
     }
-    export interface ODMessageManagerIds_Default {
-        "ot-jump-to-top:top-message":{source:"slash"|"text"|"other",params:{url:string},workers:"ot-jump-to-top:top-message"},
+    export interface ODMessageManagerIdMappings {
+        "ot-jump-to-top:top-message":{origin:"slash"|"text"|"other",params:{url:string},workers:"ot-jump-to-top:top-message"},
     }
 }
 
@@ -61,7 +60,7 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
 opendiscord.events.get("onButtonBuilderLoad").listen((buttons) => {
     buttons.add(new api.ODButton("ot-jump-to-top:top-button"))
     buttons.get("ot-jump-to-top:top-button").workers.add(
-        new api.ODWorker("ot-jump-to-top:top-button",0,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-jump-to-top:top-button",0,(instance,params,origin,cancel) => {
             instance.setMode("url")
             instance.setUrl(params.url)
             instance.setEmoji("⬆️")
@@ -72,8 +71,8 @@ opendiscord.events.get("onButtonBuilderLoad").listen((buttons) => {
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-jump-to-top:top-message"))
     messages.get("ot-jump-to-top:top-message").workers.add(
-        new api.ODWorker("ot-jump-to-top:top-message",0,async (instance,params,source,cancel) => {
-            instance.addComponent(await opendiscord.builders.buttons.getSafe("ot-jump-to-top:top-button").build(source,{url:params.url}))
+        new api.ODWorker("ot-jump-to-top:top-message",0,async (instance,params,origin,cancel) => {
+            instance.addComponent(await opendiscord.builders.buttons.getSafe("ot-jump-to-top:top-button").build(origin,{url:params.url}))
             instance.setContent("**Click to go to the top of this ticket.**")
         })
     )
@@ -85,37 +84,37 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
 
     commands.add(new api.ODCommandResponder("ot-jump-to-top:top",generalConfig.data.prefix,"top"))
     commands.get("ot-jump-to-top:top").workers.add([
-        new api.ODWorker("ot-jump-to-top:top",0,async (instance,params,source,cancel) => {
+        new api.ODWorker("ot-jump-to-top:top",0,async (instance,params,origin,cancel) => {
             const {guild,channel,user} = instance
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
                 return cancel()
             }
             const ticket = opendiscord.tickets.get(channel.id)
             if (!ticket || channel.isDMBased()){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-unknown").build(source,{guild,channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-unknown").build(origin,{guild,channel,user}))
                 return cancel()
             }
             //return when busy
             if (ticket.get("opendiscord:busy").value){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-busy").build(source,{guild,channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-busy").build(origin,{guild,channel,user}))
                 return cancel()
             }
 
             const msg = await opendiscord.tickets.getTicketMessage(ticket)
             if (!msg){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source,{guild,channel,user,error:"Unable to find ticket message!",layout:"simple"}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Unable to find ticket message!",layout:"simple"}))
                 return cancel()
             }
 
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-jump-to-top:top-message").build(source,{url:msg.url}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-jump-to-top:top-message").build(origin,{url:msg.url}))
         }),
-        new api.ODWorker("ot-jump-to-top:logs",-1,(instance,params,source,cancel) => {
+        new api.ODWorker("ot-jump-to-top:logs",-1,(instance,params,origin,cancel) => {
             opendiscord.log(instance.user.displayName+" used the 'top' command!","plugin",[
                 {key:"user",value:instance.user.username},
                 {key:"userid",value:instance.user.id,hidden:true},
                 {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:source}
+                {key:"method",value:origin}
             ])
         })
     ])
