@@ -1,0 +1,25 @@
+{
+    "name":"OT Custom Priorities",
+    "id":"ot-custom-priorities",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.2.x"],
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "contributors":[],
+        "shortDescription":"Create or customise priority levels.",
+        "longDescription":"Create or customise priority levels including name and emoji.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["priority","priorities","customisation","urgent"]
+    }
+}

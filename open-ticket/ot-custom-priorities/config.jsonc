@@ -1,0 +1,35 @@
+{
+    /* Disable built-in priority levels. They can be replaced with custom priorities. */
+    "defaultPriorities":{
+        "disableUrgent":false, //Level 5
+        "disableVeryHigh":false, //Level 4
+        "disableHigh":false, //Level 3
+        "disableNormal":false, //Level 2
+        "disableLow":false, //Level 1
+        "disableVeryLow":false //Level 0
+    },
+    /* 
+     * Create custom priority levels.
+     * Higher levels are higher priorities and will be ranked higher.
+     * The same "level" may not exist twice.
+     */
+    "customPriorities":{
+        "enabled":false,
+        "levels":[
+            {
+               "id":"custom-prio-1",
+               "level":6,
+               "name":"Ultra Urgent",
+               "displayEmoji":"🟣", //Emoji used in embeds & dropdowns. Leave empty to disable
+               "channelEmoji":"🟣" //Emoji used in channel names. Leave empty to disable
+            },
+            {
+               "id":"custom-prio-2",
+               "level":7,
+               "name":"Ultra Ultra Urgent",
+               "displayEmoji":"🔥", //Emoji used in embeds & dropdowns. Leave empty to disable
+               "channelEmoji":"🔥" //Emoji used in channel names. Leave empty to disable
+            }
+        ]
+    }
+}
