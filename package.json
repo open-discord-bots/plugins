@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "node ./utility/generateZipFiles.js"
+        "start": "node ./generateZipFiles.js"
     },
     "dependencies": {
         "archiver": "^7.0.1"

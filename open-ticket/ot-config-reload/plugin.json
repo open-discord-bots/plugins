@@ -1,7 +1,7 @@
 {
     "name":"OT Config Reload",
     "id":"ot-config-reload",
-    "version":"1.0.4",
+    "version":"2.0.0",
     "startFile":"index.ts",
     "supportedVersions":["OTv4.2.x"],
 
@@ -15,11 +15,11 @@
 
     "details":{
         "author":"guillee.3",
-        "contributors":[],
-        "shortDescription":"Adds a config reload command.",
-        "longDescription":"This plugin adds a new command that allows reloading the Open Ticket config files without the need for a restart. Note that this command only reloads the Open Ticket configuration and does not affect the configuration of other plugins.",
+        "contributors":["DJj123dj"],
+        "shortDescription":"Reload Open Ticket config files without restarting the bot.",
+        "longDescription":"This plugin adds a new command that allows reloading the Open Ticket config files without the need for a restart. Reloading plugin configurations is supported, but may not work with all plugins.",
         "imageUrl":"",
         "projectUrl":"",
-        "tags":["config","reload","command"]
+        "tags":["config","reload","command","restart"]
     }
 }

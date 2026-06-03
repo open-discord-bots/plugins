@@ -1,4 +1,4 @@
-import { api, opendiscord, utilities } from "#opendiscord"
+import { api, opendiscord, utilities, openticketUtils } from "#opendiscord"
 import * as discord from "discord.js";
 
 //DECLARATION
@@ -6,439 +6,262 @@ declare module "#opendiscord-types" {
     export interface ODPluginManagerIdMappings {
         "ot-config-reload":api.ODPlugin
     }
-    export interface ODConfigManagerIdMappings {
-        "ot-config-reload:general": api.ODGeneralJsonCommentsConfig;
-        "ot-config-reload:options": api.ODOptionsJsonCommentsConfig;
-        "ot-config-reload:panels": api.ODPanelsJsonCommentsConfig;
-        "ot-config-reload:questions": api.ODQuestionsJsonCommentsConfig;
-        "ot-config-reload:transcripts": api.ODTranscriptsJsonCommentsConfig;
-    }
     export interface ODSlashCommandManagerIdMappings {
-        "ot-config-reload:reload": api.ODSlashCommand;
-    }
-    export interface ODTextCommandManagerIdMappings {
-        "ot-config-reload:reload": api.ODTextCommand;
+        "ot-config-reload:reload":api.ODSlashCommand
     }
     export interface ODCommandResponderManagerIdMappings {
-        "ot-config-reload:reload": {origin:"slash"|"text",params:{},workers:"ot-config-reload:reload"};
+        "ot-config-reload:reload":{origin:"slash"|"text",params:{},workers:"ot-config-reload:reload"}
     }
     export interface ODMessageManagerIdMappings {
-        "ot-config-reload:config-reload-result": {origin:"slash"|"text"|"other",params:{checkerResult:api.ODCheckerResult},workers:"ot-config-reload:config-reload-result"}
+        "ot-config-reload:reload-result":{origin:"slash"|"text"|"other",params:{user:discord.User,results:{config:api.ODConfig<any>,result:api.ODCheckerResult,checker:api.ODChecker|null}[],globalResult:api.ODCheckerResult},workers:"ot-config-reload:reload-result"}
     }
     export interface ODEmbedManagerIdMappings {
-        "ot-config-reload:config-reload-result": {origin:"slash"|"text"|"other",params:{messages:api.ODCheckerMessage[],nEmbed?:number},workers:"ot-config-reload:config-reload-result"};
-        "ot-config-reload:config-reload-failure": {origin:"slash"|"text"|"other",params:{},workers:"ot-config-reload:config-reload-failure"};
-        "ot-config-reload:config-reload-success": {origin:"slash"|"text"|"other",params:{},workers:"ot-config-reload:config-reload-success"};
+        "ot-config-reload:main-embed":{origin:"slash"|"text"|"other",params:{user:discord.User,results:{config:api.ODConfig<any>,result:api.ODCheckerResult,checker:api.ODChecker|null}[],globalResult:api.ODCheckerResult},workers:"ot-config-reload:main-embed"},
+        "ot-config-reload:failure-embed":{origin:"slash"|"text"|"other",params:{user:discord.User,result:api.ODCheckerResult},workers:"ot-config-reload:failure-embed"},
     }
-}
-
-const lang = opendiscord.languages;
-const acot = discord.ApplicationCommandOptionType;
-
-//CHECK IF USING DEVCONFIG
-function getConfigPath(){
-    const devconfigFlag = opendiscord.flags.get("opendiscord:dev-config")
-    const isDevconfig = devconfigFlag ? devconfigFlag.value : false
-
-    return (isDevconfig) ? "./devconfig/" : "./config/"
+    export interface ODAutocompleteResponderManagerIdMappings {
+        "ot-config-reload:complete-config":{origin:"autocomplete",params:{},workers:"ot-config-reload:complete-config"}
+    }
 }
 
 //REGISTER COMMANDS
 opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
     slash.add(new api.ODSlashCommand("ot-config-reload:reload", {
-        name: "reload",
-        description: "Reload Open Ticket config files without restarting the bot.",
-        type: discord.ApplicationCommandType.ChatInput,
+        name:"reload",
+        description:"Reload Open Ticket config files without restarting the bot.",
+        type:discord.ApplicationCommandType.ChatInput,
         contexts:[discord.InteractionContextType.Guild],
         integrationTypes:[discord.ApplicationIntegrationType.GuildInstall],
-        options: [
+        options:[
             {
-                name: 'config',
-                description: 'Select the optional config to reload.',
-                type: acot.String,
-                required: false,
-                choices: [
-                    { name: "general", value: "general" },
-                    { name: "options", value: "options" },
-                    { name: "panels", value: "panels" },
-                    { name: "questions", value: "questions" },
-                    { name: "transcripts", value: "transcripts" },
-                ],
+                name:"config",
+                description:"Select the config to reload. If omitted, it reloads all config files.",
+                type:discord.ApplicationCommandOptionType.String,
+                required:false,
+                autocomplete:true
             }
         ]
-    }));
-});
+    }))
+})
 
-opendiscord.events.get("onTextCommandLoad").listen((text) => {
-    const generalConfig = opendiscord.configs.get("opendiscord:general");
-    text.add(
-        new api.ODTextCommand("ot-config-reload:reload", {
-            name: "reload",
-            prefix: generalConfig.data.prefix,
-            dmPermission: false,
-            guildPermission: true,
-            allowBots: false,
-            options: [
-                {
-                    name: "config",
-                    type: "string",
-                    required: false,
-                    allowSpaces: false,
-                    choices: [
-                        "general",
-                        "options",
-                        "panels",
-                        "questions",
-                        "transcripts",
-                    ]
+//REGISTER AUTOCOMPLETE
+opendiscord.events.get("onAutocompleteResponderLoad").listen((autocomplete) => {
+    autocomplete.add(new api.ODAutocompleteResponder("ot-config-reload:complete-config","reload","config"))
+    autocomplete.get("ot-config-reload:complete-config").workers.add(
+        new api.ODWorker("ot-config-reload:complete-config",0,async (instance,params,origin,cancel) => {
+            const configs: {id:string,path:string,displayName:string|null,pluginName:string|null,}[] = opendiscord.configs.getAll().map((config) => {
+                const builtin = config.id.getNamespace() === "opendiscord"
+                const pluginName = opendiscord.plugins.get(config.id.getNamespace())?.name ?? null
+                const checker = opendiscord.checkers.getAll().find((checker) => checker.config.id.value === config.id.value)
+                const displayName = checker?.options.cliDisplayName ?? null
+                
+                return {
+                    id:config.id.value,
+                    path:config.path,
+                    displayName,
+                    pluginName:(builtin) ? null : pluginName
                 }
-            ]
+            })
+            
+            await instance.filteredAutocomplete(configs.map((config) => ({
+                name:`${config.displayName ?? config.pluginName ?? config.id} (${config.path})`,
+                value:config.id
+            })))
         })
-    );
-});
+    )
+})
 
-//MESSAGE BUILDER
-opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
-    messages.add(new api.ODMessage("ot-config-reload:config-reload-result"));
-    messages.get("ot-config-reload:config-reload-result").workers.add(
-        new api.ODWorker("ot-config-reload:config-reload-result", 0, async (instance, params, origin) => {
-            const { checkerResult } = params;
-            const embeds: api.ODEmbedBuildResult[] = [];
-            if (checkerResult.valid) {
-                try {
-                    const embed = await opendiscord.builders.embeds.getSafe("ot-config-reload:config-reload-success").build(origin, {});
-                    embeds.push(embed);
-                } catch (err) {
-                    opendiscord.log(`Error building embed for valid configuration: ${err}`, "error");
-                }
-            } else {
-                try {
-                    const embed = await opendiscord.builders.embeds.getSafe("ot-config-reload:config-reload-failure").build(origin, {  });
-                    embeds.push(embed);
-                } catch (err) {
-                    opendiscord.log(`Error building embed for invalid configuration: ${err}`, "error");
-                }
-            }
-            if(checkerResult.messages.length > 0) {
-                const messages = checkerResult.messages.filter((message) => message.type !== "info");
-                if(messages.length > 25) {
-                    const embed = await opendiscord.builders.embeds.getSafe("ot-config-reload:config-reload-result").build(origin, { messages: messages.slice(0, 25), nEmbed: 1 });
-                    embeds.push(embed);
-                    for(let i = 25; i < messages.length; i+=25) {
-                        const embed = await opendiscord.builders.embeds.getSafe("ot-config-reload:config-reload-result").build(origin, { messages: messages.slice(i, i+25), nEmbed: i/25+1 });
-                        embeds.push(embed);
-                    }
-                } else if (messages.length > 0) {
-                    const embed = await opendiscord.builders.embeds.getSafe("ot-config-reload:config-reload-result").build(origin, { messages: messages });
-                    embeds.push(embed);
-                }
-            }
-
-            try {
-                embeds.forEach((embed) => {
-                    instance.addEmbed(embed);
-                });
-                instance.setEphemeral(true);
-            } catch (err) {
-                opendiscord.log(`Error setting embeds: ${err}`, "error");
-            }
-        })
-    );
-});
-
-//EMBED BUILDERS
+//REGISTER EMBEDS
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
-    embeds.add(new api.ODEmbed("ot-config-reload:config-reload-result"));
-    embeds.get("ot-config-reload:config-reload-result").workers.add(
-        new api.ODWorker("ot-config-reload:config-reload-result", 0, async (instance, params, origin) => {
-            const { messages, nEmbed } = params;
-            instance.setTitle(nEmbed ? `Config Reload Result (${nEmbed})` : 'Config Reload Result');
-            const hasErrors = messages.some((message) => message.type === "error");
-            instance.setColor(hasErrors ? "Red" : opendiscord.configs.get("opendiscord:general").data.mainColor);
-            messages.forEach((message, index) => {
-                const fieldMessage = `${message.message}\n=> ${message.filepath}: ${message.path}`
-                instance.addFields({ name: `[${message.type.toUpperCase()}]`, value: fieldMessage });
-            });
-        })
-    );
+    const generalConfig = opendiscord.configs.get("opendiscord:general")
+    const tm = opendiscord.checkers.translation
 
-    embeds.add(new api.ODEmbed("ot-config-reload:config-reload-failure"));
-    embeds.get("ot-config-reload:config-reload-failure").workers.add(
-        new api.ODWorker("ot-config-reload:config-reload-failure", 0, async (instance, params, origin) => {
-            instance.setTitle(`Config Reload Failed`);
-            instance.setDescription("Please correct the following errors and try again.");
-            instance.setColor("Red");
-        })
-    );
-
-    embeds.add(new api.ODEmbed("ot-config-reload:config-reload-success"));
-    embeds.get("ot-config-reload:config-reload-success").workers.add(
-        new api.ODWorker("ot-config-reload:config-reload-success", 0, async (instance, params, origin) => {
-            instance.setTitle(`Config Reloaded Successfully`);
-            instance.setDescription("The configuration has been reloaded successfully!");
-            instance.setColor("Green");
-        })
-    );
-});
-
-// PANEL COMMAND
-/* Update the panel command options to match the new panels */
-async function reloadPanelCommand() {
-    const newOptions: discord.ApplicationCommandOptionData[] = [
-        {
-            name: "id",
-            description: lang.getTranslation("commands.panelId"),
-            type: acot.String,
-            required: true,
-            autocomplete:true
-        },
-        {
-            name: "auto-update",
-            description: lang.getTranslation("commands.panelAutoUpdate"),
-            type: acot.Boolean,
-            required: false
-        }
-    ];
-
-    try {
-        const commands = opendiscord.client.client.application.commands.cache;
-        commands.forEach((cmd) => {
-            if (cmd.name === 'panel') {
-                cmd.setOptions(newOptions);
+    embeds.add(new api.ODEmbed("ot-config-reload:failure-embed"))
+    embeds.get("ot-config-reload:failure-embed").workers.add(
+        new api.ODWorker("ot-config-reload:failure-embed",0,(instance,params,origin,cancel) => {
+            const {result,user} = params
+            
+            //convert checker messages to embed fields
+            const filteredMsgs = result.messages.filter((msg) => msg.type !== "info")
+            const fields: discord.EmbedField[] = []
+            for (const msg of filteredMsgs.slice(0,25)){
+                const rawTranslation = tm.get("message",msg.messageId.value)
+                const translatedMessage = (rawTranslation) ? tm.insertTranslationParams(rawTranslation, msg.translationParams) : msg.message
+                const pathMessage = `${msg.filepath + (msg.path ? ":" : "")} ${msg.path}`
+                
+                if (msg.type == "error") fields.push({
+                    name:utilities.emojiTitle("❌","Error: "+translatedMessage),
+                    value:"Location: `"+pathMessage+"`",
+                    inline:false
+                })
+                else if (msg.type == "warning") fields.push({
+                    name:utilities.emojiTitle("⚠️","Warning: "+translatedMessage),
+                    value:"Location: `"+pathMessage+"`",
+                    inline:false
+                })
             }
-        });
-    } catch (error) {
-        opendiscord.log(`Error updating panel command: ${error}`, "error");
-    }
-}
+            
+            const includesErrors = result.messages.some((msg) => msg.type === "error")
+            instance.setTitle(includesErrors ? utilities.emojiTitle("❌","Config Reload Failed") : utilities.emojiTitle("⚠️","Config Reload Warnings"))
+            instance.setColor(includesErrors ? "Red" : "Green")
+            instance.setDescription(includesErrors ? `Failed to reload the config.\nPlease correct the following errors and try again.` : "Successfully reloaded the config.\nIt is recommended to fix the following warnings.")
+            instance.setAuthor(user.displayName,user.displayAvatarURL())
+            instance.setFields(fields)
+            if (filteredMsgs.length > 25) instance.setFooter("Only 25 of the "+filteredMsgs.length+" errors and warnings are shown. The rest will be shown when these errors are fixed.")
+        })
+    )
 
-// MOVE COMMAND
-/* Update the move command options to match the new options */
-async function reloadMoveCommand() {
-    const newOptions: discord.ApplicationCommandOptionData[] = [
-        {
-            name: "id",
-            description: lang.getTranslation("commands.moveId"),
-            type: acot.String,
-            required: true,
-            autocomplete:true
-        },
-        {
-            name: "reason",
-            description: lang.getTranslation("commands.reason"),
-            type: acot.String,
-            required: false
-        }
-    ];
-
-    try {
-        const commands = opendiscord.client.client.application.commands.cache;
-        commands.forEach((cmd) => {
-            if (cmd.name === 'move') {
-                cmd.setOptions(newOptions);
+    embeds.add(new api.ODEmbed("ot-config-reload:main-embed"))
+    embeds.get("ot-config-reload:main-embed").workers.add(
+        new api.ODWorker("ot-config-reload:main-embed",0,(instance,params,origin,cancel) => {
+            const {results,user} = params
+            
+            const checkerResults: string[] = []
+            for (const {config,result,checker} of results){
+                const pluginName = opendiscord.plugins.get(config.id.getNamespace())?.name ?? null
+                const displayName = checker?.options.cliDisplayName ?? null
+                const isValid = !checker || (result.messages.filter((msg) => msg.checkerId.value === checker.id.value && msg.type == "error").length == 0)
+            
+                checkerResults.push((isValid ? "- ✅ Valid: " : "- ❌ Invalid: ")+`${displayName ?? pluginName ?? config.id} (\`${config.path}\`)`)
             }
-        });
-    } catch (error) {
-        opendiscord.log(`Error updating move command: ${error}`, "error");
-    }
-}
+
+            instance.setTitle(utilities.emojiTitle("🔄","Configs Reloaded"))
+            instance.setAuthor(user.displayName,user.displayAvatarURL())
+            instance.setColor(generalConfig.data.mainColor as discord.ColorResolvable)
+            instance.setDescription(`The configuration files have been reloaded.\nInvalid files will be shown below.`,)
+            instance.addFields({
+                name:utilities.emojiTitle("⚙️","Config Status"),
+                value:checkerResults.join("\n"),
+                inline:false
+            })
+        })
+    )
+})
+
+//REGISTER MESSAGES
+opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
+    const generalConfig = opendiscord.configs.get("opendiscord:general")
+
+    messages.add(new api.ODMessage("ot-config-reload:reload-result"))
+    messages.get("ot-config-reload:reload-result").workers.add(
+        new api.ODWorker("ot-config-reload:reload-result",0,async (instance,params,origin,cancel) => {
+            const {user,results,globalResult} = params
+            
+            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-config-reload:main-embed").build(origin,{user,results,globalResult}))
+            if (globalResult.messages.filter((msg) => msg.type !== "info").length > 0) instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-config-reload:failure-embed").build(origin,{user,result:globalResult}))
+            instance.setEphemeral(true)
+        })
+    )
+})
 
 //COMMAND RESPONDERS
 opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
-    const generalConfig = opendiscord.configs.get("opendiscord:general");
+    const generalConfig = opendiscord.configs.get("opendiscord:general")
 
-    commands.add(new api.ODCommandResponder("ot-config-reload:reload", generalConfig.data.prefix, "reload"));
-    commands.get("ot-config-reload:reload").workers.add(
-        new api.ODWorker("ot-config-reload:reload", 0, async (instance, params, origin, cancel) => {
-            const { guild, channel, user } = instance;
+    commands.add(new api.ODCommandResponder("ot-config-reload:reload",generalConfig.data.prefix,"reload"))
+    commands.get("ot-config-reload:reload").workers.add([
+        new api.ODWorker("ot-config-reload:reload",0,async (instance,params,origin,cancel) => {
+            const {guild,channel,user} = instance
 
             //check if in guild
-            if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin, {channel, user }))
-                return cancel()
-            }
-
-            //check for permissions
+            const isInGuild = await openticketUtils.replyIsInGuild(instance,origin)
+            if (!isInGuild || !guild || channel.isDMBased()) return cancel()
+            
+            //check permissions
             if (!opendiscord.permissions.hasPermissions("developer",await opendiscord.permissions.getPermissions(user,channel,guild))){
                 instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["developer"]}))
                 return cancel()
             }
 
-            try {
-                const config = instance.options.getString("config", false);
-                opendiscord.log(`Reloading configuration: ${config || 'all'}`, "plugin");
-
-                let checkerResult: api.ODCheckerResult;
-
-                switch (config) {
-                    case "general": {                      
-                        const tempGeneral = new api.ODJsonConfig("ot-config-reload:general", "general.json", getConfigPath());
-                        await tempGeneral.init()
-                        
-                        const generalChecker = opendiscord.checkers.get("opendiscord:general");
-                        generalChecker.config = tempGeneral;
-                        
-                        checkerResult = opendiscord.checkers.checkAll(true)
-                        
-                        if (checkerResult.valid) {
-                            opendiscord.configs.get("opendiscord:general").reload();
-                            opendiscord.log('General configuration reloaded successfully.', "plugin");
-                        }
-                        
-                        // Reset the config properties checkers to their original state
-                        generalChecker.config = opendiscord.configs.get("opendiscord:general");
-                        
-                        break;
-                    }
-                    case "options": {
-                        const tempOptions = new api.ODJsonConfig("ot-config-reload:options", "options.json", getConfigPath());
-                        await tempOptions.init()
-
-                        const optionsChecker = opendiscord.checkers.get("opendiscord:options");
-                        optionsChecker.config = tempOptions;
-
-                        checkerResult = opendiscord.checkers.checkAll(true)
-
-                        if (checkerResult.valid) {
-                            opendiscord.configs.get("opendiscord:options").reload();
-                            await reloadMoveCommand();
-                            opendiscord.log('Options configuration reloaded successfully.', "plugin");
-                        }
-
-                        // Reset the config properties checkers to their original state
-                        optionsChecker.config = opendiscord.configs.get("opendiscord:options");
-
-                        break;
-                    }
-                    case "panels": {
-                        const tempPanels = new api.ODJsonConfig("ot-config-reload:panels", "panels.json", getConfigPath());
-                        await tempPanels.init()
-
-                        const panelsChecker = opendiscord.checkers.get("opendiscord:panels");
-                        panelsChecker.config = tempPanels;
-
-                        checkerResult = opendiscord.checkers.checkAll(true)
-
-                        if (checkerResult.valid) {
-                            opendiscord.configs.get("opendiscord:panels").reload();
-                            await reloadPanelCommand();
-                            opendiscord.log('Panels configuration reloaded successfully.', "plugin");
-                        }
-
-                        // Reset the config properties checkers to their original state
-                        panelsChecker.config = opendiscord.configs.get("opendiscord:panels");
-                        
-                        break;
-                    }
-                    case "questions": {
-                        const tempQuestions = new api.ODJsonConfig("ot-config-reload:questions", "questions.json", getConfigPath());
-                        await tempQuestions.init()
-
-                        const questionsChecker = opendiscord.checkers.get("opendiscord:questions");
-                        questionsChecker.config = tempQuestions;
-
-                        checkerResult = opendiscord.checkers.checkAll(true)
-
-                        if (checkerResult.valid) {
-                            opendiscord.configs.get("opendiscord:questions").reload();
-                            opendiscord.log('Questions configuration reloaded successfully.', "plugin");
-                        }
-
-                        // Reset the config properties checkers to their original state
-                        questionsChecker.config = opendiscord.configs.get("opendiscord:questions");
-                        
-                        break;
-                    }
-                    case "transcripts": {
-                        const tempTranscripts = new api.ODJsonConfig("ot-config-reload:transcripts", "transcripts.json", getConfigPath());
-                        await tempTranscripts.init()
-
-                        const transcriptsChecker = opendiscord.checkers.get("opendiscord:transcripts")
-                        transcriptsChecker.config = tempTranscripts;
-
-                        checkerResult = opendiscord.checkers.checkAll(true)
-
-                        if (checkerResult.valid) {
-                            opendiscord.configs.get("opendiscord:transcripts").reload();
-                            opendiscord.log('Transcripts configuration reloaded successfully.', "plugin");
-                        }
-
-                        // Reset the config properties checkers to their original state
-                        transcriptsChecker.config = opendiscord.configs.get("opendiscord:transcripts");
-
-                        break;
-                    }
-                    default: {
-                        const tempGeneral = new api.ODJsonConfig("ot-config-reload:general", "general.json", getConfigPath());
-                        const tempOptions = new api.ODJsonConfig("ot-config-reload:options", "options.json", getConfigPath());
-                        const tempPanels = new api.ODJsonConfig("ot-config-reload:panels", "panels.json", getConfigPath());
-                        const tempQuestions = new api.ODJsonConfig("ot-config-reload:questions", "questions.json", getConfigPath());
-                        const tempTranscripts = new api.ODJsonConfig("ot-config-reload:transcripts", "transcripts.json", getConfigPath());
-                    
-                        await tempGeneral.init()
-                        await tempOptions.init()
-                        await tempPanels.init()
-                        await tempQuestions.init()
-                        await tempTranscripts.init()
-
-                        const generalChecker = opendiscord.checkers.get("opendiscord:general");
-                        generalChecker.config = tempGeneral;
-
-                        const optionsChecker = opendiscord.checkers.get("opendiscord:options");
-                        optionsChecker.config = tempOptions;
-
-                        const panelsChecker = opendiscord.checkers.get("opendiscord:panels");
-                        panelsChecker.config = tempPanels;
-
-                        const questionsChecker = opendiscord.checkers.get("opendiscord:questions");
-                        questionsChecker.config = tempQuestions;
-
-                        const transcriptsChecker = opendiscord.checkers.get("opendiscord:transcripts")
-                        transcriptsChecker.config = tempTranscripts;
-
-                        checkerResult = opendiscord.checkers.checkAll(true)
-
-                        if (checkerResult.valid) {
-                            opendiscord.configs.get("opendiscord:general").reload();
-                            opendiscord.configs.get("opendiscord:options").reload();
-                            opendiscord.configs.get("opendiscord:panels").reload();
-                            opendiscord.configs.get("opendiscord:questions").reload();
-                            opendiscord.configs.get("opendiscord:transcripts").reload();
-                            await reloadPanelCommand();
-                            await reloadMoveCommand();
-                            opendiscord.log('All configurations reloaded successfully.', "plugin");
-                        }
-
-                        // Reset the config properties checkers to their original state
-                        generalChecker.config = opendiscord.configs.get("opendiscord:general");
-                        optionsChecker.config = opendiscord.configs.get("opendiscord:options");
-                        panelsChecker.config = opendiscord.configs.get("opendiscord:panels");
-                        questionsChecker.config = opendiscord.configs.get("opendiscord:questions");
-                        transcriptsChecker.config = opendiscord.configs.get("opendiscord:transcripts");
-
-                        break;
-                    }
-                }
-
-                const replyMessage = await opendiscord.builders.messages.getSafe("ot-config-reload:config-reload-result").build(origin, { checkerResult });
-                instance.reply(replyMessage);
-
-            } catch (error) {
-                opendiscord.log(`Error executing reload command: ${error}`, "error");
-
-                const errorReply = await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin, { guild, channel, user, error: error.message, layout: "advanced" });
-                instance.reply(errorReply);
-
-                return cancel();
+            //fetch data
+            await instance.defer(true)
+            const rawConfigId = instance.options.getString("config",false)
+            const configIds = (rawConfigId && opendiscord.configs.exists(rawConfigId)) ? [rawConfigId] : opendiscord.configs.getAll().map((c) => c.id.value)
+            
+            const configs: {config:api.ODConfig<any>,checker:api.ODChecker|null}[] = []
+            for (const configId of configIds){
+                const config = opendiscord.configs.get(configId)
+                if (!config) continue
+                const checker = opendiscord.checkers.getAll().find((checker) => checker.config.id.value === config.id.value) ?? null
+                configs.push({config,checker})
             }
+            configs.sort((a,b) => {
+                return (b.checker?.priority ?? -9999) - (a.checker?.priority ?? -9999)
+            })
+
+            //INIT CONFIG: check if config is able to read/initialize
+            const initiatedConfigs: {config:api.ODConfig<any>,checker:api.ODChecker|null,dataBackup:any}[] = []
+            const finalReport: {config:api.ODConfig<any>,result:api.ODCheckerResult,checker:api.ODChecker|null}[] = []
+
+            for (const {config,checker} of configs){
+                const dataBackup = config.data
+                try {
+                    await config.init()
+                    initiatedConfigs.push({config,checker,dataBackup})
+                }catch{
+                    //failed to initialize: revert changes
+                    config.data = dataBackup
+                    finalReport.push({config,result:{valid:false,messages:[]},checker})
+                }
+            }
+
+
+            //RUN CONFIG CHECKER: start the config checker for ALL config files
+            opendiscord.checkers.storage.reset()
+            const globalResult = opendiscord.checkers.checkAll(true)
+            for (const {config,checker} of initiatedConfigs){
+                if (checker){
+                    const filteredResult = globalResult.messages.filter((msg) => msg.type !== "info")
+                    const valid = filteredResult.length == 0 || !filteredResult.some((msg) => msg.type === "error")
+                    finalReport.push({config,result:{valid,messages:filteredResult},checker})
+                }else{
+                    finalReport.push({config,result:{valid:true,messages:[]},checker})
+                }
+            }
+
+            //REVERT CHANGES IF INVALID
+            if (!globalResult.valid){
+                for (const {config,dataBackup} of initiatedConfigs){
+                    config.data = dataBackup
+                }
+            }
+
+            //RELOAD VALID CONFIGS: actually reload the config and trigger events throughout the bot
+            for (const {config,result} of finalReport){
+                if (!result.valid) continue
+                try{
+                    await config.reload()
+                    opendiscord.log("Reloaded the "+config.id.value+" config!","system",[
+                        {key:"user",value:instance.user.username},
+                        {key:"userid",value:instance.user.id,hidden:true},
+                        {key:"channelid",value:instance.channel.id,hidden:true},
+                        {key:"method",value:origin}
+                    ])
+                }catch(err){
+                    process.emit("uncaughtException",err)
+                }
+            }
+
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-config-reload:reload-result").build(origin,{user,results:finalReport,globalResult}))
+        }),
+        new api.ODWorker("ot-config-reload:logs",-1,(instance,params,origin,cancel) => {
+            opendiscord.log(instance.user.displayName+" used the 'reload' command!","plugin",[
+                {key:"user",value:instance.user.username},
+                {key:"userid",value:instance.user.id,hidden:true},
+                {key:"channelid",value:instance.channel.id,hidden:true},
+                {key:"method",value:origin}
+            ])
         })
-    );
-    commands.get("ot-config-reload:reload").workers.add(new api.ODWorker("ot-config-reload:logs",-1,(instance,params,origin,cancel) => {
-        opendiscord.log(instance.user.displayName+" used the 'reload' command!","info",[
-            {key:"user",value:instance.user.username},
-            {key:"userid",value:instance.user.id,hidden:true},
-            {key:"channelid",value:instance.channel.id,hidden:true},
-            {key:"method",value:origin}
-        ])
-    }))
+    ])
+})
+
+//AUTO UPDATE PANELS
+opendiscord.events.get("afterConfigsInitiated").listen((configs) => {
+    const panelConfig = configs.get("opendiscord:panels")
+    panelConfig.onReload(() => {
+        setTimeout(async () => {
+            //timeout because ODPanelManager needs to reload first
+            await opendiscord.tasks.get("opendiscord:panel-auto-update").func()
+        },2000)
+    })
 })
