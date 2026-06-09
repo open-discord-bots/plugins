@@ -1,0 +1,11 @@
+{
+    "commandPermission": "admin",
+    "autoResendOnBoot": false,
+    "deleteStickyMessageWhenDisabled": true,
+    "dashboard": {
+        "enabled": true,
+        "host": "127.0.0.1",
+        "port": 3087,
+        "password": "changeme"
+    }
+}
