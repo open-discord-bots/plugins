@@ -1,0 +1,31 @@
+{
+    "admin_roles": ["ADMIN_ROLE_ID"],
+    "ticket_options": ["TICKET_OPTIONS"],
+    "log_channel_id": "LOG_CHANNEL_ID",
+    "embeds": {
+        "request": {
+            "title": "🔔  Ticket Close Request",
+            "description": "🔔 The ticket staff has requested to close this ticket.\n\n**Do you want this ticket to be closed?**",
+            "footer": "Only the ticket owner can respond",
+            "image": "",
+            "thumbnail": "",
+            "color": "5865F2"
+        },
+        "agreed": {
+            "title": "✅  Close Request Accepted",
+            "description": "✅ The ticket owner has agreed to close the ticket.",
+            "footer": "The ticket will now be closed",
+            "image": "",
+            "thumbnail": "",
+            "color": "57F287"
+        },
+        "declined": {
+            "title": "❌  Close Request Declined",
+            "description": "❌ The ticket owner still needs help and declined the close request.",
+            "footer": "The ticket will remain open",
+            "image": "",
+            "thumbnail": "",
+            "color": "ED4245"
+        }
+    }
+}
