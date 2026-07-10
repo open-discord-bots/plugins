@@ -1,0 +1,25 @@
+{
+    "name":"OT Sub Process",
+    "id":"ot-sub-process",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.2.x"],
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "contributors":[],
+        "shortDescription":"Modify Open Ticket to work inside an external discord.js bot as a sub-process or dependency.",
+        "longDescription":"Modify Open Ticket to work inside an external discord.js bot as a sub-process or dependency.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["subprocess","discord.js","dependency","utility","system","advanced"]
+    }
+}
