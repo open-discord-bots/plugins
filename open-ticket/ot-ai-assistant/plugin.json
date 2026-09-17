@@ -1,0 +1,25 @@
+{
+    "name": "Ot Ai Assistant",
+    "id": "ot-ai-assistant",
+    "version": "1.0.0",
+    "startFile": "index.ts",
+    "supportedVersions": ["OTv4.0.x", "OTv4.1.x", "OTv4.2.x"],
+
+    "enabled": true,
+    "priority": 1,
+    "events": [],
+
+    "npmDependencies": ["axios"],
+    "requiredPlugins": [],
+    "incompatiblePlugins": [],
+
+    "details": {
+        "author": "yow.sef",
+        "contributors": [],
+        "imageUrl": "",
+        "projectUrl": "",
+        "shortDescription": "Free AI chatbot via OpenRouter with ticket summarization and AI-powered automod.",
+        "longDescription": "Runs an AI chatbot in a dedicated Discord channel using any free OpenRouter model. Automatically summarizes new tickets when they are opened, and supports AI-powered automod that detects slurs and harassment without requiring a word list.",
+        "tags": ["ai", "chatbot", "openrouter", "tickets", "moderation", "automod"]
+    }
+}
