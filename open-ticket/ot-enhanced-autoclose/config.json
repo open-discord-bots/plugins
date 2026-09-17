@@ -1,0 +1,8 @@
+{
+    "enabled":true,
+    "checkIntervalSeconds":180,
+    "inactivityMinutes":240,
+    "skipWhenCoreAutocloseEnabled":true,
+    "sendNoticeMessage":true,
+    "reason":"Enhanced plugin auto-close"
+}
