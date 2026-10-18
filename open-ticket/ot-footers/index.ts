@@ -1,4 +1,4 @@
-import {api, opendiscord, utilities} from "#opendiscord"
+import { api, opendiscord, utilities } from "#opendiscord"
 import * as discord from "discord.js"
 
 //DECLARATION
@@ -51,83 +51,83 @@ declare module "#opendiscord-types" {
 
 //REGISTER CONFIG
 opendiscord.events.get("onConfigLoad").listen((configs) => {
-    configs.add(new OTFootersConfig("ot-footers:config","config.json","./plugins/ot-footers/"))
+    configs.add(new OTFootersConfig("ot-footers:config", "config.json", "./plugins/ot-footers/"))
 })
 
 //REGISTER CONFIG CHECKER
 opendiscord.events.get("onCheckerLoad").listen((checkers) => {
     const config = opendiscord.configs.get("ot-footers:config")
-    
+
     //low priority => requires ids from panel & option config checkers
-    checkers.add(new api.ODChecker("ot-footers:config",checkers.storage,-1,config,new api.ODCheckerObjectStructure("ot-footers:config",{children:[
+    checkers.add(new api.ODChecker("ot-footers:config", checkers.storage, -1, config, new api.ODCheckerObjectStructure("ot-footers:config", {children:[
         //GENERAL FOOTER
-        {key:"generalFooter",optional:false,priority:0,checker:new api.ODCheckerEnabledObjectStructure("ot-footers:general-footer",{property:"enabled",enabledValue:true,checker:new api.ODCheckerObjectStructure("ot-footers:general-footer",{children:[
-            {key:"includePluginEmbeds",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-footers:footer-include-plugins",{})},
-            {key:"footer",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:footer",{minLength:3,maxLength:2048})},
-            {key:"footerImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:footer-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
+        {key:"generalFooter", optional:false, priority:0, checker:new api.ODCheckerEnabledObjectStructure("ot-footers:general-footer", {property:"enabled", enabledValue:true, checker:new api.ODCheckerObjectStructure("ot-footers:general-footer", {children:[
+            {key:"includePluginEmbeds", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-footers:footer-include-plugins", {})},
+            {key:"footer", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:footer", {minLength:3, maxLength:2048})},
+            {key:"footerImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:footer-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})}
         ]})})},
 
         //DM LOGS FOOTER
-        {key:"dmLogsFooter",optional:false,priority:0,checker:new api.ODCheckerEnabledObjectStructure("ot-footers:dm-logs-footer",{property:"enabled",enabledValue:true,checker:new api.ODCheckerObjectStructure("ot-footers:dm-logs-footer",{children:[
-            {key:"footer",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:footer",{minLength:3,maxLength:2048})},
-            {key:"footerImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:footer-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
+        {key:"dmLogsFooter", optional:false, priority:0, checker:new api.ODCheckerEnabledObjectStructure("ot-footers:dm-logs-footer", {property:"enabled", enabledValue:true, checker:new api.ODCheckerObjectStructure("ot-footers:dm-logs-footer", {children:[
+            {key:"footer", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:footer", {minLength:3, maxLength:2048})},
+            {key:"footerImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:footer-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})}
         ]})})},
 
         //LOGS FOOTER
-        {key:"logsFooter",optional:false,priority:0,checker:new api.ODCheckerEnabledObjectStructure("ot-footers:logs-footer",{property:"enabled",enabledValue:true,checker:new api.ODCheckerObjectStructure("ot-footers:logs-footer",{children:[
-            {key:"footer",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:footer",{minLength:3,maxLength:2048})},
-            {key:"footerImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:footer-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
+        {key:"logsFooter", optional:false, priority:0, checker:new api.ODCheckerEnabledObjectStructure("ot-footers:logs-footer", {property:"enabled", enabledValue:true, checker:new api.ODCheckerObjectStructure("ot-footers:logs-footer", {children:[
+            {key:"footer", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:footer", {minLength:3, maxLength:2048})},
+            {key:"footerImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:footer-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})}
         ]})})},
 
         //ERROR FOOTER
-        {key:"errorFooter",optional:false,priority:0,checker:new api.ODCheckerEnabledObjectStructure("ot-footers:error-footer",{property:"enabled",enabledValue:true,checker:new api.ODCheckerObjectStructure("ot-footers:error-footer",{children:[
-            {key:"footer",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:footer",{minLength:3,maxLength:2048})},
-            {key:"footerImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:footer-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
+        {key:"errorFooter", optional:false, priority:0, checker:new api.ODCheckerEnabledObjectStructure("ot-footers:error-footer", {property:"enabled", enabledValue:true, checker:new api.ODCheckerObjectStructure("ot-footers:error-footer", {children:[
+            {key:"footer", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:footer", {minLength:3, maxLength:2048})},
+            {key:"footerImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:footer-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})}
         ]})})},
 
         //PANEL FOOTER
-        {key:"panelFooterImages",optional:false,priority:0,checker:new api.ODCheckerArrayStructure("ot-footers:panel-footer-images",{allowedTypes:["object"],propertyChecker:new api.ODCheckerObjectStructure("ot-footers:panel-footer-image",{children:[
-            {key:"id",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:panel-id",{custom:(checker,value,locationTrace,locationId,locationDocs) => {
+        {key:"panelFooterImages", optional:false, priority:0, checker:new api.ODCheckerArrayStructure("ot-footers:panel-footer-images", {allowedTypes:["object"], propertyChecker:new api.ODCheckerObjectStructure("ot-footers:panel-footer-image", {children:[
+            {key:"id", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:panel-id", {custom:(checker, value, locationTrace, locationId, locationDocs) => {
                 const lt = checker.locationTraceDeref(locationTrace)
 
-                if (typeof value != "string") return false
-                const uniqueArray: string[] = (checker.storage.get("openticket","panel-ids") === null) ? [] : checker.storage.get("openticket","panel-ids")
+                if (typeof value !== "string") return false
+                const uniqueArray: string[] = (checker.storage.get("openticket", "panel-ids") === null) ? [] : checker.storage.get("openticket", "panel-ids")
 
                 if (uniqueArray.includes(value)){
                     //exists
                     return true
                 }else{
                     //doesn't exist
-                    checker.createMessage("opendiscord:id-non-existent","error",`The id "${value}" doesn't exist!`,lt,null,[`"${value}"`],locationId,locationDocs)
+                    checker.createMessage("opendiscord:id-non-existent", "error", `The id "${value}" doesn't exist!`, lt, null, [`"${value}"`], locationId, locationDocs)
                     return false
                 }
             }})},
-            {key:"panelFooter",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:panel-footer",{minLength:3,maxLength:2048})},
-            {key:"panelFooterImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:panel-footer-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
+            {key:"panelFooter", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:panel-footer", {minLength:3, maxLength:2048})},
+            {key:"panelFooterImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:panel-footer-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})}
         ]})})},
 
         //OPTION FOOTER
-        {key:"optionFooterImages",optional:false,priority:0,checker:new api.ODCheckerArrayStructure("ot-footers:option-footer-images",{allowedTypes:["object"],propertyChecker:new api.ODCheckerObjectStructure("ot-footers:option-footer-image",{children:[
-            {key:"id",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:option-id",{custom:(checker,value,locationTrace,locationId,locationDocs) => {
+        {key:"optionFooterImages", optional:false, priority:0, checker:new api.ODCheckerArrayStructure("ot-footers:option-footer-images", {allowedTypes:["object"], propertyChecker:new api.ODCheckerObjectStructure("ot-footers:option-footer-image", {children:[
+            {key:"id", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:option-id", {custom:(checker, value, locationTrace, locationId, locationDocs) => {
                 const lt = checker.locationTraceDeref(locationTrace)
 
-                if (typeof value != "string") return false
-                const uniqueArray: string[] = (checker.storage.get("openticket","option-ids") === null) ? [] : checker.storage.get("openticket","option-ids")
+                if (typeof value !== "string") return false
+                const uniqueArray: string[] = (checker.storage.get("openticket", "option-ids") === null) ? [] : checker.storage.get("openticket", "option-ids")
 
                 if (uniqueArray.includes(value)){
                     //exists
                     return true
                 }else{
                     //doesn't exist
-                    checker.createMessage("opendiscord:id-non-existent","error",`The id "${value}" doesn't exist!`,lt,null,[`"${value}"`],locationId,locationDocs)
+                    checker.createMessage("opendiscord:id-non-existent", "error", `The id "${value}" doesn't exist!`, lt, null, [`"${value}"`], locationId, locationDocs)
                     return false
                 }
             }})},
-            {key:"ticketFooter",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:ticket-footer",{minLength:3,maxLength:2048})},
-            {key:"ticketFooterImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:ticket-footer-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
-            {key:"dmFooter",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-footers:dm-footer",{minLength:3,maxLength:2048})},
-            {key:"dmFooterImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:dm-footer-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
-        ]})})},
+            {key:"ticketFooter", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:ticket-footer", {minLength:3, maxLength:2048})},
+            {key:"ticketFooterImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:ticket-footer-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})},
+            {key:"dmFooter", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-footers:dm-footer", {minLength:3, maxLength:2048})},
+            {key:"dmFooterImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-footers:dm-footer-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})}
+        ]})})}
     ]})))
 })
 
@@ -149,12 +149,12 @@ const errorEmbedIds: (keyof api.ODEmbedManagerIdMappings)[] = [
     "opendiscord:error-channel-rename",
     "opendiscord:error-ticket-busy",
     "opendiscord:stats-ticket-unknown",
-    "opendiscord:transcript-error",
+    "opendiscord:transcript-error"
 ]
 
 const dmLogEmbedIds: (keyof api.ODEmbedManagerIdMappings)[] = [
     "opendiscord:ticket-action-dm",
-    "opendiscord:blacklist-dm",
+    "opendiscord:blacklist-dm"
 ]
 
 const logEmbedIds: (keyof api.ODEmbedManagerIdMappings)[] = [
@@ -172,58 +172,58 @@ opendiscord.events.get("afterEmbedBuildersLoaded").listen((embeds) => {
     filteredEmbeds.forEach((embed) => {
         const id = embed.id.value as keyof api.ODNoGeneric<api.ODEmbedManagerIdMappings>
 
-        if (id == "opendiscord:panel"){
+        if (id === "opendiscord:panel"){
             //PANEL FOOTER (high priority => overwrite default footer)
-            embeds.get("opendiscord:panel").workers.add(new api.ODWorker("ot-footers:footer",10,(instance,params,origin,cancel) => {
-                const panelFooterData = config.data.panelFooterImages.find((p) => p.id == params.panel.id.value)
-                if (panelFooterData && panelFooterData.panelFooterImage) instance.setFooter(panelFooterData.panelFooter,panelFooterData.panelFooterImage)
+            embeds.get("opendiscord:panel").workers.add(new api.ODWorker("ot-footers:footer", 10, (instance, params, origin, cancel) => {
+                const panelFooterData = config.data.panelFooterImages.find((p) => p.id === params.panel.id.value)
+                if (panelFooterData && panelFooterData.panelFooterImage) instance.setFooter(panelFooterData.panelFooter, panelFooterData.panelFooterImage)
                 else if (panelFooterData) instance.setFooter(panelFooterData.panelFooter)
             }))
 
-        }else if (id == "opendiscord:ticket-message"){
+        }else if (id === "opendiscord:ticket-message"){
             //OPTION FOOTER (ticket message)
-            embeds.get("opendiscord:ticket-message").workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,origin,cancel) => {
-                const optionFooterData = config.data.optionFooterImages.find((p) => p.id == params.ticket.option.id.value)
-                if (optionFooterData && optionFooterData.ticketFooterImage) instance.setFooter(optionFooterData.ticketFooter,optionFooterData.ticketFooterImage)
+            embeds.get("opendiscord:ticket-message").workers.add(new api.ODWorker("ot-footers:footer", -10, (instance, params, origin, cancel) => {
+                const optionFooterData = config.data.optionFooterImages.find((p) => p.id === params.ticket.option.id.value)
+                if (optionFooterData && optionFooterData.ticketFooterImage) instance.setFooter(optionFooterData.ticketFooter, optionFooterData.ticketFooterImage)
                 else if (optionFooterData) instance.setFooter(optionFooterData.ticketFooter)
             }))
 
-        }else if (id == "opendiscord:ticket-created-dm"){
+        }else if (id === "opendiscord:ticket-created-dm"){
             //OPTION FOOTER (ticket dm)
-            embeds.get("opendiscord:ticket-created-dm").workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,origin,cancel) => {
-                const optionFooterData = config.data.optionFooterImages.find((p) => p.id == params.ticket.option.id.value)
-                if (optionFooterData && optionFooterData.dmFooterImage) instance.setFooter(optionFooterData.dmFooter,optionFooterData.dmFooterImage)
+            embeds.get("opendiscord:ticket-created-dm").workers.add(new api.ODWorker("ot-footers:footer", -10, (instance, params, origin, cancel) => {
+                const optionFooterData = config.data.optionFooterImages.find((p) => p.id === params.ticket.option.id.value)
+                if (optionFooterData && optionFooterData.dmFooterImage) instance.setFooter(optionFooterData.dmFooter, optionFooterData.dmFooterImage)
                 else if (optionFooterData) instance.setFooter(optionFooterData.dmFooter)
             }))
 
         }else if (config.data.errorFooter.enabled && errorEmbedIds.includes(id)){
             //ERROR FOOTER (high priority => overwrite default footer)
-            embed.workers.add(new api.ODWorker("ot-footers:footer",10,(instance,params,origin,cancel) => {
-                instance.setFooter(config.data.errorFooter.footer,config.data.errorFooter.footerImage ? config.data.errorFooter.footerImage : undefined)
+            embed.workers.add(new api.ODWorker("ot-footers:footer", 10, (instance, params, origin, cancel) => {
+                instance.setFooter(config.data.errorFooter.footer, config.data.errorFooter.footerImage ? config.data.errorFooter.footerImage : undefined)
             }))
 
         }else if (config.data.dmLogsFooter.enabled && dmLogEmbedIds.includes(id)){
             //DM LOGS FOOTER
-            embed.workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,origin,cancel) => {
-                instance.setFooter(config.data.dmLogsFooter.footer,config.data.dmLogsFooter.footerImage ? config.data.dmLogsFooter.footerImage : undefined)
+            embed.workers.add(new api.ODWorker("ot-footers:footer", -10, (instance, params, origin, cancel) => {
+                instance.setFooter(config.data.dmLogsFooter.footer, config.data.dmLogsFooter.footerImage ? config.data.dmLogsFooter.footerImage : undefined)
             }))
 
         }else if (config.data.logsFooter.enabled && logEmbedIds.includes(id)){
             //LOGS FOOTER
-            embed.workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,origin,cancel) => {
-                instance.setFooter(config.data.logsFooter.footer,config.data.logsFooter.footerImage ? config.data.logsFooter.footerImage : undefined)
+            embed.workers.add(new api.ODWorker("ot-footers:footer", -10, (instance, params, origin, cancel) => {
+                instance.setFooter(config.data.logsFooter.footer, config.data.logsFooter.footerImage ? config.data.logsFooter.footerImage : undefined)
             }))
 
         }else if (config.data.generalFooter.enabled && id.startsWith("opendiscord:")){
             //GENERAL FOOTER (built-in)
-            embed.workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,origin,cancel) => {
-                instance.setFooter(config.data.generalFooter.footer,config.data.generalFooter.footerImage ? config.data.generalFooter.footerImage : undefined)
+            embed.workers.add(new api.ODWorker("ot-footers:footer", -10, (instance, params, origin, cancel) => {
+                instance.setFooter(config.data.generalFooter.footer, config.data.generalFooter.footerImage ? config.data.generalFooter.footerImage : undefined)
             }))
 
         }else if (config.data.generalFooter.enabled && config.data.generalFooter.includePluginEmbeds){
             //GENERAL FOOTER (plugins)
-            embed.workers.add(new api.ODWorker("ot-footers:footer",-10,(instance,params,origin,cancel) => {
-                instance.setFooter(config.data.generalFooter.footer,config.data.generalFooter.footerImage ? config.data.generalFooter.footerImage : undefined)
+            embed.workers.add(new api.ODWorker("ot-footers:footer", -10, (instance, params, origin, cancel) => {
+                instance.setFooter(config.data.generalFooter.footer, config.data.generalFooter.footerImage ? config.data.generalFooter.footerImage : undefined)
             }))
         }
     })

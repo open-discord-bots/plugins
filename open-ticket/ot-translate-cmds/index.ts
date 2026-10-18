@@ -8,7 +8,7 @@ declare module "#opendiscord-types" {
         "ot-translate-cmds":api.ODPlugin
     }
     export interface ODConfigManagerIdMappings {
-        "ot-translate-cmds:translations": OTTranslateCmdsConfig;
+        "ot-translate-cmds:translations":OTTranslateCmdsConfig;
     }
     export interface ODCheckerManagerIdMappings {
         "ot-translate-cmds:translations":api.ODChecker;
@@ -17,62 +17,62 @@ declare module "#opendiscord-types" {
 
 //REGISTER CONFIG
 opendiscord.events.get("onConfigLoad").listen((configs) => {
-    configs.add(new OTTranslateCmdsConfig("ot-translate-cmds:translations","translations.json","./plugins/ot-translate-cmds/"));
+    configs.add(new OTTranslateCmdsConfig("ot-translate-cmds:translations", "translations.json", "./plugins/ot-translate-cmds/"))
 })
 
 //REGISTER CONFIG CHECKER
 opendiscord.events.get("onCheckerLoad").listen((checkers) => {
     const config = opendiscord.configs.get("ot-translate-cmds:translations")
-    checkers.add(new api.ODChecker("ot-translate-cmds:translations",checkers.storage,0,config,translateCmdsConfigStructure))
+    checkers.add(new api.ODChecker("ot-translate-cmds:translations", checkers.storage, 0, config, translateCmdsConfigStructure))
 })
 
 //APPLY TRANSLATIONS
-opendiscord.events.get("afterSlashCommandsLoaded").listen(async (slash,client) => {
+opendiscord.events.get("afterSlashCommandsLoaded").listen(async (slash, client) => {
     const cmdTranslations = opendiscord.configs.get("ot-translate-cmds:translations").data
 
-    for (const cmdTranslation of cmdTranslations) {
-        const cmd = opendiscord.client.slashCommands.get(`opendiscord:${cmdTranslation.name}`);
-        if (!cmd) continue;
+    for (const cmdTranslation of cmdTranslations){
+        const cmd = opendiscord.client.slashCommands.get(`opendiscord:${cmdTranslation.name}`)
+        if (!cmd) continue
 
-        // COMMAND TRANSLATION
-        cmd.builder.nameLocalizations = cmdTranslation.nameTranslations || {};
-        cmd.builder.descriptionLocalizations = cmdTranslation.descriptionTranslations || {};
+        //COMMAND TRANSLATION
+        cmd.builder.nameLocalizations = cmdTranslation.nameTranslations || {}
+        cmd.builder.descriptionLocalizations = cmdTranslation.descriptionTranslations || {}
 
-        if (cmdTranslation.options) {
-            for (const optTranslation of cmdTranslation.options) {
-                const option = cmd.builder.options?.find(o => o.name === optTranslation.name);
-                if (!option) continue;
+        if (cmdTranslation.options){
+            for (const optTranslation of cmdTranslation.options){
+                const option = cmd.builder.options?.find((o) => o.name === optTranslation.name)
+                if (!option) continue
 
-                // OPTION/SUBCOMMAND TRANSLATION
-                option.nameLocalizations = optTranslation.nameTranslations || {};
-                option.descriptionLocalizations = optTranslation.descriptionTranslations || {};
+                //OPTION/SUBCOMMAND TRANSLATION
+                option.nameLocalizations = optTranslation.nameTranslations || {}
+                option.descriptionLocalizations = optTranslation.descriptionTranslations || {}
 
-                // CHOICE TRANSLATION
-                if(optTranslation.choices && "choices" in option){
+                //CHOICE TRANSLATION
+                if (optTranslation.choices && "choices" in option){
                     for (const choiceCfg of optTranslation.choices){
-                        const choice = option.choices?.find(c => c.name === choiceCfg.name);
-                        if (!choice) continue;
+                        const choice = option.choices?.find((c) => c.name === choiceCfg.name)
+                        if (!choice) continue
 
-                        choice.nameLocalizations = choiceCfg.nameTranslations || {};
+                        choice.nameLocalizations = choiceCfg.nameTranslations || {}
                     }
                 }
 
-                if (optTranslation.type === "subcommand" && optTranslation.options && "options" in option) {
-                    for (const subOptTranslation of optTranslation.options) {
-                        const subOption = option.options?.find(o => o.name === subOptTranslation.name);
-                        if (!subOption) continue;
+                if (optTranslation.type === "subcommand" && optTranslation.options && "options" in option){
+                    for (const subOptTranslation of optTranslation.options){
+                        const subOption = option.options?.find((o) => o.name === subOptTranslation.name)
+                        if (!subOption) continue
 
-                        // SUBCOMMAND OPTION TRANSLATION
-                        subOption.nameLocalizations = subOptTranslation.nameTranslations || {};
-                        subOption.descriptionLocalizations = subOptTranslation.descriptionTranslations || {};
+                        //SUBCOMMAND OPTION TRANSLATION
+                        subOption.nameLocalizations = subOptTranslation.nameTranslations || {}
+                        subOption.descriptionLocalizations = subOptTranslation.descriptionTranslations || {}
 
-                        // CHOICE TRANSLATION
-                        if(subOptTranslation.choices && "choices" in subOption) {
-                            for (const choiceCfg of subOptTranslation.choices) {
-                                const choice = subOption.choices?.find(c => c.name === choiceCfg.name);
-                                if (!choice) continue;
+                        //CHOICE TRANSLATION
+                        if (subOptTranslation.choices && "choices" in subOption){
+                            for (const choiceCfg of subOptTranslation.choices){
+                                const choice = subOption.choices?.find((c) => c.name === choiceCfg.name)
+                                if (!choice) continue
 
-                                choice.nameLocalizations = choiceCfg.nameTranslations || {};
+                                choice.nameLocalizations = choiceCfg.nameTranslations || {}
                             }
                         }
                     }

@@ -6,13 +6,13 @@ declare module "#opendiscord-types" {
         "ot-reminders":api.ODPlugin
     }
     export interface ODMessageManagerIdMappings {
-        "ot-reminders:reminder-message":{origin:"other",params:{reminder:ODReminder},workers:"ot-reminders:reminder-message"},
-        "ot-reminders:list-message":{origin:"slash"|"other",params:{reminders:ODReminder[]},workers:"ot-reminders:list-message"},
-        "ot-reminders:success-message":{origin:"slash"|"other",params:{ scope: "created"|"paused"|"resumed"|"deleted"|"listed" },workers:"ot-reminders:success-message"},
+        "ot-reminders:reminder-message":{origin:"other", params:{reminder:ODReminder}, workers:"ot-reminders:reminder-message"},
+        "ot-reminders:list-message":{origin:"slash"|"other", params:{reminders:ODReminder[]}, workers:"ot-reminders:list-message"},
+        "ot-reminders:success-message":{origin:"slash"|"other", params:{scope:"created"|"paused"|"resumed"|"deleted"|"listed"}, workers:"ot-reminders:success-message"},
     }
     export interface ODEmbedManagerIdMappings {
-        "ot-reminders:reminder-embed":{origin:"other",params:{reminder:ODReminder},workers:"ot-reminders:reminder-embed"},
-        "ot-reminders:list-embed":{origin:"slash"|"other",params:{reminders:ODReminder[]},workers:"ot-reminders:list-embed"},
+        "ot-reminders:reminder-embed":{origin:"other", params:{reminder:ODReminder}, workers:"ot-reminders:reminder-embed"},
+        "ot-reminders:list-embed":{origin:"slash"|"other", params:{reminders:ODReminder[]}, workers:"ot-reminders:list-embed"},
     }
     export interface ODSlashCommandManagerIdMappings {
         "ot-reminders:create":api.ODSlashCommand
@@ -21,7 +21,7 @@ declare module "#opendiscord-types" {
         "ot-reminders:create":api.ODTextCommand
     }
     export interface ODCommandResponderManagerIdMappings {
-        "ot-reminders:create":{origin:"slash"|"text",params:{},workers:"ot-reminders:create"|"ot-reminders:logs"},
+        "ot-reminders:create":{origin:"slash"|"text", params:{}, workers:"ot-reminders:create"|"ot-reminders:logs"},
     }
     export interface ODPluginClassManagerIdMappings {
         "ot-reminders:manager":ODReminderManager

@@ -1,4 +1,4 @@
-import {api, opendiscord, utilities} from "#opendiscord"
+import { api, opendiscord, utilities } from "#opendiscord"
 import * as discord from "discord.js"
 
 //DECLARATION
@@ -13,19 +13,19 @@ declare module "#opendiscord-types" {
         "ot-jump-to-top:top":api.ODTextCommand
     }
     export interface ODCommandResponderManagerIdMappings {
-        "ot-jump-to-top:top":{origin:"slash"|"text",params:{},workers:"ot-jump-to-top:top"|"ot-jump-to-top:logs"},
+        "ot-jump-to-top:top":{origin:"slash"|"text", params:{}, workers:"ot-jump-to-top:top"|"ot-jump-to-top:logs"},
     }
     export interface ODButtonManagerIdMappings {
-        "ot-jump-to-top:top-button":{origin:"slash"|"text"|"other",params:{url:string},workers:"ot-jump-to-top:top-button"},
+        "ot-jump-to-top:top-button":{origin:"slash"|"text"|"other", params:{url:string}, workers:"ot-jump-to-top:top-button"},
     }
     export interface ODMessageManagerIdMappings {
-        "ot-jump-to-top:top-message":{origin:"slash"|"text"|"other",params:{url:string},workers:"ot-jump-to-top:top-message"},
+        "ot-jump-to-top:top-message":{origin:"slash"|"text"|"other", params:{url:string}, workers:"ot-jump-to-top:top-message"},
     }
 }
 
 //REGISTER SLASH COMMAND
 opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
-    slash.add(new api.ODSlashCommand("ot-jump-to-top:top",{
+    slash.add(new api.ODSlashCommand("ot-jump-to-top:top", {
         name:"top",
         description:"Jump to the top of the ticket.",
         type:discord.ApplicationCommandType.ChatInput,
@@ -38,7 +38,7 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
 opendiscord.events.get("onTextCommandLoad").listen((text) => {
     const generalConfig = opendiscord.configs.get("opendiscord:general")
 
-    text.add(new api.ODTextCommand("ot-jump-to-top:top",{
+    text.add(new api.ODTextCommand("ot-jump-to-top:top", {
         name:"top",
         prefix:generalConfig.data.prefix,
         dmPermission:false,
@@ -48,7 +48,7 @@ opendiscord.events.get("onTextCommandLoad").listen((text) => {
 
 //REGISTER HELP MENU
 opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
-    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-jump-to-top:top",0,{
+    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-jump-to-top:top", 0, {
         slashName:"top",
         textName:"top",
         slashDescription:"Jump to the top of the ticket.",
@@ -59,62 +59,58 @@ opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
 //REGISTER BUILDERS
 opendiscord.events.get("onButtonBuilderLoad").listen((buttons) => {
     buttons.add(new api.ODButton("ot-jump-to-top:top-button"))
-    buttons.get("ot-jump-to-top:top-button").workers.add(
-        new api.ODWorker("ot-jump-to-top:top-button",0,(instance,params,origin,cancel) => {
-            instance.setMode("url")
-            instance.setUrl(params.url)
-            instance.setEmoji("⬆️")
-            instance.setLabel("Back To Top")
-        })
-    )
+    buttons.get("ot-jump-to-top:top-button").workers.add(new api.ODWorker("ot-jump-to-top:top-button", 0, (instance, params, origin, cancel) => {
+        instance.setMode("url")
+        instance.setUrl(params.url)
+        instance.setEmoji("⬆️")
+        instance.setLabel("Back To Top")
+    }))
 })
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-jump-to-top:top-message"))
-    messages.get("ot-jump-to-top:top-message").workers.add(
-        new api.ODWorker("ot-jump-to-top:top-message",0,async (instance,params,origin,cancel) => {
-            instance.addComponent(await opendiscord.builders.buttons.getSafe("ot-jump-to-top:top-button").build(origin,{url:params.url}))
-            instance.setContent("**Click to go to the top of this ticket.**")
-        })
-    )
+    messages.get("ot-jump-to-top:top-message").workers.add(new api.ODWorker("ot-jump-to-top:top-message", 0, async (instance, params, origin, cancel) => {
+        instance.addComponent(await opendiscord.builders.buttons.getSafe("ot-jump-to-top:top-button").build(origin, {url:params.url}))
+        instance.setContent("**Click to go to the top of this ticket.**")
+    }))
 })
 
 //REGISTER COMMAND RESPONDER
 opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     const generalConfig = opendiscord.configs.get("opendiscord:general")
 
-    commands.add(new api.ODCommandResponder("ot-jump-to-top:top",generalConfig.data.prefix,"top"))
+    commands.add(new api.ODCommandResponder("ot-jump-to-top:top", generalConfig.data.prefix, "top"))
     commands.get("ot-jump-to-top:top").workers.add([
-        new api.ODWorker("ot-jump-to-top:top",0,async (instance,params,origin,cancel) => {
-            const {guild,channel,user} = instance
+        new api.ODWorker("ot-jump-to-top:top", 0, async (instance, params, origin, cancel) => {
+            const {guild, channel, user} = instance
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin, {channel, user}))
                 return cancel()
             }
             const ticket = opendiscord.tickets.get(channel.id)
             if (!ticket || channel.isDMBased()){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-unknown").build(origin,{guild,channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-unknown").build(origin, {guild, channel, user}))
                 return cancel()
             }
             //return when busy
             if (ticket.get("opendiscord:busy").value){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-busy").build(origin,{guild,channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-busy").build(origin, {guild, channel, user}))
                 return cancel()
             }
 
             const msg = await opendiscord.tickets.getTicketMessage(ticket)
             if (!msg){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Unable to find ticket message!",layout:"simple"}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin, {guild, channel, user, error:"Unable to find ticket message!", layout:"simple"}))
                 return cancel()
             }
 
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-jump-to-top:top-message").build(origin,{url:msg.url}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-jump-to-top:top-message").build(origin, {url:msg.url}))
         }),
-        new api.ODWorker("ot-jump-to-top:logs",-1,(instance,params,origin,cancel) => {
-            opendiscord.log(instance.user.displayName+" used the 'top' command!","plugin",[
-                {key:"user",value:instance.user.username},
-                {key:"userid",value:instance.user.id,hidden:true},
-                {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:origin}
+        new api.ODWorker("ot-jump-to-top:logs", -1, (instance, params, origin, cancel) => {
+            opendiscord.log(instance.user.displayName + " used the 'top' command!", "plugin", [
+                {key:"user", value:instance.user.username},
+                {key:"userid", value:instance.user.id, hidden:true},
+                {key:"channelid", value:instance.channel.id, hidden:true},
+                {key:"method", value:origin}
             ])
         })
     ])

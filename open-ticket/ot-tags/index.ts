@@ -3,7 +3,7 @@ import * as discord from "discord.js"
 import crypto from "crypto"
 import ansis from "ansis"
 
-function randomHexId(blacklist:string[]){
+function randomHexId(blacklist:string[]) {
     const hash = crypto.randomBytes(8).toString("hex")
     if (blacklist.includes(hash)) return randomHexId(blacklist)
     else return hash
@@ -36,52 +36,57 @@ export interface OTTagJson {
     }
 }
 export class OTTag extends api.ODManagerData {
-    #name: string
-    set name(value:string){
+    #name:string
+    set name(value:string) {
         this.#name = value
         this._change()
     }
-    get name(){
+
+    get name() {
         return this.#name
     }
 
-    #value: string
-    set value(value:string){
+    #value:string
+    set value(value:string) {
         this.#value = value
         this._change()
     }
-    get value(){
+
+    get value() {
         return this.#value
     }
 
-    #adminOnly: boolean
-    set adminOnly(value:boolean){
+    #adminOnly:boolean
+    set adminOnly(value:boolean) {
         this.#adminOnly = value
         this._change()
     }
-    get adminOnly(){
+
+    get adminOnly() {
         return this.#adminOnly
     }
 
-    #auto: boolean
-    set auto(value:boolean){
+    #auto:boolean
+    set auto(value:boolean) {
         this.#auto = value
         this._change()
     }
-    get auto(){
+
+    get auto() {
         return this.#auto
     }
 
-    #keywords: string[]
-    set keywords(value:string[]){
+    #keywords:string[]
+    set keywords(value:string[]) {
         this.#keywords = value
         this._change()
     }
-    get keywords(){
+
+    get keywords() {
         return this.#keywords
     }
 
-    constructor(id:api.ODValidId,name:string,value:string,adminOnly:boolean,auto:boolean,keywords:string[]){
+    constructor(id:api.ODValidId, name:string, value:string, adminOnly:boolean, auto:boolean, keywords:string[]) {
         super(id)
         this.#name = name
         this.#value = value
@@ -90,7 +95,7 @@ export class OTTag extends api.ODManagerData {
         this.#keywords = keywords
     }
 
-    matchKeywords(text:string,smartMode:boolean){
+    matchKeywords(text:string, smartMode:boolean) {
         if (!this.#auto) return false
         if (smartMode){
             //smart mode
@@ -102,8 +107,8 @@ export class OTTag extends api.ODManagerData {
             words.forEach((w) => {
                 if (this.#keywords.includes(w)) score = score + 0.8
             })
-            
-            let secondScore = this.#keywords.length * 0.7
+
+            const secondScore = this.#keywords.length * 0.7
             return (score > secondScore)
 
         }else{
@@ -125,17 +130,18 @@ export class OTTag extends api.ODManagerData {
             }
         }
     }
+
     static fromJson(json:OTTagJson): OTTag {
-        const {name,value,adminOnly,auto,keywords} = json.data
-        return new OTTag(json.id,name,value,adminOnly,auto,keywords)
+        const {name, value, adminOnly, auto, keywords} = json.data
+        return new OTTag(json.id, name, value, adminOnly, auto, keywords)
     }
 }
 export class OTTagManager extends api.ODManager<OTTag> {
-    id: api.ODId = new api.ODId("ot-tags:manager")
-    defaults: {tagLoading:boolean} = {tagLoading:true}
+    id:api.ODId = new api.ODId("ot-tags:manager")
+    defaults:{tagLoading:boolean} = {tagLoading:true}
 
-    constructor(debug:api.ODDebugger){
-        super(debug,"tag")
+    constructor(debug:api.ODDebugger) {
+        super(debug, "tag")
     }
 }
 declare module "#opendiscord-types" {
@@ -143,42 +149,42 @@ declare module "#opendiscord-types" {
         "ot-tags":api.ODPlugin
     }
     export interface ODConfigManagerIdMappings {
-        "ot-tags:config": OTTagsConfig
+        "ot-tags:config":OTTagsConfig
     }
     export interface ODCheckerManagerIdMappings {
-        "ot-tags:config": api.ODChecker
+        "ot-tags:config":api.ODChecker
     }
     export interface ODDatabaseManagerIdMappings {
-        "ot-tags:tags": api.ODJsonDatabase
+        "ot-tags:tags":api.ODJsonDatabase
     }
     export interface ODSlashCommandManagerIdMappings {
         "ot-tags:tag":api.ODSlashCommand,
         "ot-tags:tags":api.ODSlashCommand
     }
     export interface ODCommandResponderManagerIdMappings {
-        "ot-tags:tag":{origin:"slash"|"text",params:{},workers:"ot-tags:tag"|"ot-tags:logs"},
-        "ot-tags:tags":{origin:"slash"|"text",params:{},workers:"ot-tags:tags"|"ot-tags:logs"},
+        "ot-tags:tag":{origin:"slash"|"text", params:{}, workers:"ot-tags:tag"|"ot-tags:logs"},
+        "ot-tags:tags":{origin:"slash"|"text", params:{}, workers:"ot-tags:tags"|"ot-tags:logs"},
     }
     export interface ODEventManagerIdMappings {
-        "ot-tags:onTagCreated":api.ODEvent<(tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>,
-        "ot-tags:onTagRemoved":api.ODEvent<(tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>,
-        "ot-tags:onTagEdited":api.ODEvent<(tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>,
-        "ot-tags:onTagUsed":api.ODEvent<(tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>,
-        "ot-tags:onAutoTagTriggered":api.ODEvent<(tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>
+        "ot-tags:onTagCreated":api.ODEvent<(tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>,
+        "ot-tags:onTagRemoved":api.ODEvent<(tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>,
+        "ot-tags:onTagEdited":api.ODEvent<(tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>,
+        "ot-tags:onTagUsed":api.ODEvent<(tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>,
+        "ot-tags:onAutoTagTriggered":api.ODEvent<(tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel) => api.ODPromiseVoid>
     }
     export interface ODMessageManagerIdMappings {
-        "ot-tags:tag-message":{origin:"slash"|"text"|"keyword"|"other",params:{tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel,keyword:string|null},workers:"ot-tags:tag-message"},
-        "ot-tags:tag-created-message":{origin:"slash"|"text"|"other",params:{tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel},workers:"ot-tags:tag-created-message"},
-        "ot-tags:tag-edited-message":{origin:"slash"|"text"|"other",params:{tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel},workers:"ot-tags:tag-edited-message"},
-        "ot-tags:tag-removed-message":{origin:"slash"|"text"|"other",params:{tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel},workers:"ot-tags:tag-removed-message"},
-        "ot-tags:log-message":{origin:"slash"|"text"|"other",params:{action:"create"|"edit"|"remove",tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel},workers:"ot-tags:log-message"},
+        "ot-tags:tag-message":{origin:"slash"|"text"|"keyword"|"other", params:{tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel, keyword:string|null}, workers:"ot-tags:tag-message"},
+        "ot-tags:tag-created-message":{origin:"slash"|"text"|"other", params:{tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel}, workers:"ot-tags:tag-created-message"},
+        "ot-tags:tag-edited-message":{origin:"slash"|"text"|"other", params:{tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel}, workers:"ot-tags:tag-edited-message"},
+        "ot-tags:tag-removed-message":{origin:"slash"|"text"|"other", params:{tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel}, workers:"ot-tags:tag-removed-message"},
+        "ot-tags:log-message":{origin:"slash"|"text"|"other", params:{action:"create"|"edit"|"remove", tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel}, workers:"ot-tags:log-message"},
     }
     export interface ODEmbedManagerIdMappings {
-        "ot-tags:tag-embed":{origin:"slash"|"text"|"keyword"|"other",params:{tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel,keyword:string|null},workers:"ot-tags:tag-embed"},
-        "ot-tags:tag-created-embed":{origin:"slash"|"text"|"other",params:{tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel},workers:"ot-tags:tag-created-embed"},
-        "ot-tags:tag-edited-embed":{origin:"slash"|"text"|"other",params:{tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel},workers:"ot-tags:tag-edited-embed"},
-        "ot-tags:tag-removed-embed":{origin:"slash"|"text"|"other",params:{tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel},workers:"ot-tags:tag-removed-embed"},
-        "ot-tags:log-embed":{origin:"slash"|"text"|"other",params:{action:"create"|"edit"|"remove",tag:OTTag,user:discord.User,channel:discord.GuildTextBasedChannel},workers:"ot-tags:log-embed"},
+        "ot-tags:tag-embed":{origin:"slash"|"text"|"keyword"|"other", params:{tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel, keyword:string|null}, workers:"ot-tags:tag-embed"},
+        "ot-tags:tag-created-embed":{origin:"slash"|"text"|"other", params:{tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel}, workers:"ot-tags:tag-created-embed"},
+        "ot-tags:tag-edited-embed":{origin:"slash"|"text"|"other", params:{tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel}, workers:"ot-tags:tag-edited-embed"},
+        "ot-tags:tag-removed-embed":{origin:"slash"|"text"|"other", params:{tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel}, workers:"ot-tags:tag-removed-embed"},
+        "ot-tags:log-embed":{origin:"slash"|"text"|"other", params:{action:"create"|"edit"|"remove", tag:OTTag, user:discord.User, channel:discord.GuildTextBasedChannel}, workers:"ot-tags:log-embed"},
     }
     export interface ODPluginClassManagerIdMappings {
         "ot-tags:manager":OTTagManager
@@ -199,25 +205,25 @@ opendiscord.events.get("onPluginClassLoad").listen((classes) => {
 
 //REGISTER CONFIG
 opendiscord.events.get("onConfigLoad").listen((configs) => {
-    configs.add(new OTTagsConfig("ot-tags:config","config.json","./plugins/ot-tags/"))
+    configs.add(new OTTagsConfig("ot-tags:config", "config.json", "./plugins/ot-tags/"))
 })
 
 //REGISTER CONFIG CHECKER
 opendiscord.events.get("onCheckerLoad").listen((checkers) => {
     const config = opendiscord.configs.get("ot-tags:config")
-    checkers.add(new api.ODChecker("ot-tags:config",checkers.storage,0,config,new api.ODCheckerObjectStructure("ot-tags:config",{children:[
-        {key:"layout",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-tags:layout",{choices:["text","bold-text","embed"]})},
-        {key:"mentionUser",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-tags:smart-mention",{})},
-        {key:"autoTagCooldownSeconds",optional:false,priority:0,checker:new api.ODCheckerNumberStructure("ot-tags:smart-cooldown",{floatAllowed:false,negativeAllowed:false,min:1,max:3600})},
-        {key:"embedLayout",optional:false,priority:0,checker:new api.ODCheckerObjectStructure("ot-tags:embed-layout",{children:[
-            {key:"title",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-tags:embed-title",{})},
-            {key:"customColor",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_HexColor("ot-tags:embed-color",true,true)},
-            {key:"url",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-tags:embed-url",true,{allowHttp:false})},
-            {key:"thumbnail",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-tags:embed-thumbnail",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
-            {key:"footer",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-tags:embed-footer",{maxLength:2048})},
-            {key:"timestamp",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-tags:embed-timestamp",{})}
+    checkers.add(new api.ODChecker("ot-tags:config", checkers.storage, 0, config, new api.ODCheckerObjectStructure("ot-tags:config", {children:[
+        {key:"layout", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-tags:layout", {choices:["text", "bold-text", "embed"]})},
+        {key:"mentionUser", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-tags:smart-mention", {})},
+        {key:"autoTagCooldownSeconds", optional:false, priority:0, checker:new api.ODCheckerNumberStructure("ot-tags:smart-cooldown", {floatAllowed:false, negativeAllowed:false, min:1, max:3600})},
+        {key:"embedLayout", optional:false, priority:0, checker:new api.ODCheckerObjectStructure("ot-tags:embed-layout", {children:[
+            {key:"title", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-tags:embed-title", {})},
+            {key:"customColor", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_HexColor("ot-tags:embed-color", true, true)},
+            {key:"url", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-tags:embed-url", true, {allowHttp:false})},
+            {key:"thumbnail", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-tags:embed-thumbnail", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})},
+            {key:"footer", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-tags:embed-footer", {maxLength:2048})},
+            {key:"timestamp", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-tags:embed-timestamp", {})}
         ]})},
-        {key:"enableSmartAutoTag",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-tags:smart-enabled",{})}
+        {key:"enableSmartAutoTag", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-tags:smart-enabled", {})}
     ]})))
 })
 
@@ -226,12 +232,12 @@ opendiscord.events.get("onDatabaseLoad").listen((databases) => {
     const devdatabaseFlag = opendiscord.flags.get("opendiscord:dev-database")
     const isDevdatabase = devdatabaseFlag ? devdatabaseFlag.value : false
 
-    databases.add(new api.ODJsonDatabase("ot-tags:tags","tags.json",(isDevdatabase) ? "./devdatabase/" : "./database/"))
+    databases.add(new api.ODJsonDatabase("ot-tags:tags", "tags.json", (isDevdatabase) ? "./devdatabase/" : "./database/"))
 })
 
 //REGISTER SLASH COMMANDS
 opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
-    slash.add(new api.ODSlashCommand("ot-tags:tag",{
+    slash.add(new api.ODSlashCommand("ot-tags:tag", {
         name:"tag",
         description:"Use a tag in this channel.",
         type:discord.ApplicationCommandType.ChatInput,
@@ -247,7 +253,7 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
             }
         ]
     }))
-    slash.add(new api.ODSlashCommand("ot-tags:tags",{
+    slash.add(new api.ODSlashCommand("ot-tags:tags", {
         name:"tags",
         description:"Manage all tags in the server.",
         type:discord.ApplicationCommandType.ChatInput,
@@ -349,13 +355,13 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
 
 //REGISTER HELP MENU
 opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
-    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-tags:tag",0,{
+    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-tags:tag", 0, {
         slashName:"tag",
-        slashDescription:"Use a tag in a channel!",
+        slashDescription:"Use a tag in a channel!"
     }))
-    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-tags:tags",0,{
+    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-tags:tags", 0, {
         slashName:"tags",
-        slashDescription:"Manage all tags in the server!",
+        slashDescription:"Manage all tags in the server!"
     }))
 })
 
@@ -365,84 +371,74 @@ opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     const config = opendiscord.configs.get("ot-tags:config")
 
     embeds.add(new api.ODEmbed("ot-tags:tag-embed"))
-    embeds.get("ot-tags:tag-embed").workers.add(
-        new api.ODWorker("ot-tags:tag-embed",0,(instance,params,origin,cancel) => {
-            const {tag,user,channel,keyword} = params
-            const keywordSuffix = ((config.data.layout == "text" || config.data.layout == "bold-text") && keyword) ? "\n\n*Triggered By:* `"+keyword+"`" : ""
+    embeds.get("ot-tags:tag-embed").workers.add(new api.ODWorker("ot-tags:tag-embed", 0, (instance, params, origin, cancel) => {
+        const {tag, user, channel, keyword} = params
+        const keywordSuffix = ((config.data.layout === "text" || config.data.layout === "bold-text") && keyword) ? "\n\n*Triggered By:* `" + keyword + "`" : ""
 
-            instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
-            instance.setDescription(tag.value.replaceAll(/\\n/g,"\n")+keywordSuffix)
-            instance.setAuthor(user.displayName,user.displayAvatarURL())
-            if (config.data.embedLayout.title) instance.setTitle(utilities.emojiTitle("🏷️",tag.name))
-            if (config.data.embedLayout.footer) instance.setFooter(config.data.embedLayout.footer)
-            if (config.data.embedLayout.url) instance.setUrl(config.data.embedLayout.url)
-            if (config.data.embedLayout.thumbnail) instance.setThumbnail(config.data.embedLayout.thumbnail)
-            if (config.data.embedLayout.timestamp) instance.setTimestamp(new Date())
-        })
-    )
+        instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
+        instance.setDescription(tag.value.replaceAll(/\\n/g, "\n") + keywordSuffix)
+        instance.setAuthor(user.displayName, user.displayAvatarURL())
+        if (config.data.embedLayout.title) instance.setTitle(utilities.emojiTitle("🏷️", tag.name))
+        if (config.data.embedLayout.footer) instance.setFooter(config.data.embedLayout.footer)
+        if (config.data.embedLayout.url) instance.setUrl(config.data.embedLayout.url)
+        if (config.data.embedLayout.thumbnail) instance.setThumbnail(config.data.embedLayout.thumbnail)
+        if (config.data.embedLayout.timestamp) instance.setTimestamp(new Date())
+    }))
 
     embeds.add(new api.ODEmbed("ot-tags:tag-created-embed"))
-    embeds.get("ot-tags:tag-created-embed").workers.add(
-        new api.ODWorker("ot-tags:tag-created-embed",0,(instance,params,origin,cancel) => {
-            const {tag,user} = params
+    embeds.get("ot-tags:tag-created-embed").workers.add(new api.ODWorker("ot-tags:tag-created-embed", 0, (instance, params, origin, cancel) => {
+        const {tag, user} = params
 
-            instance.setAuthor(user.displayName,user.displayAvatarURL())
-            instance.setTitle(utilities.emojiTitle("🏷️","Tag Created"))
-            instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
-            instance.setDescription("A new tag has been created sucessfully!")
-            instance.addFields({name:"Name:",value:"```"+tag.name+"```"})
-            if (tag.adminOnly) instance.addFields({name:"Admin Only:",value:"```Yes```"})
-            if (tag.keywords.length > 0 && tag.auto) instance.addFields({name:"Keywords:",value:"```"+tag.keywords.join(", ")+"```"})
-        })
-    )
+        instance.setAuthor(user.displayName, user.displayAvatarURL())
+        instance.setTitle(utilities.emojiTitle("🏷️", "Tag Created"))
+        instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
+        instance.setDescription("A new tag has been created sucessfully!")
+        instance.addFields({name:"Name:", value:"```" + tag.name + "```"})
+        if (tag.adminOnly) instance.addFields({name:"Admin Only:", value:"```Yes```"})
+        if (tag.keywords.length > 0 && tag.auto) instance.addFields({name:"Keywords:", value:"```" + tag.keywords.join(", ") + "```"})
+    }))
 
     embeds.add(new api.ODEmbed("ot-tags:tag-edited-embed"))
-    embeds.get("ot-tags:tag-edited-embed").workers.add(
-        new api.ODWorker("ot-tags:tag-edited-embed",0,(instance,params,origin,cancel) => {
-            const {tag,user} = params
-            
-            instance.setAuthor(user.displayName,user.displayAvatarURL())
-            instance.setTitle(utilities.emojiTitle("🏷️","Tag Edited"))
-            instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
-            instance.setDescription("This tag has been edited sucessfully!")
-            instance.addFields({name:"Name:",value:"```"+tag.name+"```"})
-            if (tag.adminOnly) instance.addFields({name:"Admin Only:",value:"```Yes```"})
-            if (tag.keywords.length > 0 && tag.auto) instance.addFields({name:"Keywords:",value:"```"+tag.keywords.join(", ")+"```"})
-        })
-    )
+    embeds.get("ot-tags:tag-edited-embed").workers.add(new api.ODWorker("ot-tags:tag-edited-embed", 0, (instance, params, origin, cancel) => {
+        const {tag, user} = params
+
+        instance.setAuthor(user.displayName, user.displayAvatarURL())
+        instance.setTitle(utilities.emojiTitle("🏷️", "Tag Edited"))
+        instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
+        instance.setDescription("This tag has been edited sucessfully!")
+        instance.addFields({name:"Name:", value:"```" + tag.name + "```"})
+        if (tag.adminOnly) instance.addFields({name:"Admin Only:", value:"```Yes```"})
+        if (tag.keywords.length > 0 && tag.auto) instance.addFields({name:"Keywords:", value:"```" + tag.keywords.join(", ") + "```"})
+    }))
 
     embeds.add(new api.ODEmbed("ot-tags:tag-removed-embed"))
-    embeds.get("ot-tags:tag-removed-embed").workers.add(
-        new api.ODWorker("ot-tags:tag-removed-embed",0,(instance,params,origin,cancel) => {
-            const {tag,user} = params
-            
-            instance.setAuthor(user.displayName,user.displayAvatarURL())
-            instance.setTitle(utilities.emojiTitle("🏷️","Tag Removed"))
-            instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
-            instance.setDescription("This tag has been removed sucessfully!")
-            instance.addFields({name:"Name:",value:"```"+tag.name+"```"})
-        })
-    )
+    embeds.get("ot-tags:tag-removed-embed").workers.add(new api.ODWorker("ot-tags:tag-removed-embed", 0, (instance, params, origin, cancel) => {
+        const {tag, user} = params
+
+        instance.setAuthor(user.displayName, user.displayAvatarURL())
+        instance.setTitle(utilities.emojiTitle("🏷️", "Tag Removed"))
+        instance.setColor(config.data.embedLayout.customColor ? config.data.embedLayout.customColor : generalConfig.data.mainColor)
+        instance.setDescription("This tag has been removed sucessfully!")
+        instance.addFields({name:"Name:", value:"```" + tag.name + "```"})
+    }))
 
     embeds.add(new api.ODEmbed("ot-tags:log-embed"))
-    embeds.get("ot-tags:log-embed").workers.add(
-        new api.ODWorker("ot-tags:log-embed",0,(instance,params,origin,cancel) => {
-            const {action,tag,user} = params
-            const title = (action == "create") ? "Tag Created" : (action == "edit") ? "Tag Edited" : "Tag Removed"
-            const description = (action == "create") ? "This tag has been created by "+discord.userMention(user.id)+"!" : (action == "edit") ? "This tag has been edited by "+discord.userMention(user.id)+"!" : "This tag has been removed by "+discord.userMention(user.id)+"!"
+    embeds.get("ot-tags:log-embed").workers.add(new api.ODWorker("ot-tags:log-embed", 0, (instance, params, origin, cancel) => {
+        const {action, tag, user} = params
+        const title = (action === "create") ? "Tag Created" : (action === "edit") ? "Tag Edited" : "Tag Removed"
+        const description = (action === "create") ? "This tag has been created by " + discord.userMention(user.id) + "!" : (action === "edit") ? "This tag has been edited by " + discord.userMention(user.id) + "!" : "This tag has been removed by " + discord.userMention(user.id) + "!"
 
-            instance.setColor(generalConfig.data.mainColor)
-            instance.setTitle(utilities.emojiTitle("🏷️",title))
-            instance.setThumbnail(user.displayAvatarURL())
-            instance.setAuthor(user.displayName,user.displayAvatarURL())
-            instance.setTimestamp(new Date())
-            instance.setDescription(description)
+        instance.setColor(generalConfig.data.mainColor)
+        instance.setTitle(utilities.emojiTitle("🏷️", title))
+        instance.setThumbnail(user.displayAvatarURL())
+        instance.setAuthor(user.displayName, user.displayAvatarURL())
+        instance.setTimestamp(new Date())
+        instance.setDescription(description)
 
-            instance.addFields({name:"Name:",value:"```"+tag.name+"```"})
-            if (tag.adminOnly) instance.addFields({name:"Admin Only:",value:"```Yes```"})
-            if (tag.keywords.length > 0 && tag.auto) instance.addFields({name:"Keywords:",value:"```"+tag.keywords.join(", ")+"```"})
-        })
-    )
+        instance.addFields({name:"Name:", value:"```" + tag.name + "```"})
+        if (tag.adminOnly) instance.addFields({name:"Admin Only:", value:"```Yes```"})
+        if (tag.keywords.length > 0 && tag.auto) instance.addFields({name:"Keywords:", value:"```" + tag.keywords.join(", ") + "```"})
+    }))
 })
 
 //REGISTER MESSAGE BUILDERS
@@ -450,193 +446,183 @@ opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     const config = opendiscord.configs.get("ot-tags:config")
 
     messages.add(new api.ODMessage("ot-tags:tag-message"))
-    messages.get("ot-tags:tag-message").workers.add(
-        new api.ODWorker("ot-tags:tag-message",0,async (instance,params,origin,cancel) => {
-            const {tag,user,channel,keyword} = params
-            const keywordSuffix = ((config.data.layout == "text" || config.data.layout == "bold-text") && keyword) ? "\n#- Triggered By: `"+keyword+"`" : ""
+    messages.get("ot-tags:tag-message").workers.add(new api.ODWorker("ot-tags:tag-message", 0, async (instance, params, origin, cancel) => {
+        const {tag, user, channel, keyword} = params
+        const keywordSuffix = ((config.data.layout === "text" || config.data.layout === "bold-text") && keyword) ? "\n#- Triggered By: `" + keyword + "`" : ""
 
-            if (config.data.layout == "text") instance.setContent(tag.value.replaceAll(/\\n/g,"\n")+keywordSuffix)
-            else if (config.data.layout == "bold-text") instance.setContent("**"+tag.value.replaceAll(/\\n/g,"\n")+"**"+keywordSuffix)
-            else if (config.data.layout == "embed") instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-embed").build(origin,{tag,user,channel,keyword}))
-        })
-    )
+        if (config.data.layout === "text") instance.setContent(tag.value.replaceAll(/\\n/g, "\n") + keywordSuffix)
+        else if (config.data.layout === "bold-text") instance.setContent("**" + tag.value.replaceAll(/\\n/g, "\n") + "**" + keywordSuffix)
+        else if (config.data.layout === "embed") instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-embed").build(origin, {tag, user, channel, keyword}))
+    }))
 
     messages.add(new api.ODMessage("ot-tags:tag-created-message"))
-    messages.get("ot-tags:tag-created-message").workers.add(
-        new api.ODWorker("ot-tags:tag-created-message",0,async (instance,params,origin,cancel) => {
-            const {tag,user,channel} = params
-            
-            instance.setEphemeral(true)
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-created-embed").build(origin,{tag,user,channel}))
-        })
-    )
+    messages.get("ot-tags:tag-created-message").workers.add(new api.ODWorker("ot-tags:tag-created-message", 0, async (instance, params, origin, cancel) => {
+        const {tag, user, channel} = params
+
+        instance.setEphemeral(true)
+        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-created-embed").build(origin, {tag, user, channel}))
+    }))
 
     messages.add(new api.ODMessage("ot-tags:tag-edited-message"))
-    messages.get("ot-tags:tag-edited-message").workers.add(
-        new api.ODWorker("ot-tags:tag-edited-message",0,async (instance,params,origin,cancel) => {
-            const {tag,user,channel} = params
-            
-            instance.setEphemeral(true)
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-edited-embed").build(origin,{tag,user,channel}))
-        })
-    )
+    messages.get("ot-tags:tag-edited-message").workers.add(new api.ODWorker("ot-tags:tag-edited-message", 0, async (instance, params, origin, cancel) => {
+        const {tag, user, channel} = params
+
+        instance.setEphemeral(true)
+        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-edited-embed").build(origin, {tag, user, channel}))
+    }))
 
     messages.add(new api.ODMessage("ot-tags:tag-removed-message"))
-    messages.get("ot-tags:tag-removed-message").workers.add(
-        new api.ODWorker("ot-tags:tag-removed-message",0,async (instance,params,origin,cancel) => {
-            const {tag,user,channel} = params
-            
-            instance.setEphemeral(true)
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-removed-embed").build(origin,{tag,user,channel}))
-        })
-    )
+    messages.get("ot-tags:tag-removed-message").workers.add(new api.ODWorker("ot-tags:tag-removed-message", 0, async (instance, params, origin, cancel) => {
+        const {tag, user, channel} = params
+
+        instance.setEphemeral(true)
+        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:tag-removed-embed").build(origin, {tag, user, channel}))
+    }))
 
     messages.add(new api.ODMessage("ot-tags:log-message"))
-    messages.get("ot-tags:log-message").workers.add(
-        new api.ODWorker("ot-tags:log-message",0,async (instance,params,origin,cancel) => {
-            const {action,tag,user,channel} = params
-            
-            instance.setEphemeral(true)
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:log-embed").build(origin,{action,tag,user,channel}))
-        })
-    )
+    messages.get("ot-tags:log-message").workers.add(new api.ODWorker("ot-tags:log-message", 0, async (instance, params, origin, cancel) => {
+        const {action, tag, user, channel} = params
+
+        instance.setEphemeral(true)
+        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-tags:log-embed").build(origin, {action, tag, user, channel}))
+    }))
 })
 
 opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     const generalConfig = opendiscord.configs.get("opendiscord:general")
     const tags = opendiscord.plugins.classes.get("ot-tags:manager")
-    
+
     //TAG
-    commands.add(new api.ODCommandResponder("ot-tags:tag",generalConfig.data.prefix,"tag"))
+    commands.add(new api.ODCommandResponder("ot-tags:tag", generalConfig.data.prefix, "tag"))
     commands.get("ot-tags:tag").workers.add([
-        new api.ODWorker("ot-tags:tag",0,async (instance,params,origin,cancel) => {
-            const {guild,channel,user} = instance
-            const nameOpt = instance.options.getString("name",true)
+        new api.ODWorker("ot-tags:tag", 0, async (instance, params, origin, cancel) => {
+            const {guild, channel, user} = instance
+            const nameOpt = instance.options.getString("name", true)
 
             //check if in guild
             if (!guild || channel.isDMBased()){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin, {channel, user}))
                 return cancel()
             }
 
-            const tag = tags.getAll().find((t) => t.name.toLowerCase() == nameOpt.toLowerCase())
+            const tag = tags.getAll().find((t) => t.name.toLowerCase() === nameOpt.toLowerCase())
             if (!tag){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Supplied an invalid tag name. Please try again!",layout:"simple"}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin, {guild, channel, user, error:"Supplied an invalid tag name. Please try again!", layout:"simple"}))
                 return cancel()
             }
 
             //check permissions (when admin only)
-            if (tag.adminOnly && !opendiscord.permissions.hasPermissions("support",await opendiscord.permissions.getPermissions(user,channel,guild))){
+            if (tag.adminOnly && !opendiscord.permissions.hasPermissions("support", await opendiscord.permissions.getPermissions(user, channel, guild))){
                 //no permissions
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin","support"]}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin, {guild:instance.guild, channel:instance.channel, user:instance.user, permissions:["admin", "support"]}))
                 return cancel()
             }
 
-            await opendiscord.events.get("ot-tags:onTagUsed").emit([tag,user,channel])
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-tags:tag-message").build(origin,{channel,user,keyword:null,tag}))
+            await opendiscord.events.get("ot-tags:onTagUsed").emit([tag, user, channel])
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-tags:tag-message").build(origin, {channel, user, keyword:null, tag}))
         }),
-        new api.ODWorker("ot-tags:logs",-1,(instance,params,origin,cancel) => {
-            const nameOpt = instance.options.getString("name",true)
-            const tag = tags.getAll().find((t) => t.name.toLowerCase() == nameOpt.toLowerCase())
+        new api.ODWorker("ot-tags:logs", -1, (instance, params, origin, cancel) => {
+            const nameOpt = instance.options.getString("name", true)
+            const tag = tags.getAll().find((t) => t.name.toLowerCase() === nameOpt.toLowerCase())
             const tagName = tag ? tag.name : "/"
 
-            opendiscord.log(instance.user.displayName+" used the 'tag' command!","plugin",[
-                {key:"user",value:instance.user.username},
-                {key:"userid",value:instance.user.id,hidden:true},
-                {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:origin},
-                {key:"tag",value:tagName},
+            opendiscord.log(instance.user.displayName + " used the 'tag' command!", "plugin", [
+                {key:"user", value:instance.user.username},
+                {key:"userid", value:instance.user.id, hidden:true},
+                {key:"channelid", value:instance.channel.id, hidden:true},
+                {key:"method", value:origin},
+                {key:"tag", value:tagName}
             ])
         })
     ])
 
     //TAGS add,edit,remove
-    commands.add(new api.ODCommandResponder("ot-tags:tags",generalConfig.data.prefix,"tags"))
+    commands.add(new api.ODCommandResponder("ot-tags:tags", generalConfig.data.prefix, "tags"))
     commands.get("ot-tags:tags").workers.add([
-        new api.ODWorker("ot-tags:tags",0,async (instance,params,origin,cancel) => {
-            const {guild,channel,user} = instance
-            const nameOpt = instance.options.getString("name",true)
+        new api.ODWorker("ot-tags:tags", 0, async (instance, params, origin, cancel) => {
+            const {guild, channel, user} = instance
+            const nameOpt = instance.options.getString("name", true)
             const modeOpt = instance.options.getSubCommand() as "add"|"edit"|"remove"
 
             //check if in guild
             if (!guild || channel.isDMBased()){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin, {channel, user}))
                 return cancel()
             }
 
             //check permissions
-            if (!opendiscord.permissions.hasPermissions("support",await opendiscord.permissions.getPermissions(user,channel,guild))){
+            if (!opendiscord.permissions.hasPermissions("support", await opendiscord.permissions.getPermissions(user, channel, guild))){
                 //no permissions
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin","support"]}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin, {guild:instance.guild, channel:instance.channel, user:instance.user, permissions:["admin", "support"]}))
                 return cancel()
             }
 
-            if (modeOpt == "add"){
+            if (modeOpt === "add"){
                 //create a new tag
-                const contentsOpt = instance.options.getString("contents",true)
-                const adminOpt = instance.options.getBoolean("admin-only",false) ?? false
-                const autoOpt = instance.options.getBoolean("auto",false) ?? false
-                const keywordsOpt = instance.options.getString("keywords",false)
+                const contentsOpt = instance.options.getString("contents", true)
+                const adminOpt = instance.options.getBoolean("admin-only", false) ?? false
+                const autoOpt = instance.options.getBoolean("auto", false) ?? false
+                const keywordsOpt = instance.options.getString("keywords", false)
                 const keywords = keywordsOpt ? keywordsOpt.split(/ *, */g).filter((k) => k.length > 2) : []
 
-                if (tags.getAll().find((t) => t.name.toLowerCase() == nameOpt.toLowerCase())){
-                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"This tag already exists! Please use another name.",layout:"simple"}))
+                if (tags.getAll().find((t) => t.name.toLowerCase() === nameOpt.toLowerCase())){
+                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin, {guild, channel, user, error:"This tag already exists! Please use another name.", layout:"simple"}))
                     return cancel()
                 }
-                
-                const tag = new OTTag(randomHexId(tags.getIds().map((id) => id.value)),nameOpt,contentsOpt,adminOpt,autoOpt,keywords)
+
+                const tag = new OTTag(randomHexId(tags.getIds().map((id) => id.value)), nameOpt, contentsOpt, adminOpt, autoOpt, keywords)
                 tags.add(tag)
-                await opendiscord.statistics.get("opendiscord:global").setStat("ot-tags:tags-created",1,"increase")
-                await opendiscord.events.get("ot-tags:onTagCreated").emit([tag,user,channel])
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-tags:tag-created-message").build(origin,{channel,user,tag}))
-            
-            }else if (modeOpt == "edit"){
+                await opendiscord.statistics.get("opendiscord:global").setStat("ot-tags:tags-created", 1, "increase")
+                await opendiscord.events.get("ot-tags:onTagCreated").emit([tag, user, channel])
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-tags:tag-created-message").build(origin, {channel, user, tag}))
+
+            }else if (modeOpt === "edit"){
                 //edit an existing tag
-                const contentsOpt = instance.options.getString("contents",true)
-                const adminOpt = instance.options.getBoolean("admin-only",false) ?? false
-                const autoOpt = instance.options.getBoolean("auto",false) ?? false
-                const keywordsOpt = instance.options.getString("keywords",false)
+                const contentsOpt = instance.options.getString("contents", true)
+                const adminOpt = instance.options.getBoolean("admin-only", false) ?? false
+                const autoOpt = instance.options.getBoolean("auto", false) ?? false
+                const keywordsOpt = instance.options.getString("keywords", false)
                 const keywords = keywordsOpt ? keywordsOpt.split(/ *, */g).filter((k) => k.length > 2) : []
 
-                const tag = tags.getAll().find((t) => t.name.toLowerCase() == nameOpt.toLowerCase())
+                const tag = tags.getAll().find((t) => t.name.toLowerCase() === nameOpt.toLowerCase())
                 if (!tag){
-                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Supplied an invalid tag name. Please try again!",layout:"simple"}))
+                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin, {guild, channel, user, error:"Supplied an invalid tag name. Please try again!", layout:"simple"}))
                     return cancel()
                 }
-                
+
                 tag.value = contentsOpt
                 tag.adminOnly = adminOpt
                 tag.auto = autoOpt
                 tag.keywords = keywords
-                await opendiscord.events.get("ot-tags:onTagEdited").emit([tag,user,channel])
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-tags:tag-edited-message").build(origin,{channel,user,tag}))
-            
-            }else if (modeOpt == "remove"){
+                await opendiscord.events.get("ot-tags:onTagEdited").emit([tag, user, channel])
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-tags:tag-edited-message").build(origin, {channel, user, tag}))
+
+            }else if (modeOpt === "remove"){
                 //remove an existing tag
-                const tag = tags.getAll().find((t) => t.name.toLowerCase() == nameOpt.toLowerCase())
+                const tag = tags.getAll().find((t) => t.name.toLowerCase() === nameOpt.toLowerCase())
                 if (!tag){
-                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,error:"Supplied an invalid tag name. Please try again!",layout:"simple"}))
+                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin, {guild, channel, user, error:"Supplied an invalid tag name. Please try again!", layout:"simple"}))
                     return cancel()
                 }
-                
+
                 tags.remove(tag.id)
-                await opendiscord.statistics.get("opendiscord:global").setStat("ot-tags:tags-created",1,"decrease")
-                await opendiscord.events.get("ot-tags:onTagRemoved").emit([tag,user,channel])
-                await instance.reply(await opendiscord.builders.messages.getSafe("ot-tags:tag-removed-message").build(origin,{channel,user,tag}))
+                await opendiscord.statistics.get("opendiscord:global").setStat("ot-tags:tags-created", 1, "decrease")
+                await opendiscord.events.get("ot-tags:onTagRemoved").emit([tag, user, channel])
+                await instance.reply(await opendiscord.builders.messages.getSafe("ot-tags:tag-removed-message").build(origin, {channel, user, tag}))
             }
         }),
-        new api.ODWorker("ot-tags:logs",-1,(instance,params,origin,cancel) => {
-            const nameOpt = instance.options.getString("name",true)
+        new api.ODWorker("ot-tags:logs", -1, (instance, params, origin, cancel) => {
+            const nameOpt = instance.options.getString("name", true)
             const modeOpt = instance.options.getSubCommand()
-            const tag = tags.getAll().find((t) => t.name.toLowerCase() == nameOpt.toLowerCase())
+            const tag = tags.getAll().find((t) => t.name.toLowerCase() === nameOpt.toLowerCase())
             const tagName = tag ? tag.name : "/"
 
-            opendiscord.log(instance.user.displayName+" used the 'tags "+modeOpt+"' command!","plugin",[
-                {key:"user",value:instance.user.username},
-                {key:"userid",value:instance.user.id,hidden:true},
-                {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:origin},
-                {key:"tag",value:tagName},
+            opendiscord.log(instance.user.displayName + " used the 'tags " + modeOpt + "' command!", "plugin", [
+                {key:"user", value:instance.user.username},
+                {key:"userid", value:instance.user.id, hidden:true},
+                {key:"channelid", value:instance.channel.id, hidden:true},
+                {key:"method", value:origin},
+                {key:"tag", value:tagName}
             ])
         })
     ])
@@ -648,7 +634,7 @@ opendiscord.events.get("onTaskLoad").listen((tasks) => {
     const version = opendiscord.plugins.get("ot-tags").version
 
     //TAG LOADER
-    opendiscord.tasks.add(new api.ODTask("ot-tags:tag-loader",0,async () => {
+    opendiscord.tasks.add(new api.ODTask("ot-tags:tag-loader", 0, async () => {
         const rawTags = await tagDatabase.getCategory("ot-tags:tag") ?? []
         rawTags.forEach((rawTag) => {
             tags.add(OTTag.fromJson(rawTag.value as OTTagJson))
@@ -656,15 +642,15 @@ opendiscord.events.get("onTaskLoad").listen((tasks) => {
     }))
 
     //TAG SAVER
-    opendiscord.tasks.add(new api.ODTask("ot-tags:tag-saver",-1,() => {
+    opendiscord.tasks.add(new api.ODTask("ot-tags:tag-saver", -1, () => {
         tags.onAdd(async (tag) => {
-            await tagDatabase.set("ot-tags:tag",tag.id.value,tag.toJson(version))
+            await tagDatabase.set("ot-tags:tag", tag.id.value, tag.toJson(version))
         })
         tags.onChange(async (tag) => {
-            await tagDatabase.set("ot-tags:tag",tag.id.value,tag.toJson(version))
+            await tagDatabase.set("ot-tags:tag", tag.id.value, tag.toJson(version))
         })
         tags.onRemove(async (tag) => {
-            await tagDatabase.delete("ot-tags:tag",tag.id.value)
+            await tagDatabase.delete("ot-tags:tag", tag.id.value)
         })
     }))
 })
@@ -677,45 +663,45 @@ opendiscord.events.get("onClientReady").listen((clientManager) => {
     const generalConfig = opendiscord.configs.get("opendiscord:general")
 
     //AUTOCOMPLETE
-    client.on("interactionCreate",(interaction) => {
+    client.on("interactionCreate", (interaction) => {
         if (!interaction.isAutocomplete()) return
-        if (interaction.commandName != "tag" && interaction.commandName != "tags") return
+        if (interaction.commandName !== "tag" && interaction.commandName !== "tags") return
         const nameOpt = interaction.options.getFocused(true)
-        if (nameOpt.name != "name") return
+        if (nameOpt.name !== "name") return
 
-        const choices = tags.getAll().map((t) => t.name).filter((n) => n.startsWith(nameOpt.value)).map((n) => {return {name:n,value:n}})
+        const choices = tags.getAll().map((t) => t.name).filter((n) => n.startsWith(nameOpt.value)).map((n) => {return {name:n, value:n}})
         interaction.respond(choices)
     })
 
     //SMART MODE
-    const tagCooldown: Map<string,boolean> = new Map()
-    client.on("messageCreate",async (msg) => {
-        if (msg.guildId != generalConfig.data.serverId || msg.author.id == client.user.id || msg.author.bot || msg.channel.isDMBased()) return
-        const tag = tags.getAll().find((tag) => !tagCooldown.has(tag.id.value+"_"+msg.channel.id) && tag.matchKeywords(msg.content,config.data.enableSmartAutoTag))
+    const tagCooldown: Map<string, boolean> = new Map()
+    client.on("messageCreate", async (msg) => {
+        if (msg.guildId !== generalConfig.data.serverId || msg.author.id === client.user.id || msg.author.bot || msg.channel.isDMBased()) return
+        const tag = tags.getAll().find((tag) => !tagCooldown.has(tag.id.value + "_" + msg.channel.id) && tag.matchKeywords(msg.content, config.data.enableSmartAutoTag))
         if (!tag) return
-        const replyMsg = (await opendiscord.builders.messages.getSafe("ot-tags:tag-message").build("keyword",{channel:msg.channel,user:msg.author,keyword:null,tag})).message
-       
+        const replyMsg = (await opendiscord.builders.messages.getSafe("ot-tags:tag-message").build("keyword", {channel:msg.channel, user:msg.author, keyword:null, tag})).message
+
         if (config.data.mentionUser) msg.reply(replyMsg)
         else msg.channel.send(replyMsg)
-        await opendiscord.events.get("ot-tags:onAutoTagTriggered").emit([tag,msg.author,msg.channel])
+        await opendiscord.events.get("ot-tags:onAutoTagTriggered").emit([tag, msg.author, msg.channel])
 
-        opendiscord.log(msg.author.displayName+" auto-triggered a tag!","plugin",[
-            {key:"user",value:msg.author.username},
-            {key:"userid",value:msg.author.id,hidden:true},
-            {key:"channelid",value:msg.channel.id,hidden:true},
-            {key:"tag",value:tag.name}
+        opendiscord.log(msg.author.displayName + " auto-triggered a tag!", "plugin", [
+            {key:"user", value:msg.author.username},
+            {key:"userid", value:msg.author.id, hidden:true},
+            {key:"channelid", value:msg.channel.id, hidden:true},
+            {key:"tag", value:tag.name}
         ])
 
-        tagCooldown.set(tag.id.value+"_"+msg.channel.id,true)
+        tagCooldown.set(tag.id.value + "_" + msg.channel.id, true)
         setTimeout(() => {
-            tagCooldown.delete(tag.id.value+"_"+msg.channel.id)
-        },config.data.autoTagCooldownSeconds*1000)
+            tagCooldown.delete(tag.id.value + "_" + msg.channel.id)
+        }, config.data.autoTagCooldownSeconds * 1000)
     })
 })
 
 //REGISTER NEW STATISTICS
 opendiscord.events.get("onStatisticLoad").listen((stats) => {
-    stats.get("opendiscord:global").add(new api.ODBaseStatistic("ot-tags:tags-created",0,"Tags Created",0))
+    stats.get("opendiscord:global").add(new api.ODBaseStatistic("ot-tags:tags-created", 0, "Tags Created", 0))
 })
 
 
@@ -727,8 +713,8 @@ opendiscord.events.get("onStartScreenLoad").listen((startscreen) => {
 
     //insert tags startup info before "help" stat.
     const newProperties = [
-        ...stats.properties.slice(0,5),
-        {key:"tags",value:"loaded "+ansis.bold(tags.getLength().toString())+" tags!"},
+        ...stats.properties.slice(0, 5),
+        {key:"tags", value:"loaded " + ansis.bold(tags.getLength().toString()) + " tags!"},
         ...stats.properties.slice(5)
     ]
     stats.properties = newProperties

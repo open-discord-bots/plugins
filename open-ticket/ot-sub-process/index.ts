@@ -1,4 +1,4 @@
-import {api, opendiscord, utilities} from "#opendiscord"
+import { api, opendiscord, utilities } from "#opendiscord"
 import * as discord from "discord.js"
 
 declare module "#opendiscord-types" {
@@ -7,10 +7,10 @@ declare module "#opendiscord-types" {
     }
 }
 
-//OVERWRITE CONFIG TO USE ENV 
+//OVERWRITE CONFIG TO USE ENV
 opendiscord.events.get("afterConfigsInitiated").listen((configs) => {
     configs.get("opendiscord:general").data.tokenFromENV = true
 })
 
 //DISABLE SLASH COMMAND REMOVAL
-opendiscord.sharedFuses.setFuse("allowSlashCommandRemoval",false)
+opendiscord.sharedFuses.setFuse("allowSlashCommandRemoval", false)

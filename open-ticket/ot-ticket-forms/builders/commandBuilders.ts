@@ -1,4 +1,4 @@
-import {api, opendiscord, utilities} from "#opendiscord"
+import { api, opendiscord, utilities } from "#opendiscord"
 import * as discord from "discord.js"
 
 //REGISTER SLASH COMMAND
@@ -10,10 +10,10 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
     //create form choices
     const formChoices : {name:string, value:string}[] = []
     config.data.forEach((form) => {
-        formChoices.push({name:form.name,value:form.id})
+        formChoices.push({name:form.name, value:form.id})
     })
 
-    slash.add(new api.ODSlashCommand("ot-ticket-forms:form",{
+    slash.add(new api.ODSlashCommand("ot-ticket-forms:form", {
         name:"form",
         description:"Send a form.",
         type:act.ChatInput,
@@ -37,23 +37,23 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
                         name:"channel",
                         description:"The channel or thread to send the form.",
                         required:true,
-                        channelTypes:[discord.ChannelType.GuildText,discord.ChannelType.GuildAnnouncement, discord.ChannelType.PublicThread, discord.ChannelType.PrivateThread]
+                        channelTypes:[discord.ChannelType.GuildText, discord.ChannelType.GuildAnnouncement, discord.ChannelType.PublicThread, discord.ChannelType.PrivateThread]
                     }
                 ]
             }
         ]
-    },(current) => {
+    }, (current) => {
         //check if this slash command needs to be updated
         if (!current.options) return true
 
-        const sendSubcommand = current.options.find((opt) => opt.name == "send") as discord.ApplicationCommandSubCommandData|undefined
+        const sendSubcommand = current.options.find((opt) => opt.name === "send") as discord.ApplicationCommandSubCommandData|undefined
         if (!sendSubcommand || !sendSubcommand.options) return true
 
-        const idOption = sendSubcommand.options.find((opt) => opt.name == "id" && opt.type == acot.String) as discord.ApplicationCommandStringOptionData|undefined
-        if (!idOption || !idOption.choices || idOption.choices.length != formChoices.length) return true
+        const idOption = sendSubcommand.options.find((opt) => opt.name === "id" && opt.type === acot.String) as discord.ApplicationCommandStringOptionData|undefined
+        if (!idOption || !idOption.choices || idOption.choices.length !== formChoices.length) return true
         else if (!formChoices.every((embed) => {
             if (!idOption.choices) return false
-            else if (!idOption.choices.find((choice) => choice.value == embed.value && choice.name == embed.name)) return false
+            else if (!idOption.choices.find((choice) => choice.value === embed.value && choice.name === embed.name)) return false
             else return true
         })) return true
         else return false

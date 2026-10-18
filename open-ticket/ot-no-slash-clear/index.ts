@@ -1,4 +1,4 @@
-import {api, opendiscord, utilities} from "#opendiscord"
+import { api, opendiscord, utilities } from "#opendiscord"
 
 //DECLARATION
 declare module "#opendiscord-types" {
@@ -8,6 +8,6 @@ declare module "#opendiscord-types" {
 }
 
 //DISABLE SLASH COMMAND REMOVAL
-opendiscord.sharedFuses.setFuse("allowSlashCommandRemoval",false)
+opendiscord.sharedFuses.setFuse("allowSlashCommandRemoval", false)
 
 //Yep, this is everything this plugin does :)

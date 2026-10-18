@@ -8,27 +8,27 @@ declare module "#opendiscord-types" {
         "ot-assign-role":api.ODPlugin
     }
     export interface ODConfigManagerIdMappings {
-        "ot-assign-role:config": OTAssignRoleConfig
+        "ot-assign-role:config":OTAssignRoleConfig
     }
     export interface ODCheckerManagerIdMappings {
-        "ot-assign-role:config": api.ODChecker
+        "ot-assign-role:config":api.ODChecker
     }
     export interface ODEventManagerIdMappings {
-        "ot-assign-role:onRoleAdded":api.ODEvent<(member:discord.GuildMember,role:discord.Role) => api.ODPromiseVoid>
-        "ot-assign-role:onRoleRemoved":api.ODEvent<(member:discord.GuildMember,role:discord.Role) => api.ODPromiseVoid>
+        "ot-assign-role:onRoleAdded":api.ODEvent<(member:discord.GuildMember, role:discord.Role) => api.ODPromiseVoid>
+        "ot-assign-role:onRoleRemoved":api.ODEvent<(member:discord.GuildMember, role:discord.Role) => api.ODPromiseVoid>
     }
 }
 
 //REGISTER CONFIG
 opendiscord.events.get("onConfigLoad").listen((configs) => {
-    configs.add(new OTAssignRoleConfig("ot-assign-role:config","config.json","./plugins/ot-assign-role/"))
+    configs.add(new OTAssignRoleConfig("ot-assign-role:config", "config.json", "./plugins/ot-assign-role/"))
 })
 
 //REGISTER CONFIG CHECKER
 opendiscord.events.get("onCheckerLoad").listen((checkers) => {
     const config = opendiscord.configs.get("ot-assign-role:config")
-    checkers.add(new api.ODChecker("ot-assign-role:config",checkers.storage,0,config,new api.ODCheckerObjectStructure("ot-assign-role:config",{children:[
-        {key:"roleId",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_DiscordId("ot-assign-role:role-id","role",false,[])}
+    checkers.add(new api.ODChecker("ot-assign-role:config", checkers.storage, 0, config, new api.ODCheckerObjectStructure("ot-assign-role:config", {children:[
+        {key:"roleId", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_DiscordId("ot-assign-role:role-id", "role", false, [])}
     ]})))
 })
 
@@ -38,49 +38,49 @@ opendiscord.events.get("onReadyForUsage").listen(async () => {
     const mainServer = opendiscord.client.mainServer
     if (!mainServer) return
 
-    const role = await opendiscord.client.fetchGuildRole(mainServer,config.data.roleId)
-    if (!role) opendiscord.log("The assign role ID is invalid! Please use a valid one instead!","error",[
-        {key:"roleid",value:config.data.roleId}
+    const role = await opendiscord.client.fetchGuildRole(mainServer, config.data.roleId)
+    if (!role) opendiscord.log("The assign role ID is invalid! Please use a valid one instead!", "error", [
+        {key:"roleid", value:config.data.roleId}
     ])
 })
 
 //ADD ROLE ON TICKET CREATION
-opendiscord.events.get("afterTicketCreated").listen(async (ticket,creator,channel) => {
+opendiscord.events.get("afterTicketCreated").listen(async (ticket, creator, channel) => {
     const config = opendiscord.configs.get("ot-assign-role:config")
     const mainServer = opendiscord.client.mainServer
     if (!mainServer) return
 
-    const role = await opendiscord.client.fetchGuildRole(mainServer,config.data.roleId)
-    if (!role) return opendiscord.log("Unable to give ticket creator a non-existing assign role!","error",[
-        {key:"roleid",value:config.data.roleId},
-        {key:"channel",value:"#"+channel.name},
-        {key:"channelid",value:channel.id,hidden:true},
-        {key:"user",value:creator.displayName},
-        {key:"userid",value:creator.id,hidden:true},
+    const role = await opendiscord.client.fetchGuildRole(mainServer, config.data.roleId)
+    if (!role) return opendiscord.log("Unable to give ticket creator a non-existing assign role!", "error", [
+        {key:"roleid", value:config.data.roleId},
+        {key:"channel", value:"#" + channel.name},
+        {key:"channelid", value:channel.id, hidden:true},
+        {key:"user", value:creator.displayName},
+        {key:"userid", value:creator.id, hidden:true}
     ])
 
-    const member = await opendiscord.client.fetchGuildMember(mainServer,creator.id)
+    const member = await opendiscord.client.fetchGuildMember(mainServer, creator.id)
     if (!member) return
 
     await member.roles.add(role)
-    opendiscord.log(creator.displayName+" has been added to the assign role!","plugin",[
-        {key:"roleid",value:config.data.roleId},
-        {key:"channel",value:"#"+channel.name},
-        {key:"channelid",value:channel.id,hidden:true},
-        {key:"user",value:creator.displayName},
-        {key:"userid",value:creator.id,hidden:true},
+    opendiscord.log(creator.displayName + " has been added to the assign role!", "plugin", [
+        {key:"roleid", value:config.data.roleId},
+        {key:"channel", value:"#" + channel.name},
+        {key:"channelid", value:channel.id, hidden:true},
+        {key:"user", value:creator.displayName},
+        {key:"userid", value:creator.id, hidden:true}
     ])
 
-    await opendiscord.events.get("ot-assign-role:onRoleAdded").emit([member,role])
+    await opendiscord.events.get("ot-assign-role:onRoleAdded").emit([member, role])
 })
 
 //REMOVE ROLE ON TICKET DELETION
-opendiscord.events.get("onTicketDelete").listen(async (ticket,deleter,channel,reason) => {
+opendiscord.events.get("onTicketDelete").listen(async (ticket, deleter, channel, reason) => {
     const config = opendiscord.configs.get("ot-assign-role:config")
     const mainServer = opendiscord.client.mainServer
     if (!mainServer) return
 
-    const creator = await opendiscord.tickets.getTicketUser(ticket,"creator")
+    const creator = await opendiscord.tickets.getTicketUser(ticket, "creator")
     if (!creator) return
 
     //ignore role removal if creator has multiple tickets opened at the same time
@@ -89,26 +89,26 @@ opendiscord.events.get("onTicketDelete").listen(async (ticket,deleter,channel,re
     })
     if (creatorTickets.length > 1) return
 
-    const role = await opendiscord.client.fetchGuildRole(mainServer,config.data.roleId)
-    if (!role) return opendiscord.log("Unable to remove ticket creator from non-existing assign role!","error",[
-        {key:"roleid",value:config.data.roleId},
-        {key:"channel",value:"#"+channel.name},
-        {key:"channelid",value:channel.id,hidden:true},
-        {key:"user",value:creator.displayName},
-        {key:"userid",value:creator.id,hidden:true},
+    const role = await opendiscord.client.fetchGuildRole(mainServer, config.data.roleId)
+    if (!role) return opendiscord.log("Unable to remove ticket creator from non-existing assign role!", "error", [
+        {key:"roleid", value:config.data.roleId},
+        {key:"channel", value:"#" + channel.name},
+        {key:"channelid", value:channel.id, hidden:true},
+        {key:"user", value:creator.displayName},
+        {key:"userid", value:creator.id, hidden:true}
     ])
 
-    const member = await opendiscord.client.fetchGuildMember(mainServer,creator.id)
+    const member = await opendiscord.client.fetchGuildMember(mainServer, creator.id)
     if (!member) return
 
     await member.roles.remove(role)
-    opendiscord.log(creator.displayName+" has been removed from the assign role!","plugin",[
-        {key:"roleid",value:config.data.roleId},
-        {key:"channel",value:"#"+channel.name},
-        {key:"channelid",value:channel.id,hidden:true},
-        {key:"user",value:creator.displayName},
-        {key:"userid",value:creator.id,hidden:true},
+    opendiscord.log(creator.displayName + " has been removed from the assign role!", "plugin", [
+        {key:"roleid", value:config.data.roleId},
+        {key:"channel", value:"#" + channel.name},
+        {key:"channelid", value:channel.id, hidden:true},
+        {key:"user", value:creator.displayName},
+        {key:"userid", value:creator.id, hidden:true}
     ])
 
-    await opendiscord.events.get("ot-assign-role:onRoleRemoved").emit([member,role])
+    await opendiscord.events.get("ot-assign-role:onRoleRemoved").emit([member, role])
 })

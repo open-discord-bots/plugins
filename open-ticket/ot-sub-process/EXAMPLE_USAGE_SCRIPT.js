@@ -1,3 +1,4 @@
+/*eslint-disable @typescript-eslint/no-require-imports */
 const cp = require("child_process")
 const path = require("path")
 
@@ -18,17 +19,17 @@ const DIRECTORY_NAME = "./open-ticket/" //the name of the Open Ticket folder rel
 
 try {
     console.log("Installing Open Ticket dependencies...")
-    cp.execSync("npm install",{
-        cwd:path.join(process.cwd(),DIRECTORY_NAME)
+    cp.execSync("npm install", {
+        cwd:path.join(process.cwd(), DIRECTORY_NAME)
     })
     console.log("Succesfully installed Open Ticket dependencies!")
 }catch(err){
-    throw new Error("Unable to install Open Ticket npm dependencies!",{cause:err})
+    throw new Error("Unable to install Open Ticket npm dependencies!", {cause:err})
 }
 
-const openTicketProcess = cp.fork("./index.js",{
-    cwd:path.join(process.cwd(),DIRECTORY_NAME),
+const openTicketProcess = cp.fork("./index.js", {
+    cwd:path.join(process.cwd(), DIRECTORY_NAME),
     env:{
         "TOKEN":TOKEN
-    },
+    }
 })

@@ -1,4 +1,4 @@
-import {api, opendiscord, utilities} from "#opendiscord"
+import { api, opendiscord, utilities } from "#opendiscord"
 import * as discord from "discord.js"
 import ansis from "ansis"
 
@@ -18,7 +18,7 @@ export interface OTCustomEmbedsEmbed {
     footerImage:string,
 
     timestamp:boolean,
-    fields:{name:string,value:string,inline:boolean}[],
+    fields:{name:string, value:string, inline:boolean}[],
     ping:{
         "@here":boolean,
         "@everyone":boolean,
@@ -28,19 +28,19 @@ export interface OTCustomEmbedsEmbed {
 
 export class OTCustomEmbedsConfig extends api.ODJsonConfig<OTCustomEmbedsEmbed[]> {}
 export class OTCustomEmbed extends api.ODManagerData {
-    data: OTCustomEmbedsEmbed
+    data:OTCustomEmbedsEmbed
 
-    constructor(id:api.ODValidId, data:OTCustomEmbedsEmbed){
+    constructor(id:api.ODValidId, data:OTCustomEmbedsEmbed) {
         super(id)
         this.data = data
     }
 }
 export class OTCustomEmbedManager extends api.ODManager<OTCustomEmbed> {
-    id: api.ODId = new api.ODId("ot-embeds:manager")
-    defaults: {customEmbedsLoading:boolean} = {customEmbedsLoading:true}
+    id:api.ODId = new api.ODId("ot-embeds:manager")
+    defaults:{customEmbedsLoading:boolean} = {customEmbedsLoading:true}
 
-    constructor(debug:api.ODDebugger){
-        super(debug,"custom embed")
+    constructor(debug:api.ODDebugger) {
+        super(debug, "custom embed")
     }
 }
 
@@ -61,14 +61,14 @@ declare module "#opendiscord-types" {
         "ot-embeds:embed":api.ODTextCommand
     }
     export interface ODCommandResponderManagerIdMappings {
-        "ot-embeds:embed":{origin:"slash"|"text",params:{},workers:"ot-embeds:embed"|"ot-embeds:logs"},
+        "ot-embeds:embed":{origin:"slash"|"text", params:{}, workers:"ot-embeds:embed"|"ot-embeds:logs"},
     }
     export interface ODMessageManagerIdMappings {
-        "ot-embeds:embed-message":{origin:"slash"|"other",params:{embed:OTCustomEmbedsEmbed},workers:"ot-embeds:embed-message"},
-        "ot-embeds:success-message":{origin:"slash"|"other",params:{},workers:"ot-embeds:success-message"},
+        "ot-embeds:embed-message":{origin:"slash"|"other", params:{embed:OTCustomEmbedsEmbed}, workers:"ot-embeds:embed-message"},
+        "ot-embeds:success-message":{origin:"slash"|"other", params:{}, workers:"ot-embeds:success-message"},
     }
     export interface ODEmbedManagerIdMappings {
-        "ot-embeds:embed-embed":{origin:"slash"|"other",params:{embed:OTCustomEmbedsEmbed},workers:"ot-embeds:embed-embed"},
+        "ot-embeds:embed-embed":{origin:"slash"|"other", params:{embed:OTCustomEmbedsEmbed}, workers:"ot-embeds:embed-embed"},
     }
     export interface ODEventManagerIdMappings {
         "ot-embeds:onEmbedLoad":api.ODEvent<(embeds:OTCustomEmbedManager) => api.ODPromiseVoid>
@@ -86,43 +86,43 @@ opendiscord.events.get("onPluginClassLoad").listen((classes) => {
 
 //REGISTER CONFIG FILE
 opendiscord.events.get("onConfigLoad").listen((configs) => {
-    configs.add(new OTCustomEmbedsConfig("ot-embeds:config","config.json","./plugins/ot-embeds/"))
+    configs.add(new OTCustomEmbedsConfig("ot-embeds:config", "config.json", "./plugins/ot-embeds/"))
 })
 
 //CONFIG STRUCTURE
-export const embedsConfigStructure = new api.ODCheckerArrayStructure("ot-embeds:config",{maxLength:25,allowedTypes:["object"],propertyChecker:new api.ODCheckerObjectStructure("ot-embeds:config",{children:[
+export const embedsConfigStructure = new api.ODCheckerArrayStructure("ot-embeds:config", {maxLength:25, allowedTypes:["object"], propertyChecker:new api.ODCheckerObjectStructure("ot-embeds:config", {children:[
     //TODO id
-    {key:"id",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UniqueId("ot-embeds:id","ot-embeds","embed-ids",{regex:/^[A-Za-z0-9-éèçàêâôûî]+$/,minLength:3,maxLength:40})},
-    {key:"content",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-embeds:content",{maxLength:2000})},
-    {key:"title",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-embeds:title",{minLength:1,maxLength:256})},
-    {key:"description",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-embeds:description",{maxLength:4096})},
-    {key:"customColor",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_HexColor("ot-embeds:custom-color",true,true)},
+    {key:"id", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UniqueId("ot-embeds:id", "ot-embeds", "embed-ids", {regex:/^[A-Za-z0-9-éèçàêâôûî]+$/, minLength:3, maxLength:40})},
+    {key:"content", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-embeds:content", {maxLength:2000})},
+    {key:"title", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-embeds:title", {minLength:1, maxLength:256})},
+    {key:"description", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-embeds:description", {maxLength:4096})},
+    {key:"customColor", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_HexColor("ot-embeds:custom-color", true, true)},
 
-    {key:"image",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-embeds:image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
-    {key:"thumbnail",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-embeds:thumbnail",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
-    {key:"authorText",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-embeds:author-text",{maxLength:256})},
-    {key:"authorImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-embeds:author-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
-    {key:"footerText",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-embeds:footer-text",{maxLength:2048})},
-    {key:"footerImage",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_UrlString("ot-embeds:footer-image",true,{allowHttp:false,allowedExtensions:[".png",".jpg",".jpeg",".webp",".gif"]})},
-    
-    {key:"timestamp",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-embeds:timestamp",{})},
-    {key:"fields",optional:false,priority:0,checker:new api.ODCheckerArrayStructure("ot-embeds:fields",{allowedTypes:["object"],propertyChecker:new api.ODCheckerObjectStructure("ot-embeds:field",{children:[
-        {key:"name",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-embeds:field-name",{minLength:1,maxLength:256})},
-        {key:"value",optional:false,priority:0,checker:new api.ODCheckerStringStructure("ot-embeds:field-value",{minLength:1,maxLength:1024})},
-        {key:"inline",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-embeds:field-inline",{})}
+    {key:"image", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-embeds:image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})},
+    {key:"thumbnail", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-embeds:thumbnail", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})},
+    {key:"authorText", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-embeds:author-text", {maxLength:256})},
+    {key:"authorImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-embeds:author-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})},
+    {key:"footerText", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-embeds:footer-text", {maxLength:2048})},
+    {key:"footerImage", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_UrlString("ot-embeds:footer-image", true, {allowHttp:false, allowedExtensions:[".png", ".jpg", ".jpeg", ".webp", ".gif"]})},
+
+    {key:"timestamp", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-embeds:timestamp", {})},
+    {key:"fields", optional:false, priority:0, checker:new api.ODCheckerArrayStructure("ot-embeds:fields", {allowedTypes:["object"], propertyChecker:new api.ODCheckerObjectStructure("ot-embeds:field", {children:[
+        {key:"name", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-embeds:field-name", {minLength:1, maxLength:256})},
+        {key:"value", optional:false, priority:0, checker:new api.ODCheckerStringStructure("ot-embeds:field-value", {minLength:1, maxLength:1024})},
+        {key:"inline", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-embeds:field-inline", {})}
     ]})})},
 
-    {key:"ping",optional:false,priority:0,checker:new api.ODCheckerObjectStructure("ot-embeds:ping",{children:[
-        {key:"@here",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-embeds:ping-here",{})},
-        {key:"@everyone",optional:false,priority:0,checker:new api.ODCheckerBooleanStructure("ot-embeds:ping-everyone",{})},
-        {key:"custom",optional:false,priority:0,checker:new api.ODCheckerCustomStructure_DiscordIdArray("ot-embeds:ping-custom","role",[],{allowDoubles:false})},
+    {key:"ping", optional:false, priority:0, checker:new api.ODCheckerObjectStructure("ot-embeds:ping", {children:[
+        {key:"@here", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-embeds:ping-here", {})},
+        {key:"@everyone", optional:false, priority:0, checker:new api.ODCheckerBooleanStructure("ot-embeds:ping-everyone", {})},
+        {key:"custom", optional:false, priority:0, checker:new api.ODCheckerCustomStructure_DiscordIdArray("ot-embeds:ping-custom", "role", [], {allowDoubles:false})}
     ]})}
 ]})})
 
 //REGISTER CONFIG CHECKER
 opendiscord.events.get("onCheckerLoad").listen((checkers) => {
     const config = opendiscord.configs.get("ot-embeds:config")
-    checkers.add(new api.ODChecker("ot-embeds:config",checkers.storage,0,config,embedsConfigStructure))
+    checkers.add(new api.ODChecker("ot-embeds:config", checkers.storage, 0, config, embedsConfigStructure))
 })
 
 //REGISTER SLASH COMMAND
@@ -134,10 +134,10 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
     //create embed choices
     const embedChoices : {name:string, value:string}[] = []
     config.data.forEach((embed) => {
-        embedChoices.push({name:embed.title,value:embed.id})
+        embedChoices.push({name:embed.title, value:embed.id})
     })
 
-    slash.add(new api.ODSlashCommand("ot-embeds:embed",{
+    slash.add(new api.ODSlashCommand("ot-embeds:embed", {
         name:"embed",
         description:"Send a custom embed or choose a pre-configured message.",
         type:act.ChatInput,
@@ -154,7 +154,7 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
                         name:"channel",
                         description:"The channel to send the embed.",
                         required:true,
-                        channelTypes:[discord.ChannelType.GuildText,discord.ChannelType.GuildAnnouncement]
+                        channelTypes:[discord.ChannelType.GuildText, discord.ChannelType.GuildAnnouncement]
                     },
                     {
                         type:acot.String,
@@ -241,7 +241,7 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
                         name:"channel",
                         description:"The channel to send the embed.",
                         required:true,
-                        channelTypes:[discord.ChannelType.GuildText,discord.ChannelType.GuildAnnouncement]
+                        channelTypes:[discord.ChannelType.GuildText, discord.ChannelType.GuildAnnouncement]
                     },
                     {
                         name:"id",
@@ -253,18 +253,18 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
                 ]
             }
         ]
-    },(current) => {
+    }, (current) => {
         //check if this slash command needs to be updated
         if (!current.options) return true
 
-        const presetSubcommand = current.options.find((opt) => opt.name == "preset") as discord.ApplicationCommandSubCommandData|undefined
+        const presetSubcommand = current.options.find((opt) => opt.name === "preset") as discord.ApplicationCommandSubCommandData|undefined
         if (!presetSubcommand || !presetSubcommand.options) return true
 
-        const idOption = presetSubcommand.options.find((opt) => opt.name == "id" && opt.type == acot.String) as discord.ApplicationCommandStringOptionData|undefined
-        if (!idOption || !idOption.choices || idOption.choices.length != embedChoices.length) return true
+        const idOption = presetSubcommand.options.find((opt) => opt.name === "id" && opt.type === acot.String) as discord.ApplicationCommandStringOptionData|undefined
+        if (!idOption || !idOption.choices || idOption.choices.length !== embedChoices.length) return true
         else if (!embedChoices.every((embed) => {
             if (!idOption.choices) return false
-            else if (!idOption.choices.find((choice) => choice.value == embed.value && choice.name == embed.name)) return false
+            else if (!idOption.choices.find((choice) => choice.value === embed.value && choice.name === embed.name)) return false
             else return true
         })) return true
         else return false
@@ -273,9 +273,9 @@ opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
 
 //REGISTER HELP MENU
 opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
-    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-embeds:embed",0,{
+    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-embeds:embed", 0, {
         slashName:"embed",
-        slashDescription:"Create a custom embed in the server.",
+        slashDescription:"Create a custom embed in the server."
     }))
 })
 
@@ -284,10 +284,10 @@ opendiscord.events.get("afterBlacklistLoaded").listen(async () => {
     const embedManager = opendiscord.plugins.classes.get("ot-embeds:manager")
     const config = opendiscord.configs.get("ot-embeds:config")
 
-    opendiscord.log("Loading custom embeds...","plugin")
+    opendiscord.log("Loading custom embeds...", "plugin")
     if (embedManager.defaults.customEmbedsLoading){
         config.data.forEach((embed) => {
-            embedManager.add(new OTCustomEmbed(embed.id,embed))
+            embedManager.add(new OTCustomEmbed(embed.id, embed))
         })
     }
     await opendiscord.events.get("ot-embeds:onEmbedLoad").emit([embedManager])
@@ -297,54 +297,48 @@ opendiscord.events.get("afterBlacklistLoaded").listen(async () => {
 //REGISTER EMBED BUILDER
 opendiscord.events.get("onEmbedBuilderLoad").listen((embeds) => {
     embeds.add(new api.ODEmbed("ot-embeds:embed-embed"))
-    embeds.get("ot-embeds:embed-embed").workers.add(
-        new api.ODWorker("ot-embeds:embed-embed",0,(instance,params,origin,cancel) => {
-            const generalConfig = opendiscord.configs.get("opendiscord:general")
-            const {embed} = params
+    embeds.get("ot-embeds:embed-embed").workers.add(new api.ODWorker("ot-embeds:embed-embed", 0, (instance, params, origin, cancel) => {
+        const generalConfig = opendiscord.configs.get("opendiscord:general")
+        const {embed} = params
 
-            instance.setTitle(embed.title)
-            instance.setColor((embed.customColor) ? embed.customColor : generalConfig.data.mainColor)
-            if (embed.description) instance.setDescription(embed.description)
+        instance.setTitle(embed.title)
+        instance.setColor((embed.customColor) ? embed.customColor : generalConfig.data.mainColor)
+        if (embed.description) instance.setDescription(embed.description)
 
-            if (embed.image) instance.setImage(embed.image)
-            if (embed.thumbnail) instance.setThumbnail(embed.thumbnail)
-            if (embed.footerText) instance.setFooter(embed.footerText,(embed.footerImage) ? embed.footerImage : null)
-            if (embed.authorText) instance.setAuthor(embed.authorText,(embed.authorImage) ? embed.authorImage : null)
-                
-            if (embed.timestamp) instance.setTimestamp(new Date())
-            if (embed.fields.length > 0) instance.setFields(embed.fields)
-        })
-    )
+        if (embed.image) instance.setImage(embed.image)
+        if (embed.thumbnail) instance.setThumbnail(embed.thumbnail)
+        if (embed.footerText) instance.setFooter(embed.footerText, (embed.footerImage) ? embed.footerImage : null)
+        if (embed.authorText) instance.setAuthor(embed.authorText, (embed.authorImage) ? embed.authorImage : null)
+
+        if (embed.timestamp) instance.setTimestamp(new Date())
+        if (embed.fields.length > 0) instance.setFields(embed.fields)
+    }))
 })
 
 //REGISTER MESSAGE BUILDER
 opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
     messages.add(new api.ODMessage("ot-embeds:embed-message"))
-    messages.get("ot-embeds:embed-message").workers.add(
-        new api.ODWorker("ot-embeds:embed-message",0,async (instance,params,origin,cancel) => {
-            const {embed} = params
-            instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-embeds:embed-embed").build(origin,{embed}))
+    messages.get("ot-embeds:embed-message").workers.add(new api.ODWorker("ot-embeds:embed-message", 0, async (instance, params, origin, cancel) => {
+        const {embed} = params
+        instance.addEmbed(await opendiscord.builders.embeds.getSafe("ot-embeds:embed-embed").build(origin, {embed}))
 
-            //create pings
-            const pings: string[] = []
-            if (embed.ping["@everyone"]) pings.push("@everyone")
-            if (embed.ping["@here"]) pings.push("@here")
-            embed.ping.custom.forEach((ping) => pings.push(discord.roleMention(ping)))
-            const pingText = (pings.length > 0) ? pings.join(" ")+"\n" : ""
-    
-            //create content
-            if (embed.content !== "") instance.setContent(pingText+embed.content)
-            else if (pings.length > 0) instance.setContent(pingText)
-        })
-    )
+        //create pings
+        const pings: string[] = []
+        if (embed.ping["@everyone"]) pings.push("@everyone")
+        if (embed.ping["@here"]) pings.push("@here")
+        embed.ping.custom.forEach((ping) => pings.push(discord.roleMention(ping)))
+        const pingText = (pings.length > 0) ? pings.join(" ") + "\n" : ""
+
+        //create content
+        if (embed.content !== "") instance.setContent(pingText + embed.content)
+        else if (pings.length > 0) instance.setContent(pingText)
+    }))
 
     messages.add(new api.ODMessage("ot-embeds:success-message"))
-    messages.get("ot-embeds:success-message").workers.add(
-        new api.ODWorker("ot-embeds:success-message",0,async (instance,params,origin,cancel) => {
-            instance.setContent("✅ The embed has been created successfully!")
-            instance.setEphemeral(true)
-        })
-    )
+    messages.get("ot-embeds:success-message").workers.add(new api.ODWorker("ot-embeds:success-message", 0, async (instance, params, origin, cancel) => {
+        instance.setContent("✅ The embed has been created successfully!")
+        instance.setEphemeral(true)
+    }))
 })
 
 //REGISTER COMMAND RESPONDER
@@ -352,47 +346,47 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
     const generalConfig = opendiscord.configs.get("opendiscord:general")
     const embedManager = opendiscord.plugins.classes.get("ot-embeds:manager")
 
-    commands.add(new api.ODCommandResponder("ot-embeds:embed",generalConfig.data.prefix,"embed"))
+    commands.add(new api.ODCommandResponder("ot-embeds:embed", generalConfig.data.prefix, "embed"))
     commands.get("ot-embeds:embed").workers.add([
-        new api.ODWorker("ot-embeds:embed",0,async (instance,params,origin,cancel) => {
-            const {guild,channel,user} = instance
+        new api.ODWorker("ot-embeds:embed", 0, async (instance, params, origin, cancel) => {
+            const {guild, channel, user} = instance
             if (!guild){
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin,{channel,user}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(origin, {channel, user}))
                 return cancel()
             }
 
-            if (!opendiscord.permissions.hasPermissions("admin",await opendiscord.permissions.getPermissions(instance.user,instance.channel,instance.guild))){
+            if (!opendiscord.permissions.hasPermissions("admin", await opendiscord.permissions.getPermissions(instance.user, instance.channel, instance.guild))){
                 //no permissions
-                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin,{guild:instance.guild,channel:instance.channel,user:instance.user,permissions:["admin"]}))
+                instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(origin, {guild:instance.guild, channel:instance.channel, user:instance.user, permissions:["admin"]}))
                 return cancel()
             }
 
             //command doesn't support text-commands!
-            if (origin == "text") return cancel()
+            if (origin === "text") return cancel()
             const scope = instance.options.getSubCommand() as "custom"|"preset"
 
-            if (scope == "custom"){
-                const embedChannel = instance.options.getChannel("channel",true) as discord.GuildTextBasedChannel
-                const customColor = (instance.options.getString("color",true) as `#${string}`).replace("%CONFIG_COLOR%",generalConfig.data.mainColor.toString()) as `#${string}`
-                const title = instance.options.getString("title",false) ?? ""
-                const description = instance.options.getString("description",false) ?? ""
-                const footerText = instance.options.getString("footer",false) ?? ""
-                const authorText = instance.options.getString("author",false) ?? ""
-                const timestamp = instance.options.getBoolean("timestamp",false) ?? false
-                const image = instance.options.getString("image",false) ?? ""
-                const thumbnail = instance.options.getString("thumbnail",false) ?? ""
-                const ping = instance.options.getMentionable("ping",false)
+            if (scope === "custom"){
+                const embedChannel = instance.options.getChannel("channel", true) as discord.GuildTextBasedChannel
+                const customColor = (instance.options.getString("color", true) as `#${string}`).replace("%CONFIG_COLOR%", generalConfig.data.mainColor.toString()) as `#${string}`
+                const title = instance.options.getString("title", false) ?? ""
+                const description = instance.options.getString("description", false) ?? ""
+                const footerText = instance.options.getString("footer", false) ?? ""
+                const authorText = instance.options.getString("author", false) ?? ""
+                const timestamp = instance.options.getBoolean("timestamp", false) ?? false
+                const image = instance.options.getString("image", false) ?? ""
+                const thumbnail = instance.options.getString("thumbnail", false) ?? ""
+                const ping = instance.options.getMentionable("ping", false)
                 let pingEveryone = false
                 const pingCustom: string[] = []
                 if (ping){
-                    if (guild && ping.id == guild.id){
+                    if (guild && ping.id === guild.id){
                         pingEveryone = true
                     }else{
                         pingCustom.push(ping.id)
                     }
                 }
 
-                await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(origin,{embed:{
+                await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(origin, {embed:{
                     id:"_CUSTOM_",
                     content:"",
                     title,
@@ -415,17 +409,17 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
                     }
                 }})).message)
 
-            }else if (scope == "preset"){
-                const embedChannel = instance.options.getChannel("channel",true) as discord.GuildTextBasedChannel
-                const embedId = instance.options.getString("id",true)
-                
+            }else if (scope === "preset"){
+                const embedChannel = instance.options.getChannel("channel", true) as discord.GuildTextBasedChannel
+                const embedId = instance.options.getString("id", true)
+
                 const embed = embedManager.get(embedId)
                 if (!embed){
-                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin,{guild,channel,user,layout:"simple",error:"Invalid embed id. Please try again!"}))
+                    instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(origin, {guild, channel, user, layout:"simple", error:"Invalid embed id. Please try again!"}))
                     return cancel()
                 }
 
-                await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(origin,{embed:{
+                await embedChannel.send((await opendiscord.builders.messages.getSafe("ot-embeds:embed-message").build(origin, {embed:{
                     id:embed.id.value,
                     content:embed.data.content,
                     title:embed.data.title,
@@ -446,15 +440,15 @@ opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
             }
 
             //reply
-            await instance.reply(await opendiscord.builders.messages.getSafe("ot-embeds:success-message").build(origin,{}))
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-embeds:success-message").build(origin, {}))
         }),
-        new api.ODWorker("ot-embeds:logs",-1,(instance,params,origin,cancel) => {
+        new api.ODWorker("ot-embeds:logs", -1, (instance, params, origin, cancel) => {
             const scope = instance.options.getSubCommand() as "custom"|"preset"
-            opendiscord.log(instance.user.displayName+" used the 'embed "+scope+"' command!","plugin",[
-                {key:"user",value:instance.user.username},
-                {key:"userid",value:instance.user.id,hidden:true},
-                {key:"channelid",value:instance.channel.id,hidden:true},
-                {key:"method",value:origin}
+            opendiscord.log(instance.user.displayName + " used the 'embed " + scope + "' command!", "plugin", [
+                {key:"user", value:instance.user.username},
+                {key:"userid", value:instance.user.id, hidden:true},
+                {key:"channelid", value:instance.channel.id, hidden:true},
+                {key:"method", value:origin}
             ])
         })
     ])
@@ -468,8 +462,8 @@ opendiscord.events.get("onStartScreenLoad").listen((startscreen) => {
 
     //insert embeds startup info before "help" stat.
     const newProperties = [
-        ...stats.properties.slice(0,5),
-        {key:"embeds",value:"loaded "+ansis.bold(embedManager.getLength().toString())+" embeds!"},
+        ...stats.properties.slice(0, 5),
+        {key:"embeds", value:"loaded " + ansis.bold(embedManager.getLength().toString()) + " embeds!"},
         ...stats.properties.slice(5)
     ]
     stats.properties = newProperties
