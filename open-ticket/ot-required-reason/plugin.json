@@ -1,0 +1,25 @@
+{
+    "name":"OT Required Reason",
+    "id":"ot-required-reason",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.2.x"],
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "contributors":[],
+        "shortDescription":"Force users to specify a reason for all ticket actions.",
+        "longDescription":"Force users to specify a reason for all ticket actions. Individual actions can be customised in the config.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["reason","required"]
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "enableCloseRequest":true,
+    "enableDeleteRequest":true,
+
+    /* These roles will always be able to accept close/delete requests. Use this when the ticket creator doesn't reply. */
+    "ignoredRoles":["DISCORD_ROLE_ID"]
+}

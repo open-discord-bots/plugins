@@ -1,0 +1,9 @@
+{
+    "forceCloseReason":true,
+    "forceReopenReason":true,
+    "forceDeleteReason":true,
+    "forceClaimReason":true,
+    "forceUnclaimReason":true,
+    "forcePinReason":true,
+    "forceUnpinReason":true
+}

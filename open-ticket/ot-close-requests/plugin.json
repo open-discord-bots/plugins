@@ -1,0 +1,25 @@
+{
+    "name":"OT Close Requests",
+    "id":"ot-close-requests",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.2.x"],
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "contributors":["yow.sef"],
+        "shortDescription":"Ask the creator of the ticket for approval before closing/deleting the ticket.",
+        "longDescription":"Ask the creator of the ticket for approval before closing/deleting the ticket.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["request","close","delete","management","utility"]
+    }
+}
