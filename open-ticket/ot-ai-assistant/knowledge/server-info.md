@@ -1,78 +1,37 @@
-# [Your Server Name] — Server Info
+# [Your Server Name] - Server Info
 
-> ✏️ **How to use this file:**
-> Replace every `[placeholder]` with your real server information.
-> The AI reads this file as context for every conversation — the more accurate it is, the better the AI will answer.
-> Delete this tip block when you're done.
+> Replace every `[placeholder]` with your server details. The AI reads this file as context when replying.
 
 ---
 
-## 🌐 What is [Your Server Name]?
+## About [Your Server Name]
 
-[Your Server Name] is a [describe your server — e.g. "gaming community server", "Minecraft network", "roleplay server", etc.].
-[Add 1–2 sentences about what makes your server unique and who it is for.]
+[Describe your server in 1-2 sentences.]
 
 ---
 
-## 🔌 How to Join
-
-[Describe how users join your server or platform — e.g. IP address, invite link, website registration, etc.]
+## How to Join
 
 - **Primary link / IP:** [your-server-ip-or-link]
 - **Website:** [https://your-website.com]
+- **Store:** [https://your-store-link.com]
 
 ---
 
-## 🔗 Links
+## General Rules
 
-- 🛒 **Store:** [https://your-store-link.com]
-- 🌐 **Website:** [https://your-website.com]
-- 📢 **Status page:** [link or "check the status channel in Discord"]
-
----
-
-## 📜 General Rules
-
-We aim for a safe, welcoming environment — please read all rules carefully.
-
-### 🤝 Respect Everyone
-Treat all members and staff with respect. No insults, harassment, discrimination, or toxic behavior.
-
-### 🚫 No Cheating or Exploiting
-Cheating, exploiting bugs, or gaining unfair advantages is strictly forbidden. Found a bug? Report it to staff — reporters may receive a reward.
-
-### 📢 No Spam or Advertising
-No spamming messages or commands. No advertising other servers, communities, or social media.
-
-### 🛡️ Respect Staff Decisions
-Staff decisions are final. If you disagree, open a support ticket. Do not argue with or disrespect staff.
-
-### 🕵️ No Impersonation
-Do not impersonate members or staff. Offensive or inappropriate usernames are not allowed.
-
-### 🔒 Respect Privacy
-Do not share personal information. Never ask for passwords or private details.
-
-### 💬 Use Channels Responsibly
-Keep conversations on-topic in each channel. Avoid excessive CAPS or flooding.
-
-### 😊 Have Fun & Be Kind
-Keep the community friendly and welcoming. Help new members and spread positivity.
+1. **Respect everyone:** No insults, harassment, discrimination, or hate speech.
+2. **No cheating or exploiting:** Report bugs to staff instead of abusing them.
+3. **No spam or advertising:** Do not flood channels or advertise other servers.
+4. **Follow staff instructions:** Open a support ticket if you have a dispute.
+5. **No impersonation:** Do not impersonate staff or other members.
+6. **Protect privacy:** Never share personal information.
 
 ---
 
-## ⚖️ Punishment Guide
+## Punishment Guide
 
 | Offense | Punishment |
 |---|---|
 | [Example offense 1] | [Example punishment] |
 | [Example offense 2] | [Example punishment] |
-| [Add more rows as needed] | |
-
----
-
-## 🤖 About This Bot
-
-This bot is an AI-powered assistant. If it can't answer your question or you need real help, please open a support ticket and the staff team will assist you.
-
-> ⚠️ The bot is powered by AI and may occasionally make mistakes. Always verify important information with a staff member.

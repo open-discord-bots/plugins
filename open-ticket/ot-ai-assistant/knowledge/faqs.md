@@ -1,84 +1,50 @@
-# [Your Server Name] — Frequently Asked Questions
+# [Your Server Name] - Frequently Asked Questions
 
-> ✏️ **How to use this file:**
-> Replace every `[placeholder]` with your real server information.
-> Add, remove, or rename FAQ sections to match your server's actual features.
-> The AI reads this file as context for every conversation.
-> Delete this tip block when you're done.
+> Replace every `[placeholder]` with your server details. The AI reads this file as context when replying.
 
 ---
 
-## 🔌 Joining & Connection
+## Joining and Connection
 
 **Q: How do I join the server?**
-[Explain how to join — e.g. the IP address, invite link, or sign-up process.]
+[Explain how to join, such as the IP address, invite link, or sign-up steps.]
 
-**Q: What versions / platforms are supported?**
+**Q: What versions or platforms are supported?**
 [List the supported platforms, versions, or devices.]
 
-**Q: I can't connect — what do I do?**
-Check the server status channel in Discord first. If the server shows as online and you still can't connect, open a support ticket.
+**Q: I cannot connect. What should I do?**
+Check the server status channel in Discord first. If the server is online and you still cannot connect, open a support ticket.
 
 ---
 
-## 🛒 Store & Purchases
+## Store and Purchases
 
 **Q: Where is the store?**
 [https://your-store-link.com]
 
-**Q: I bought something but didn't receive it.**
-Please open a support ticket with your order details and proof of purchase, and the team will sort it out.
+**Q: I bought something but did not receive it.**
+Open a support ticket with your order details and proof of purchase.
 
 ---
 
-## ⚠️ Bans & Punishments
+## Bans and Punishments
 
-**Q: I got banned — what do I do?**
-Open a ban appeal ticket. Be honest — explain what happened and why you deserve another chance. Appeals are reviewed within [your timeframe, e.g. 24–48 hours].
+**Q: I got banned. What should I do?**
+Open a ban appeal ticket. Explain what happened and why the ban should be reviewed.
 
 **Q: Can someone else appeal on my behalf?**
-No. The banned user must open their own appeal. Appeals submitted by others are ignored.
-
-**Q: I was banned, can I appeal?**
-It depends on the severity of the offense. Minor first-time violations may be reviewed. Severe violations are usually permanent with no appeal.
+No. The banned user must submit their own appeal.
 
 ---
 
-## 🐛 Bugs & Exploits
+## Bugs and Exploits
 
-**Q: I found a bug — what do I do?**
-Report it to staff immediately by opening a ticket. Do NOT abuse or share the bug with others.
-[Optional: mention a reward if your server offers one — e.g. "Bug reporters may receive a reward from the store ⭐"]
-
-**Q: What happens if I team up with someone exploiting a bug?**
-You will receive the same punishment as the person exploiting the bug.
+**Q: I found a bug. What should I do?**
+Report it to staff by opening a ticket. Do not abuse or share the bug.
 
 ---
 
-## 🛡️ Allowed & Forbidden Content
-
-**Q: What is allowed?**
-[Describe what mods, tools, behaviors, or content are allowed on your server.]
-
-**Q: What is forbidden?**
-[Describe what mods, tools, behaviors, or content are strictly banned.]
-
----
-
-## 🎮 Gameplay
+## Reporting Users
 
 **Q: How do I report another user?**
-Open a report ticket. Include: the user's name, what they did, when it happened, and any screenshots or video evidence.
-
-**Q: [Add your own gameplay FAQ here]**
-[Answer here]
-
----
-
-## 🤖 About This Bot
-
-**Q: Who made this bot?**
-This bot was set up by the server owner. If you have a problem the bot can't solve, open a ticket and the staff team will help you.
-
-**Q: The bot gave me wrong information.**
-Open a support ticket. The bot is AI-powered and may occasionally be inaccurate — always verify with staff for important matters.
+Open a report ticket and include the username, what happened, when it occurred, and screenshots or video evidence.
