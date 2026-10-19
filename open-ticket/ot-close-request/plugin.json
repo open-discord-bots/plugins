@@ -3,6 +3,7 @@
     "id": "ot-close-request",
     "version": "2.0.0",
     "startFile": "index.ts",
+    "supportedVersions": ["OTv4.0.x", "OTv4.1.x", "OTv4.2.x"],
 
     "enabled": true,
     "priority": 0,
@@ -14,8 +15,9 @@
 
     "details": {
         "author": "yow.sef",
-        "shortDescription": "Lets staff request ticket owner confirmation before closing.",
-        "longDescription": "Adds a /close-request (and prefix text) command that sends an agree/disagree prompt to the ticket owner. If the owner agrees, the ticket is closed via Open Ticket's own close action. Includes configurable embed colors, timeout, and role-based permission checks.",
+        "contributors": [],
+        "shortDescription": "Ask the ticket creator for confirmation before closing.",
+        "longDescription": "Adds a /close-request command for staff to request confirmation from the ticket creator before closing. If accepted, Open Ticket runs its built-in close action.",
         "imageUrl": "",
         "projectUrl": "",
         "tags": ["ticket", "close", "request", "confirm"]

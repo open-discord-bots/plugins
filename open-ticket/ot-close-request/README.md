@@ -1,39 +1,67 @@
 # OT Close Request
 
-**OT Close Request** is a plugin for [Open Ticket](https://github.com/open-discord-bots/open-ticket) that allows staff to request confirmation from a ticket owner before closing their ticket.
+OT Close Request adds a `/close-request` command for staff to ask a ticket creator before closing their ticket.
 
-## ✨ Features
+## Features
 
-- **Double Confirmation:** Prevents accidental or unwanted closures by asking the ticket owner first.
-- **Slash & Text Commands:** Use `/close-request` or your bot's prefix command (e.g., `!close-request`).
-- **Owner Verification:** Only the person who opened the ticket can respond to the confirmation prompt.
-- **Role Permissions:** Limit command usage to specific staff roles.
-- **Configurable Embeds:** Fully customize the titles, descriptions, colors, and thumbnails for the request, agreed, and declined messages.
-- **Audit Logging:** Automatically logs when a request is accepted or declined to your specified log channel.
-- **Automatic Integration:** Once confirmed, it uses Open Ticket's internal closing system to ensure all standard procedures (transcripts, etc.) are followed.
+- **Staff command**: Run `/close-request` or use your text prefix (such as `!close-request`).
+- **Creator confirmation**: The bot asks the user who opened the ticket to agree or disagree.
+- **Role checks**: Works with Open Ticket support permissions, server administrators, and custom roles.
+- **Option filters**: Enable the command for all tickets or limit it to chosen ticket options.
+- **Custom embeds**: Edit embed titles, text, colors, footers, and images in `config.json`.
+- **Logs**: Posts actions to the Open Ticket log channel or a custom channel you pick.
+- **Core actions**: Triggers the built-in Open Ticket close action when accepted, keeping category moves, transcripts, and permissions intact.
 
-## 🚀 How It Works
+## How it works
 
-1. Staff member runs `/close-request` in a ticket channel.
-2. The bot pings the ticket owner with an embed containing **Agree** and **Disagree** buttons.
-3. If the owner clicks **Agree**: The ticket is automatically closed.
-4. If the owner clicks **Disagree**: The staff member is notified, and the ticket remains open.
+1. A staff member runs `/close-request` in a ticket channel.
+2. The bot pings the ticket creator with **I Agree** and **I Disagree** buttons.
+3. If the creator clicks **I Agree**, Open Ticket closes the ticket.
+4. If the creator clicks **I Disagree**, the bot notifies the staff member and leaves the ticket open.
 
-## ⚙️ Configuration
+## Configuration
 
-You can find the configuration in `config.json` within the plugin folder:
+Edit `config.json` in the plugin folder:
 
-- `admin_roles`: List of role IDs allowed to use the command.
-- `ticket_options`: List of Open Ticket option IDs where this plugin should be active.
-- `log_channel_id`: Where to send logs if Open Ticket's default logging is unavailable.
-- `embeds`: Customize the visual style of the interaction.
+```json
+{
+    "admin_roles": [],
+    "ticket_options": [],
+    "log_channel_id": "",
+    "embeds": {
+        "request": {
+            "title": "Ticket Close Request",
+            "description": "Staff requested to close this ticket.\n\n**Do you want to close this ticket?**",
+            "footer": "Only the ticket creator can respond",
+            "image": "",
+            "thumbnail": "",
+            "color": "#5865F2"
+        },
+        "agreed": {
+            "title": "Close Request Accepted",
+            "description": "The ticket creator agreed to close this ticket.",
+            "footer": "Closing ticket",
+            "image": "",
+            "thumbnail": "",
+            "color": "#57F287"
+        },
+        "declined": {
+            "title": "Close Request Declined",
+            "description": "The ticket creator declined the request.",
+            "footer": "Ticket remains open",
+            "image": "",
+            "thumbnail": "",
+            "color": "#ED4245"
+        }
+    }
+}
+```
 
-## 🛠️ Requirements
+- `admin_roles`: Role IDs that can run the command. Leave empty to allow default Open Ticket support staff and administrators.
+- `ticket_options`: Option IDs where the command works (for example `["general"]`). Leave empty to allow all tickets.
+- `log_channel_id`: Channel ID for logs. Leave empty to use the default Open Ticket log channel.
+- `embeds`: Colors, titles, text, and images for each prompt state.
 
-- **Open Ticket**
+## Requirements
 
-  
-## Made By: **aboreda12**, Discord: **yow.sef**
-
-
-
+Open Ticket v4.0.0 or higher (v4.0.x, v4.1.x, v4.2.x).

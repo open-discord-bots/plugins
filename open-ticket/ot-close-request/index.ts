@@ -1,30 +1,122 @@
-import { api, opendiscord, utilities } from "#opendiscord";
+import { api, opendiscord } from "#opendiscord";
 import * as discord from "discord.js";
 
-// ─── VERIFY THIS IS OPENTICKET ───────────────────────────────────────────────
-if (utilities.project !== "openticket") {
-    throw new api.ODPluginError("This plugin only works in Open Ticket!");
+// Check Open Ticket
+if (!opendiscord.tickets) {
+    throw new api.ODPluginError("This plugin only works in Open Ticket.");
 }
 
-// ─── TYPE DECLARATIONS ────────────────────────────────────────────────────────
+// Configuration types
+export interface EmbedConfig {
+    title: string;
+    description: string;
+    footer: string;
+    image: string;
+    thumbnail: string;
+    color: string;
+}
+
+export interface OTCloseRequestConfigData {
+    admin_roles: string[];
+    ticket_options: string[];
+    log_channel_id: string;
+    embeds: {
+        request: EmbedConfig;
+        agreed: EmbedConfig;
+        declined: EmbedConfig;
+    };
+}
+
+// Type declarations
 declare module "#opendiscord-types" {
     export interface ODPluginManagerIds_Default {
         "ot-close-request": api.ODPlugin;
     }
+    export interface ODConfigManagerIds_Default {
+        "ot-close-request:config": api.ODJsonConfig<OTCloseRequestConfigData>;
+    }
+    export interface ODCheckerManagerIds_Default {
+        "ot-close-request:config": api.ODChecker;
+    }
     export interface ODSlashCommandManagerIds_Default {
-        "ot-close-request:slash": api.ODSlashCommand;
+        "ot-close-request:close-request": api.ODSlashCommand;
     }
     export interface ODTextCommandManagerIds_Default {
-        "ot-close-request:text": api.ODTextCommand;
+        "ot-close-request:close-request": api.ODTextCommand;
+    }
+    export interface ODCommandResponderManagerIds_Default {
+        "ot-close-request:close-request": {
+            source: "slash" | "text";
+            params: {};
+            workers: "ot-close-request:close-request" | "ot-close-request:logs";
+        };
+    }
+    export interface ODButtonResponderManagerIds_Default {
+        "ot-close-request:agree": {
+            source: "button";
+            params: {};
+            workers: "ot-close-request:agree";
+        };
+        "ot-close-request:decline": {
+            source: "button";
+            params: {};
+            workers: "ot-close-request:decline";
+        };
+    }
+    export interface ODMessageManagerIds_Default {
+        "ot-close-request:success-message": {
+            source: "slash" | "text" | "other";
+            params: {};
+            workers: "ot-close-request:success-message";
+        };
     }
 }
 
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-opendiscord.events.get("onConfigLoad")?.listen((configs) => {
-    configs.add(new api.ODJsonConfig("ot-close-request:config", "config.json", `./plugins/ot-close-request/`));
+// Register config
+opendiscord.events.get("onConfigLoad").listen((configs) => {
+    configs.add(new api.ODJsonConfig<OTCloseRequestConfigData>("ot-close-request:config", "config.json", "./plugins/ot-close-request/"));
 });
 
-interface EmbedConfig {
+// Register config checker
+function createEmbedCheckerStructure(id: string) {
+    return new api.ODCheckerObjectStructure(id, {
+        children: [
+            { key: "title", optional: false, priority: 0, checker: new api.ODCheckerStringStructure(`${id}-title`, { maxLength: 256 }) },
+            { key: "description", optional: false, priority: 0, checker: new api.ODCheckerStringStructure(`${id}-description`, { maxLength: 4096 }) },
+            { key: "footer", optional: false, priority: 0, checker: new api.ODCheckerStringStructure(`${id}-footer`, { maxLength: 2048 }) },
+            { key: "image", optional: false, priority: 0, checker: new api.ODCheckerCustomStructure_UrlString(`${id}-image`, true, { allowHttp: false }) },
+            { key: "thumbnail", optional: false, priority: 0, checker: new api.ODCheckerCustomStructure_UrlString(`${id}-thumbnail`, true, { allowHttp: false }) },
+            { key: "color", optional: false, priority: 0, checker: new api.ODCheckerStringStructure(`${id}-color`, { regex: /^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})?$/ }) }
+        ]
+    });
+}
+
+opendiscord.events.get("onCheckerLoad").listen((checkers) => {
+    const config = opendiscord.configs.get("ot-close-request:config");
+    if (!config) return;
+    const structure = new api.ODCheckerObjectStructure("ot-close-request:config", {
+        children: [
+            { key: "admin_roles", optional: false, priority: 0, checker: new api.ODCheckerCustomStructure_DiscordIdArray("ot-close-request:admin-roles", "role", [], { allowDoubles: false }) },
+            { key: "ticket_options", optional: false, priority: 0, checker: new api.ODCheckerArrayStructure("ot-close-request:ticket-options", { allowedTypes: ["string"], propertyChecker: new api.ODCheckerStringStructure("ot-close-request:ticket-option", { minLength: 1 }) }) },
+            { key: "log_channel_id", optional: false, priority: 0, checker: new api.ODCheckerCustomStructure_DiscordId("ot-close-request:log-channel", "channel", true, [], {}) },
+            {
+                key: "embeds",
+                optional: false,
+                priority: 0,
+                checker: new api.ODCheckerObjectStructure("ot-close-request:embeds", {
+                    children: [
+                        { key: "request", optional: false, priority: 0, checker: createEmbedCheckerStructure("ot-close-request:embed-request") },
+                        { key: "agreed", optional: false, priority: 0, checker: createEmbedCheckerStructure("ot-close-request:embed-agreed") },
+                        { key: "declined", optional: false, priority: 0, checker: createEmbedCheckerStructure("ot-close-request:embed-declined") }
+                    ]
+                })
+            }
+        ]
+    });
+    checkers.add(new api.ODChecker("ot-close-request:config", checkers.storage, 0, config, structure));
+});
+
+interface ParsedEmbedConfig {
     title: string;
     description: string;
     footer: string;
@@ -35,445 +127,406 @@ interface EmbedConfig {
 
 function getConfig() {
     const cfg = opendiscord.configs.get("ot-close-request:config");
-    const d = cfg?.data ?? {};
-    
-    const parseEmbed = (key: string, defColor: string): EmbedConfig => {
-        const e = d.embeds?.[key] ?? {};
+    const d: Partial<OTCloseRequestConfigData> = cfg ? cfg.data : {};
+
+    const parseEmbed = (key: "request" | "agreed" | "declined", defTitle: string, defDesc: string, defColor: string, defFooter: string): ParsedEmbedConfig => {
+        const e: Partial<EmbedConfig> = d.embeds?.[key] ?? {};
+        const hex = (e.color ?? defColor).replace(/^#/, "");
+        const colorNum = parseInt(hex, 16);
         return {
-            title:       e.title       ?? "Untitled",
-            description: e.description ?? "",
-            footer:      e.footer      ?? "",
+            title:       e.title       ?? defTitle,
+            description: e.description ?? defDesc,
+            footer:      e.footer      ?? defFooter,
             image:       e.image       ?? "",
             thumbnail:   e.thumbnail   ?? "",
-            color:       parseInt(e.color ?? defColor, 16)
+            color:       isNaN(colorNum) ? parseInt(defColor, 16) : colorNum
         };
     };
 
     return {
-        adminRoles:     (d.admin_roles      as string[]) ?? [],
-        ticketOptions:  (d.ticket_options   as string[]) ?? [],
-        logChannelId:   (d.log_channel_id   as string)   ?? "",
+        adminRoles:    Array.isArray(d.admin_roles) ? d.admin_roles.filter(Boolean) : [],
+        ticketOptions: Array.isArray(d.ticket_options) ? d.ticket_options.filter(Boolean) : [],
+        logChannelId:  d.log_channel_id ?? "",
         embeds: {
-            request:  parseEmbed("request",  "5865F2"),
-            agreed:   parseEmbed("agreed",   "57F287"),
-            declined: parseEmbed("declined", "ED4245")
+            request:  parseEmbed("request",  "Ticket Close Request",   "Staff requested to close this ticket.\n\n**Do you want to close this ticket?**", "5865F2", "Only the ticket creator can respond"),
+            agreed:   parseEmbed("agreed",   "Close Request Accepted", "The ticket creator agreed to close this ticket.", "57F287", "Closing ticket"),
+            declined: parseEmbed("declined", "Close Request Declined", "The ticket creator declined the request.", "ED4245", "Ticket remains open")
         }
     };
 }
 
-// ─── TRACK PENDING REQUESTS ───────────────────────────────────────────────────
-const pendingRequests = new Map<string, {
-    messageId:      string;
-    ticketOwnerId:  string;
-    staffId:        string;
-    channelId:      string;
-    timestamp:      number;
-}>();
+// Maps channelId -> active prompt messageId to prevent duplicate active prompts in the same channel
+const pendingMessages = new Map<string, string>();
 
-// ─── PERMISSION HELPERS ───────────────────────────────────────────────────────
-function isAdmin(member: discord.GuildMember): boolean {
-    if (member.permissions.has(discord.PermissionFlagsBits.ManageGuild)) return true;
-    const config = getConfig();
-    return config.adminRoles.some(roleId => member.roles.cache.has(roleId));
-}
-
-function isTicketChannel(channel: discord.TextChannel): boolean {
-    const config = getConfig();
-    const ticket = (opendiscord as any).tickets?.get(channel.id);
-
-    // If no specific options configured, fallback to basic name/parent check
-    if (config.ticketOptions.length === 0) {
-        return !!ticket || channel.name.startsWith("ticket-") || !!channel.parent?.name.toLowerCase().includes("ticket");
+// Permission check
+async function hasStaffPermission(user: discord.User, member: discord.GuildMember | null, channel: discord.GuildTextBasedChannel, guild: discord.Guild): Promise<boolean> {
+    if (member && (member.permissions.has(discord.PermissionFlagsBits.Administrator) || member.permissions.has(discord.PermissionFlagsBits.ManageGuild))) {
+        return true;
     }
 
-    // Source of truth: Open Ticket's ticket manager
-    if (ticket) {
-        return config.ticketOptions.includes(ticket.option.id.value);
+    try {
+        const perms = await opendiscord.permissions.getPermissions(user, channel, guild);
+        if (opendiscord.permissions.hasPermissions("support", perms)) {
+            return true;
+        }
+    } catch {}
+
+    const config = getConfig();
+    if (member && config.adminRoles.some(roleId => member.roles.cache.has(roleId))) {
+        return true;
     }
 
     return false;
 }
 
-// ─── GET TICKET OWNER ─────────────────────────────────────────────────────────
-async function getTicketOwner(channel: discord.TextChannel): Promise<discord.User | null> {
-    try {
-        const topic = channel.topic;
-        if (topic) {
-            const match = topic.match(/<@!?(\d+)>/) ?? topic.match(/(\d{17,19})/);
-            if (match) {
-                const user = await channel.client.users.fetch(match[1]).catch(() => null);
-                if (user) return user;
-            }
-        }
-
-        const nameMatch = channel.name.match(/ticket-(\d{17,19})/);
-        if (nameMatch) {
-            const user = await channel.client.users.fetch(nameMatch[1]).catch(() => null);
-            if (user) return user;
-        }
-
-        for (const [id, overwrite] of channel.permissionOverwrites.cache) {
-            if (overwrite.type !== discord.OverwriteType.Member) continue;
-            if (!overwrite.allow.has(discord.PermissionFlagsBits.ViewChannel)) continue;
-            const member = await channel.guild.members.fetch(id).catch(() => null);
-            if (member && !member.user.bot) return member.user;
-        }
-
-        const messages = await channel.messages.fetch({ limit: 10 });
-        for (const msg of messages.values()) {
-            if (msg.author.bot) continue;
-            const msgMember = await channel.guild.members.fetch(msg.author.id).catch(() => null);
-            if (msgMember && isAdmin(msgMember)) continue;
-            return msg.author;
-        }
-
-        return null;
-    } catch (err) {
-        console.error("[CloseRequest] Error getting ticket owner:", err);
-        return null;
-    }
-}
-
-// ─── LOGGING HELPER ───────────────────────────────────────────────────────────
-async function logAction(guild: discord.Guild, embed: discord.EmbedBuilder) {
-    const config = getConfig();
-    let logChannel: discord.TextBasedChannel | null = null;
-
-    // 1. Try Open Ticket default logs post
-    const otLogs = opendiscord.posts.get("logs");
-    if (otLogs?.ready && otLogs.channel?.isTextBased()) {
-        logChannel = otLogs.channel as discord.TextBasedChannel;
-    } 
-    // 2. Try plugin config fallback
-    else if (config.logChannelId) {
-        const fallback = await guild.channels.fetch(config.logChannelId).catch(() => null);
-        if (fallback?.isTextBased()) logChannel = fallback as discord.TextBasedChannel;
-    }
-
-    if (logChannel) {
-        await (logChannel as any).send({ embeds: [embed] }).catch(() => {});
-    }
-}
-
-// ─── EMBED BUILDERS ───────────────────────────────────────────────────────────
-function applyVisuals(builder: discord.EmbedBuilder, config: EmbedConfig) {
-    if (config.title)       builder.setTitle(config.title);
+// Embeds and buttons
+function applyVisuals(builder: discord.EmbedBuilder, config: ParsedEmbedConfig): discord.EmbedBuilder {
+    if (config.title) builder.setTitle(config.title);
     if (config.description) builder.setDescription(config.description);
     builder.setColor(config.color);
-    
-    if (config.footer)      builder.setFooter({ text: config.footer });
-    if (config.image)       builder.setImage(config.image);
-    if (config.thumbnail)   builder.setThumbnail(config.thumbnail);
+    if (config.footer) builder.setFooter({ text: config.footer });
+    if (config.image) builder.setImage(config.image);
+    if (config.thumbnail) builder.setThumbnail(config.thumbnail);
     return builder;
 }
 
-function buildRequestEmbed(staffMember: discord.GuildMember, ticketOwner: discord.User): discord.EmbedBuilder {
+function buildRequestEmbed(staffMember: discord.GuildMember | discord.User, ticketOwner: discord.User): discord.EmbedBuilder {
     const config = getConfig();
-    const embed = new discord.EmbedBuilder();
-    
-    applyVisuals(embed, config.embeds.request);
-    embed.addFields(
-        { name: "📍  Requested by", value: `${staffMember} (${staffMember.user.tag})`, inline: false },
-        { name: "👤  Ticket Owner", value: `${ticketOwner} — please respond below`, inline: false },
-    );
-    embed.setTimestamp();
-    return embed;
+    const embed = applyVisuals(new discord.EmbedBuilder(), config.embeds.request);
+    const staffTag = "tag" in staffMember ? staffMember.tag : staffMember.user.tag;
+
+    return embed
+        .addFields(
+            { name: "Requested by", value: `<@${staffMember.id}> (${staffTag})`, inline: false },
+            { name: "Ticket Creator", value: `<@${ticketOwner.id}> (respond below)`, inline: false }
+        )
+        .setTimestamp();
 }
 
-function buildAgreedEmbed(ticketOwner: discord.User): discord.EmbedBuilder {
+function buildResponseEmbed(key: "agreed" | "declined", ticketOwner: discord.User): discord.EmbedBuilder {
     const config = getConfig();
-    const embed = new discord.EmbedBuilder();
-    applyVisuals(embed, config.embeds.agreed);
-    embed.addFields({ name: "👤  Responded by", value: `${ticketOwner} (${ticketOwner.tag})`, inline: false });
-    embed.setTimestamp();
-    return embed;
+    return applyVisuals(new discord.EmbedBuilder(), config.embeds[key])
+        .addFields({ name: "Responded by", value: `<@${ticketOwner.id}> (${ticketOwner.tag})`, inline: false })
+        .setTimestamp();
 }
 
-function buildDeclinedEmbed(ticketOwner: discord.User): discord.EmbedBuilder {
-    const config = getConfig();
-    const embed = new discord.EmbedBuilder();
-    applyVisuals(embed, config.embeds.declined);
-    embed.addFields({ name: "👤  Responded by", value: `${ticketOwner} (${ticketOwner.tag})`, inline: false });
-    embed.setTimestamp();
-    return embed;
-}
-
-// ─── BUTTON ROW BUILDERS ──────────────────────────────────────────────────────
-function buildRequestButtons(requestId: string): discord.ActionRowBuilder<discord.ButtonBuilder> {
+function buildRequestButtons(ticketOwnerId: string, staffId: string): discord.ActionRowBuilder<discord.ButtonBuilder> {
     return new discord.ActionRowBuilder<discord.ButtonBuilder>().addComponents(
         new discord.ButtonBuilder()
-            .setCustomId(`close_req_agree:${requestId}`)
+            .setCustomId(`ot-close-request:agree:${ticketOwnerId}:${staffId}`)
             .setLabel("I Agree")
             .setEmoji("✅")
             .setStyle(discord.ButtonStyle.Success),
         new discord.ButtonBuilder()
-            .setCustomId(`close_req_decline:${requestId}`)
+            .setCustomId(`ot-close-request:decline:${ticketOwnerId}:${staffId}`)
             .setLabel("I Disagree")
             .setEmoji("❌")
-            .setStyle(discord.ButtonStyle.Danger),
+            .setStyle(discord.ButtonStyle.Danger)
     );
 }
 
 function buildDisabledButtons(): discord.ActionRowBuilder<discord.ButtonBuilder> {
     return new discord.ActionRowBuilder<discord.ButtonBuilder>().addComponents(
         new discord.ButtonBuilder()
-            .setCustomId("close_req_agree_disabled")
+            .setCustomId("ot-close-request:agree:disabled")
             .setLabel("I Agree")
             .setEmoji("✅")
             .setStyle(discord.ButtonStyle.Success)
             .setDisabled(true),
         new discord.ButtonBuilder()
-            .setCustomId("close_req_decline_disabled")
+            .setCustomId("ot-close-request:decline:disabled")
             .setLabel("I Disagree")
             .setEmoji("❌")
             .setStyle(discord.ButtonStyle.Danger)
-            .setDisabled(true),
+            .setDisabled(true)
     );
 }
 
-// ─── CLOSE TICKET VIA OT ACTION SYSTEM ───────────────────────────────────────
-async function closeTicket(channel: discord.TextChannel, staffMember: discord.GuildMember): Promise<boolean> {
+// Logging
+async function logAction(guild: discord.Guild, embed: discord.EmbedBuilder): Promise<void> {
+    const config = getConfig();
+
+    if (config.logChannelId) {
+        try {
+            const channel = await guild.channels.fetch(config.logChannelId);
+            if (channel && channel.isTextBased()) {
+                await (channel as discord.TextChannel).send({ embeds: [embed] }).catch(() => {});
+                return;
+            }
+        } catch {}
+    }
+
     try {
-        const closeAction = opendiscord.actions?.get("opendiscord:close-ticket") as any;
-        const ticket = (opendiscord as any).tickets?.get(channel.id);
-
-        if (closeAction && ticket) {
-            await closeAction.run("other", {
-                guild:       channel.guild,
-                channel:     channel,
-                user:        staffMember.user,
-                ticket:      ticket,
-                reason:      "Ticket owner agreed to the close request.",
-                sendMessage: true,
-            });
-            return true;
+        const otLogs = opendiscord.posts.get("opendiscord:logs");
+        if (otLogs && otLogs.ready && otLogs.channel && otLogs.channel.isTextBased()) {
+            await (otLogs.channel as discord.TextChannel).send({ embeds: [embed] }).catch(() => {});
         }
+    } catch {}
+}
 
-        return false;
-    } catch (err) {
-        console.error("[CloseRequest] Failed to close ticket:", err);
-        return false;
+// Slash command
+opendiscord.events.get("onSlashCommandLoad").listen((slash) => {
+    slash.add(new api.ODSlashCommand("ot-close-request:close-request", {
+        name: "close-request",
+        description: "Ask the ticket creator to confirm closing this ticket.",
+        type: discord.ApplicationCommandType.ChatInput,
+        contexts: [discord.InteractionContextType.Guild],
+        integrationTypes: [discord.ApplicationIntegrationType.GuildInstall]
+    }));
+});
+
+// Text command
+opendiscord.events.get("onTextCommandLoad").listen((text) => {
+    const generalConfig = opendiscord.configs.get("opendiscord:general");
+    text.add(new api.ODTextCommand("ot-close-request:close-request", {
+        name: "close-request",
+        prefix: generalConfig.data.prefix,
+        dmPermission: false,
+        guildPermission: true
+    }));
+});
+
+// Help menu
+opendiscord.events.get("onHelpMenuComponentLoad").listen((menu) => {
+    menu.get("opendiscord:extra").add(new api.ODHelpMenuCommandComponent("ot-close-request:close-request", 0, {
+        slashName: "close-request",
+        textName: "close-request",
+        slashDescription: "Ask the ticket creator to confirm closing this ticket.",
+        textDescription: "Ask the ticket creator to confirm closing this ticket."
+    }));
+});
+
+// Message builder
+opendiscord.events.get("onMessageBuilderLoad").listen((messages) => {
+    messages.add(new api.ODMessage("ot-close-request:success-message"));
+    messages.get("ot-close-request:success-message")?.workers.add(
+        new api.ODWorker("ot-close-request:success-message", 0, (instance) => {
+            instance.setContent("Close request sent to the ticket creator.");
+            instance.setEphemeral(true);
+        })
+    );
+});
+
+// Command responder
+opendiscord.events.get("onCommandResponderLoad").listen((commands) => {
+    const generalConfig = opendiscord.configs.get("opendiscord:general");
+
+    commands.add(new api.ODCommandResponder("ot-close-request:close-request", generalConfig.data.prefix, "close-request"));
+    commands.get("ot-close-request:close-request")?.workers.add([
+        new api.ODWorker("ot-close-request:close-request", 0, async (instance, params, source, cancel) => {
+            const { guild, channel, user, member } = instance;
+
+            if (!guild || channel.isDMBased()) {
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-not-in-guild").build(source, { channel, user }));
+                return cancel();
+            }
+
+            const ticket = opendiscord.tickets.get(channel.id);
+            if (!ticket) {
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-unknown").build(source, { guild, channel, user }));
+                return cancel();
+            }
+
+            const hasPerms = await hasStaffPermission(user, member, channel as discord.GuildTextBasedChannel, guild);
+            if (!hasPerms) {
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-no-permissions").build(source, {
+                    guild,
+                    channel,
+                    user,
+                    permissions: ["support"]
+                }));
+                return cancel();
+            }
+
+            if (ticket.get("opendiscord:busy").value) {
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error-ticket-busy").build(source, { guild, channel, user }));
+                return cancel();
+            }
+
+            if (ticket.get("opendiscord:closed").value) {
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source, {
+                    guild,
+                    channel,
+                    user,
+                    error: opendiscord.languages.getTranslation("errors.actionInvalid.close"),
+                    layout: "simple"
+                }));
+                return cancel();
+            }
+
+            const config = getConfig();
+            if (config.ticketOptions.length > 0 && !config.ticketOptions.includes(ticket.option.id.value)) {
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source, {
+                    guild,
+                    channel,
+                    user,
+                    error: "Close requests are disabled for this ticket type.",
+                    layout: "simple"
+                }));
+                return cancel();
+            }
+
+            // Verify whether an existing prompt message is still present in the channel
+            const existingMsgId = pendingMessages.get(channel.id);
+            if (existingMsgId) {
+                const existingMsg = await channel.messages.fetch(existingMsgId).catch(() => null);
+                if (existingMsg) {
+                    await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source, {
+                        guild,
+                        channel,
+                        user,
+                        error: "A close request is already pending in this ticket.",
+                        layout: "simple"
+                    }));
+                    return cancel();
+                }
+                pendingMessages.delete(channel.id);
+            }
+
+            let ticketOwner: discord.User | null = await opendiscord.tickets.getTicketUser(ticket, "creator");
+            if (!ticketOwner) {
+                const creatorId = ticket.get("opendiscord:opened-by").value;
+                if (creatorId) {
+                    ticketOwner = await opendiscord.client.fetchUser(creatorId).catch(() => null);
+                }
+            }
+
+            if (!ticketOwner) {
+                await instance.reply(await opendiscord.builders.messages.getSafe("opendiscord:error").build(source, {
+                    guild,
+                    channel,
+                    user,
+                    error: "Cannot find the creator of this ticket.",
+                    layout: "simple"
+                }));
+                return cancel();
+            }
+
+            const promptMessage = await (channel as discord.TextChannel).send({
+                content: `<@${ticketOwner.id}>`,
+                embeds: [buildRequestEmbed(member ?? user, ticketOwner)],
+                components: [buildRequestButtons(ticketOwner.id, user.id)]
+            });
+
+            pendingMessages.set(channel.id, promptMessage.id);
+            await instance.reply(await opendiscord.builders.messages.getSafe("ot-close-request:success-message").build(source, {}));
+        }),
+        new api.ODWorker("ot-close-request:logs", -1, (instance, params, source) => {
+            opendiscord.log(`${instance.user.displayName} used the 'close-request' command.`, "plugin", [
+                { key: "user", value: instance.user.username },
+                { key: "userid", value: instance.user.id, hidden: true },
+                { key: "channelid", value: instance.channel.id, hidden: true },
+                { key: "method", value: source }
+            ]);
+        })
+    ]);
+});
+
+// Shared button response handler
+async function handleButtonResponse(mode: "agree" | "decline", instance: api.ODButtonResponderInstance, cancel: () => void) {
+    const { guild, channel, user } = instance;
+    const interaction = instance.interaction as discord.ButtonInteraction;
+    const parts = interaction.customId.split(":");
+    const ticketOwnerId = parts[2];
+    const staffId = parts[3];
+
+    if (!guild || !channel || channel.isDMBased() || !ticketOwnerId || !staffId) {
+        await instance.defer("reply", true);
+        await interaction.editReply({ content: "This close request is invalid." });
+        return cancel();
+    }
+
+    const ticket = opendiscord.tickets.get(channel.id);
+    if (!ticket || ticket.get("opendiscord:closed").value) {
+        pendingMessages.delete(channel.id);
+        await instance.defer("reply", true);
+        await interaction.editReply({ content: "This ticket is already closed." });
+        return cancel();
+    }
+
+    if (ticket.get("opendiscord:busy").value) {
+        await instance.defer("reply", true);
+        await interaction.editReply({ content: "This ticket is busy. Try again in a moment." });
+        return cancel();
+    }
+
+    if (user.id !== ticketOwnerId) {
+        await instance.defer("reply", true);
+        await interaction.editReply({ content: "Only the ticket creator can respond to this request." });
+        return cancel();
+    }
+
+    await instance.defer("update", false);
+    pendingMessages.delete(channel.id);
+
+    const isAgreed = mode === "agree";
+    const responseEmbed = buildResponseEmbed(isAgreed ? "agreed" : "declined", user);
+    await interaction.editReply({
+        content: "",
+        embeds: [responseEmbed],
+        components: [buildDisabledButtons()]
+    });
+
+    if (!isAgreed) {
+        await (channel as discord.TextChannel).send({
+            content: `<@${staffId}> The ticket creator (<@${user.id}>) declined the close request.`
+        }).catch(() => {});
+    }
+
+    opendiscord.log(`${user.displayName} ${isAgreed ? "accepted" : "declined"} the close request in #${(channel as any).name}`, "plugin", [
+        { key: "user", value: user.username },
+        { key: "userid", value: user.id, hidden: true },
+        { key: "channelid", value: channel.id, hidden: true }
+    ]);
+
+    const logEmbed = new discord.EmbedBuilder(responseEmbed.data)
+        .setTitle(isAgreed ? "Logs: Close Request Accepted" : "Logs: Close Request Declined")
+        .addFields(
+            { name: "Channel", value: `<#${channel.id}>`, inline: true },
+            { name: "Ticket Creator", value: `<@${user.id}>`, inline: true },
+            { name: "Requested by", value: `<@${staffId}>`, inline: true }
+        )
+        .setTimestamp();
+    await logAction(guild, logEmbed);
+
+    if (isAgreed) {
+        const staffUser = await opendiscord.client.fetchUser(staffId).catch(() => null) ?? user;
+        await opendiscord.actions.get("opendiscord:close-ticket").run("other", {
+            guild,
+            channel: channel as discord.GuildTextBasedChannel,
+            user: staffUser,
+            ticket,
+            reason: "Ticket creator agreed to close request.",
+            sendMessage: true
+        });
     }
 }
 
-// ─── SLASH COMMAND REGISTRATION ───────────────────────────────────────────────
-opendiscord.events.get("onSlashCommandLoad")?.listen((slash) => {
-    slash.add(new api.ODSlashCommand("ot-close-request:slash", {
-        name:             "close-request",
-        description:      "🔔 Ask the ticket owner to confirm closing this ticket.",
-        type:             discord.ApplicationCommandType.ChatInput,
-        contexts:         [discord.InteractionContextType.Guild],
-        integrationTypes: [discord.ApplicationIntegrationType.GuildInstall],
-    }));
-});
-
-// ─── TEXT COMMAND REGISTRATION ────────────────────────────────────────────────
-opendiscord.events.get("onTextCommandLoad")?.listen((text) => {
-    const prefix = opendiscord.configs.get("opendiscord:general").data.prefix;
-    text.add(new api.ODTextCommand("ot-close-request:text", {
-        name:            "close-request",
-        prefix,
-        dmPermission:    false,
-        guildPermission: true,
-    }));
-});
-
-// ─── COMMAND RESPONDER ────────────────────────────────────────────────────────
-opendiscord.events.get("onCommandResponderLoad")?.listen((responders) => {
-    const prefix = opendiscord.configs.get("opendiscord:general").data.prefix;
-
-    responders.add(new api.ODCommandResponder(
-        "ot-close-request:command" as any,
-        prefix,
-        "close-request",
-    ));
-
-    responders.get("ot-close-request:command" as any)?.workers.add([
-        new api.ODWorker("ot-close-request:command-handler" as any, 0, async (instance: any) => {
-            const isSlash = instance.type === "interaction";
-            if (isSlash) await instance.defer(true);
-
-            const member  = instance.member  as discord.GuildMember | null;
-            const channel = instance.channel as discord.TextChannel;
-
-            const sendError = async (content: string): Promise<void> => {
-                if (isSlash) {
-                    await (instance.interaction as discord.ChatInputCommandInteraction)
-                        .editReply({ content });
-                } else {
-                    await (instance.interaction as discord.Message)
-                        .reply({ content });
-                }
-            };
-
-            if (!member || !isAdmin(member)) {
-                await sendError("❌ You don't have permission to use this command. Only staff can request ticket closure.");
-                return;
-            }
-
-            if (!isTicketChannel(channel)) {
-                const hint = "This command can only be used in ticket channels.";
-                await sendError(`❌ ${hint}`);
-                return;
-            }
-
-            const existing = [...pendingRequests.values()].find(r => r.channelId === channel.id);
-            if (existing) {
-                await sendError("⚠️ There is already a pending close request in this ticket.");
-                return;
-            }
-
-            const ticketOwner = await getTicketOwner(channel);
-            if (!ticketOwner) {
-                await sendError(
-                    "❌ Could not identify the ticket owner.\n\n" +
-                    "**Troubleshooting:**\n" +
-                    "• Ensure the channel topic contains the owner's user ID or mention\n" +
-                    "• Add the ticket option ID to `ticket_options` in the plugin config\n" +
-                    "• Make sure the ticket owner has posted at least one message",
-                );
-                return;
-            }
-
-            const requestId = `${channel.id}-${Date.now()}`;
-            const sent = await channel.send({
-                content:    `${ticketOwner}`,
-                embeds:     [buildRequestEmbed(member, ticketOwner)],
-                components: [buildRequestButtons(requestId)],
-            });
-
-            if (isSlash) {
-                await (instance.interaction as discord.ChatInputCommandInteraction)
-                    .deleteReply()
-                    .catch(() => { /* ignore if already gone */ });
-            }
-
-            pendingRequests.set(requestId, {
-                messageId:     sent.id,
-                ticketOwnerId: ticketOwner.id,
-                staffId:       member.id,
-                channelId:     channel.id,
-                timestamp:     Date.now(),
-            });
-        }),
-    ]);
-});
-
-// ─── STALE REQUEST CLEANUP ────────────────────────────────────────────────────
-setInterval(() => {
-    const oneDay = 24 * 60 * 60 * 1000;
-    const now = Date.now();
-    for (const [id, req] of pendingRequests.entries()) {
-        if (now - req.timestamp > oneDay) pendingRequests.delete(id);
-    }
-}, 60 * 60 * 1000); // Check every hour
-
-// ─── BUTTON RESPONDERS ────────────────────────────────────────────────────────
-opendiscord.events.get("onClientReady")?.listen(() => {
-
-    // ── Agree button ────────────────────────────────────────────────────────
-    opendiscord.responders.buttons.add(
-        new api.ODButtonResponder("ot-close-request:agree-btn" as any, /^close_req_agree:/),
+// Button responders
+opendiscord.events.get("onButtonResponderLoad").listen((buttons) => {
+    buttons.add(new api.ODButtonResponder("ot-close-request:agree", /^ot-close-request:agree:/));
+    buttons.get("ot-close-request:agree")?.workers.add(
+        new api.ODWorker("ot-close-request:agree", 0, async (instance, params, source, cancel) => {
+            await handleButtonResponse("agree", instance, cancel);
+        })
     );
-    opendiscord.responders.buttons.get("ot-close-request:agree-btn" as any)?.workers.add([
-        new api.ODWorker("ot-close-request:agree-btn-handler" as any, 0, async (instance: any) => {
-            const interaction = instance.interaction as discord.ButtonInteraction;
-            const requestId   = interaction.customId.split(":")[1];
-            const request     = pendingRequests.get(requestId);
 
-            if (!request) {
-                await instance.defer("reply", true);
-                await interaction.editReply({ content: "❌ This close request has already expired or been responded to." });
-                return;
-            }
-
-            if (instance.user.id !== request.ticketOwnerId) {
-                await instance.defer("reply", true);
-                await interaction.editReply({ content: "❌ Only the ticket owner can respond to this close request." });
-                return;
-            }
-
-            await instance.defer("update", false);
-            pendingRequests.delete(requestId);
-
-            const agreedEmbed = buildAgreedEmbed(instance.user);
-            await interaction.editReply({
-                content:    "",
-                embeds:     [agreedEmbed],
-                components: [buildDisabledButtons()],
-            });
-
-            // Log the action
-            if (interaction.guild) {
-                const logEmbed = new discord.EmbedBuilder(agreedEmbed.data)
-                    .setTitle("📝 Logs: Close Request Accepted")
-                    .addFields({ name: "Channel", value: `${interaction.channel}`, inline: true })
-                    .setTimestamp();
-                await logAction(interaction.guild, logEmbed);
-            }
-
-            // ── Actually close the ticket ──────────────────────────────────
-            const guild = instance.guild as discord.Guild | null;
-            if (guild) {
-                const staffMember = await guild.members.fetch(request.staffId).catch(() => null);
-                if (staffMember) {
-                    const closed = await closeTicket(instance.channel as discord.TextChannel, staffMember);
-                    if (!closed) {
-                        await (instance.channel as discord.TextChannel).send({
-                            content: "⚠️ The ticket owner agreed to close, but automatic closure failed. Please close this ticket manually.",
-                        }).catch(() => {});
-                    }
-                }
-            }
-        }),
-    ]);
-
-    // ── Decline button ──────────────────────────────────────────────────────
-    opendiscord.responders.buttons.add(
-        new api.ODButtonResponder("ot-close-request:decline-btn" as any, /^close_req_decline:/),
+    buttons.add(new api.ODButtonResponder("ot-close-request:decline", /^ot-close-request:decline:/));
+    buttons.get("ot-close-request:decline")?.workers.add(
+        new api.ODWorker("ot-close-request:decline", 0, async (instance, params, source, cancel) => {
+            await handleButtonResponse("decline", instance, cancel);
+        })
     );
-    opendiscord.responders.buttons.get("ot-close-request:decline-btn" as any)?.workers.add([
-        new api.ODWorker("ot-close-request:decline-btn-handler" as any, 0, async (instance: any) => {
-            const interaction = instance.interaction as discord.ButtonInteraction;
-            const requestId   = interaction.customId.split(":")[1];
-            const request     = pendingRequests.get(requestId);
+});
 
-            if (!request) {
-                await instance.defer("reply", true);
-                await interaction.editReply({ content: "❌ This close request has already expired or been responded to." });
-                return;
-            }
+// Lifecycle events
+const clearPendingTicket = (ticket: api.ODTicket) => {
+    pendingMessages.delete(ticket.id.value);
+};
+opendiscord.events.get("onTicketClose").listen(clearPendingTicket);
+opendiscord.events.get("onTicketDelete").listen(clearPendingTicket);
 
-            if (instance.user.id !== request.ticketOwnerId) {
-                await instance.defer("reply", true);
-                await interaction.editReply({ content: "❌ Only the ticket owner can respond to this close request." });
-                return;
-            }
-
-            await instance.defer("update", false);
-            pendingRequests.delete(requestId);
-
-            const declinedEmbed = buildDeclinedEmbed(instance.user);
-            await interaction.editReply({
-                content:    "",
-                embeds:     [declinedEmbed],
-                components: [buildDisabledButtons()],
-            });
-
-            // Log the action
-            if (interaction.guild) {
-                const logEmbed = new discord.EmbedBuilder(declinedEmbed.data)
-                    .setTitle("📝 Logs: Close Request Declined")
-                    .addFields({ name: "Channel", value: `${interaction.channel}`, inline: true })
-                    .setTimestamp();
-                await logAction(interaction.guild, logEmbed);
-            }
-
-            await (instance.channel as discord.TextChannel).send({
-                content: `🔔 <@${request.staffId}> The ticket owner has declined the close request and still needs help.`,
-            }).catch(() => {});
-        }),
-    ]);
-
-    opendiscord.log("✅ Ticket Close Request plugin loaded (slash + text + button responders).", "plugin");
+// Plugin initialization
+opendiscord.events.get("afterPluginsLoaded").listen(() => {
+    opendiscord.log("Loaded ot-close-request.", "plugin");
 });
