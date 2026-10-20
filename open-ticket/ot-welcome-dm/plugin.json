@@ -1,0 +1,25 @@
+{
+    "name":"Welcome DM Plugin",
+    "id":"welcome-dm-plugin",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.1.x","OTv4.2.x"],
+
+    "enabled":true,
+    "priority":1,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"Custom",
+        "contributors":[],
+        "shortDescription":"Sends a welcome DM when a ticket is created.",
+        "longDescription":"Listens to ticket creation lifecycle events and sends a personalized onboarding DM to the ticket creator.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["welcome","dm","onboarding"]
+    }
+}

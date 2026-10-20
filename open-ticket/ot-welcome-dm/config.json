@@ -1,0 +1,5 @@
+{
+    "enabled":true,
+    "message":"Hi {user}, thanks for opening a ticket in {guild}. Our team will help you shortly in {channel}.",
+    "footer":"If your issue gets solved, feel free to close the ticket."
+}
