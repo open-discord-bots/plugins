@@ -1,0 +1,25 @@
+{
+    "name":"OT Terms Of Service",
+    "id":"ot-terms-of-service",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.2.x"],
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "contributors":[],
+        "shortDescription":"Require users to accept your terms of service before creating a ticket.",
+        "longDescription":"Require users to accept your terms of service before creating a ticket. Or send them manually using /terms.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["terms","terms-of-service","signature","legal"]
+    }
+}

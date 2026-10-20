@@ -1,0 +1,25 @@
+{
+    "name":"OT My Tickets",
+    "id":"ot-my-tickets",
+    "version":"1.0.0",
+    "startFile":"index.ts",
+    "supportedVersions":["OTv4.2.x"],
+
+    "enabled":true,
+    "priority":0,
+    "events":[],
+
+    "npmDependencies":[],
+    "requiredPlugins":[],
+    "incompatiblePlugins":[],
+
+    "details":{
+        "author":"DJj123dj",
+        "contributors":[],
+        "shortDescription":"Adds a command to list all your created and claimed tickets.",
+        "longDescription":"Adds a command to list all your created and claimed tickets.",
+        "imageUrl":"",
+        "projectUrl":"",
+        "tags":["my-tickets","list","tickets","claim","command","admin"]
+    }
+}

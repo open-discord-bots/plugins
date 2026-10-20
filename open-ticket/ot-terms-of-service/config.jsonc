@@ -1,0 +1,22 @@
+{
+    "restrictTickets":true, //Disable ticket creation if terms have not been accepted 
+    "ignoredTicketOptionIds":[], //Ignore "restrictTickets" for these ticket options
+    "resetOnChangedTerms":true, //Reset all accepted users when terms in TERMS.md have changed.
+    "assignedRoles":["DISCORD_ROLE_ID"], //Roles assigned to users that have accepted the terms.
+    "command":{
+        /* Enable the /terms command to manually send the terms of service or check if someone has accepted the terms. */
+        "enabled":true,
+        "adminRoles":["DISCORD_ROLE_ID"]
+    },
+    "termsEmbed":{
+        "title":"Terms Of Service",
+        "emoji":"⚖️", //Title Emoji. Leave empty to disable
+        "customColor":"", //Leave empty to use default color
+        "url":"", //URL. Leave empty to disable
+        
+        "image":"", //Image URL. Leave empty to disable
+        "thumbnail":"", //Image URL. Leave empty to disable
+        
+        "footer":"Having issues? Please contact our support team." //Leave empty to disable
+    }
+}
