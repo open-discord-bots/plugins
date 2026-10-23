@@ -1,0 +1,70 @@
+{
+    "openrouter": {
+        "apiKey": "sk-or-v1-YOUR_KEY_HERE",
+        "model": "meta-llama/llama-3.3-70b-instruct:free",
+        "fallbackModels": [],
+        "baseUrl": "https://openrouter.ai/api/v1"
+    },
+    "chatbot": {
+        "channelId": "",
+        "systemPrompt": "You are a support assistant for this server. Answer questions clearly using the provided server knowledge.",
+        "maxContextMessages": 5,
+        "typingIndicator": true,
+        "respondToMentionsOnly": false,
+        "vipUserIds": []
+    },
+    "giphy": {
+        "enabled": false,
+        "apiKey": "",
+        "gifChance": 0.85
+    },
+    "ticketAI": {
+        "enabled": true,
+        "summaryDelayMs": 350,
+        "options": [
+            {
+                "id": "YOUR-BAN-APPEAL-OPTION-ID",
+                "systemPrompt": "You are a support bot speaking directly to the user who opened a ban appeal ticket.\n\nRead their answers and write a short response that:\n1. Confirms what they submitted in 1-2 sentences\n2. Explains that the moderation team will review their appeal and asks them to wait without opening another ticket\n3. Reminds them to share their username or ban reason if missing",
+                "embedTitle": "Appeal Received",
+                "embedColor": "#e74c3c",
+                "questionIndexes": "all",
+                "readBotEmbeds": true,
+                "maxTokens": 350
+            },
+            {
+                "id": "YOUR-REPORT-OPTION-ID",
+                "systemPrompt": "You are a support bot speaking directly to the user who opened a player report ticket.\n\nRead their answers and write a short response that:\n1. Confirms what they reported in 1-2 sentences\n2. Asks them to attach screenshots or video evidence and wait for staff review\n3. Reminds them to provide evidence if none was mentioned",
+                "embedTitle": "Report Received",
+                "embedColor": "#e67e22",
+                "questionIndexes": "all",
+                "readBotEmbeds": false,
+                "maxTokens": 350
+            },
+            {
+                "id": "YOUR-GENERAL-SUPPORT-OPTION-ID",
+                "systemPrompt": "You are a support bot speaking directly to the user who opened a support ticket.\n\nRead their answers and write a short response that:\n1. Confirms what they need help with in 1 sentence\n2. Gives a direct answer if covered in the server knowledge, or lets them know staff will assist shortly\n3. Asks them to share any relevant screenshots or details",
+                "embedTitle": "Ticket Received",
+                "embedColor": "#3498db",
+                "questionIndexes": "all",
+                "readBotEmbeds": true,
+                "maxTokens": 350
+            }
+        ]
+    },
+    "automod": {
+        "enabled": true,
+        "monitoredChannels": [],
+        "exemptRoles": [],
+        "exemptUsers": [],
+        "logChannelId": "",
+        "publicEmbedChannelId": "",
+        "deleteMessage": true,
+        "timeoutDurationSec": 300,
+        "offenseResetSec": 3600,
+        "blocklist": []
+    },
+    "conversation": {
+        "maxTokens": 450,
+        "temperature": 0.65
+    }
+}
