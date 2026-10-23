@@ -18,10 +18,6 @@
         "apiKey": "",
         "gifChance": 0.85
     },
-    "knowledge": {
-        "serverInfoPath": "./plugins/ot-ai-assistant/knowledge/server-info.md",
-        "faqPath": "./plugins/ot-ai-assistant/knowledge/faqs.md"
-    },
     "ticketAI": {
         "enabled": true,
         "summaryDelayMs": 350,
