@@ -1,0 +1,14 @@
+{
+    "approvalChannelId":"DISCORD_CHANNEL_ID", //The channel where ticket requests must be approved.
+    "notifyRoleId":"DISCORD_ROLE_ID", //The role to ping once a new request arrives. (Leave empty to disable)
+    "extraApproverRoleIds":[], //Optional roles that are also allowed to approve/reject requests, on top of the default global/ticket Admins
+    "staffBypassApproval":false, //Staff (Open Ticket admin/support roles) can open tickets directly, without approval.
+
+    "allowTicketsWhenChannelInvalid":true, //Fallback: Create tickets if the approval channel is missing instead of blocking everything.
+    "requireReasonOnReject":true, //Require staff to fill in a reason when rejecting. The reason is sent in DM.
+    "dmRequesterOnApprove":true, //DM the ticket creator if their request is approved.
+    "dmRequesterOnReject":true, //DM the ticket creator if their request is rejected (including reason).
+
+    "requestExpiryHours":72, //Requests older than this many hours can no longer be approved or rejected. (0 disables the expiry)
+    "maxAnswersShown":8 //How many answers of the request are shown in the approval message. (max 25 embed fields)
+}
