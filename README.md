@@ -83,6 +83,7 @@ Use the **📥 Button** in the table to quickly download the plugin as `.zip` fi
 |[📥](https://raw.githubusercontent.com/open-discord-bots/plugins/refs/heads/main/open-ticket/ot-ticket-forms/ot-ticket-forms.zip)               |[`ot-ticket-forms`](./open-ticket/ot-ticket-forms/)<br>(Created by: `guillee.3`)       |Create advanced forms for Open Ticket. |
 |[📥](https://raw.githubusercontent.com/open-discord-bots/plugins/refs/heads/main/open-ticket/ot-template-system/ot-template-system.zip)         |[`ot-template-system`](./open-ticket/ot-template-system/)<br>(Created by: `DanoGlez`)  |Predefined template system for sending quick messages. |
 |[📥](https://raw.githubusercontent.com/open-discord-bots/plugins/refs/heads/main/open-ticket/ot-twitch-notifier/ot-twitch-notifier.zip)         |[`ot-twitch-notifier`](./open-ticket/ot-twitch-notifier/)<br>(Created by: `guillee.3`) |Get notified when your favorite Twitch streamers go live. |
+|[📥](https://raw.githubusercontent.com/open-discord-bots/plugins/refs/heads/main/open-ticket/ot-ticket-approval/ot-ticket-approval.zip)         |[`ot-ticket-approval`](./open-ticket/ot-ticket-approval/)<br>(Created by: `SpaceCore`) |Members can only open a ticket after staff approves their request. |
 
 ### 🎨 Customisation Plugins
 > Plugins that expand built-in features with additional customisation and styles.

@@ -1,35 +1,14 @@
 {
-    /* Enable or disable the whole approval workflow without removing the plugin. */
-    "enabled":true,
+    "approvalChannelId":"DISCORD_CHANNEL_ID", //The channel where ticket requests must be approved.
+    "notifyRoleId":"DISCORD_ROLE_ID", //The role to ping once a new request arrives. (Leave empty to disable)
+    "extraApproverRoleIds":[], //Optional roles that are also allowed to approve/reject requests, on top of the default global/ticket Admins
+    "staffBypassApproval":false, //Staff (Open Ticket admin/support roles) can open tickets directly, without approval.
 
-    /* The channel where ticket requests must be approved. Get the ID by right-clicking a channel > Copy Channel ID. */
-    /* Leave this empty (or invalid) and the plugin will not block any tickets. */
-    "approvalChannelId":"APPROVAL-CHANNEL-ID",
+    "allowTicketsWhenChannelInvalid":true, //Fallback: Create tickets if the approval channel is missing instead of blocking everything.
+    "requireReasonOnReject":true, //Require staff to fill in a reason when rejecting. The reason is sent in DM.
+    "dmRequesterOnApprove":true, //DM the ticket creator if their request is approved.
+    "dmRequesterOnReject":true, //DM the ticket creator if their request is rejected (including reason).
 
-    /* Optional: a role that gets pinged in the approval channel when a new request arrives. Empty to disable. */
-    "notifyRoleId":"NOTIFY-ROLE-ID",
-
-    /* Optional: additional roles that are allowed to approve/reject requests, on top of the Open Ticket "support" permission. */
-    "extraApproverRoleIds":[],
-
-    /* Staff (Open Ticket admin/support roles) can open tickets directly, without approval. */
-    "staffBypassApproval":false,
-
-    /* If the approval channel is missing, still open tickets directly (recommended) instead of blocking everything. */
-    "allowTicketsWhenChannelInvalid":true,
-
-    /* Staff must fill in a reason when rejecting. The reason is sent to the member in a DM. */
-    "requireReasonOnReject":true,
-
-    /* DM the member when their request is approved, with a link to the new ticket. */
-    "dmRequesterOnApprove":true,
-
-    /* DM the member when their request is rejected, including the rejection reason. */
-    "dmRequesterOnReject":true,
-
-    /* Requests older than this many hours can no longer be approved or rejected. 0 disables the expiry. */
-    "requestExpiryHours":72,
-
-    /* How many answers of the request are shown in the approval message (max 25 embed fields). */
-    "maxAnswersShown":8
+    "requestExpiryHours":72, //Requests older than this many hours can no longer be approved or rejected. (0 disables the expiry)
+    "maxAnswersShown":8 //How many answers of the request are shown in the approval message. (max 25 embed fields)
 }

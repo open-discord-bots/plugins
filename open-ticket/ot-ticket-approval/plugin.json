@@ -15,7 +15,7 @@
 
     "details":{
         "author":"SpaceCore",
-        "contributors":[],
+        "contributors":["DJj123dj"],
         "shortDescription":"Members can only open a ticket after staff approves their request.",
         "longDescription":"Every ticket request is sent to a staff approval channel first. Staff can approve (the ticket opens automatically) or reject it with a reason that is DM'd to the member. The approval message shows the requester, the selected ticket category and the reason/questions of the request, and keeps track of who approved or rejected it.",
         "imageUrl":"",
